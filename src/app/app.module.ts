@@ -32,23 +32,23 @@ import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import { FooterComponent } from './components/layout/footer/footer.component';
 import { MenuComponent } from './components/layout/menu/menu.component';
 
-
 @NgModule({
   declarations: [
+    // Components
+    AdminDashboardComponent,
     AppComponent,
+    ContentComponent,
+    CustomerDashboardComponent,
     ErrorComponent,
+    FooterComponent,
     HomeComponent,
+    LayoutComponent,
     LoginComponent,
+    ManagerDashboardComponent,
+    MenuComponent,
+    NavbarComponent,
     NotAuthorizedComponent,
     RegisterComponent,
-    AdminDashboardComponent,
-    ManagerDashboardComponent,
-    CustomerDashboardComponent,
-    LayoutComponent,
-    ContentComponent,
-    NavbarComponent,
-    FooterComponent,
-    MenuComponent
   ],
   imports: [
     // Angular Modules
@@ -68,9 +68,8 @@ import { MenuComponent } from './components/layout/menu/menu.component';
       },
     }),
 
+    // ng-bootstrap Module
     NgbModule
-
-
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
