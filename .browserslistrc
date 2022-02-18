@@ -8,6 +8,8 @@
 # You can see what browsers were selected by your queries by running:
 #   npx browserslist
 
+# Alttaki ayarlar Angular 13.2.4 ile birlikte varsayılan olarak geliyor ve tarayıcıların sadece 39%'unu kapsıyor.
+# Fakat ben projeyi geliştirene kadar desteklediği tarayıcı yüzdesi artacaktır.
 last 1 Chrome version
 last 1 Firefox version
 last 2 Edge major versions
