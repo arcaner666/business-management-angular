@@ -1,0 +1,61 @@
+@import 'src/assets/scss/_variables.scss';
+
+.footer-special {
+    background: $gradient-1;
+    color: white;
+    padding-top: 2rem;
+
+    ul{
+        list-style: none;
+        padding: 0;
+
+        a {
+            cursor: pointer;
+            display: block;
+            color: white;
+            text-decoration: none;
+
+            &.link {
+                color: $passive-link-color;
+        
+                &:hover,
+                &:focus,
+                &.active {
+                    color: $active-link-color;
+                }
+                
+            }
+        }
+    }
+
+    address {
+        a {
+            line-height: 2rem;
+            
+            &.navbar-brand {
+                margin-bottom: 1rem;
+                font-weight: 500;
+            }
+
+            img {
+                margin-right: 0.7rem;
+            }
+    
+            i {
+                margin-top: 0.5rem;
+                margin-left: 0.5rem;
+                margin-right: 1rem;
+            }
+            
+            p {
+                margin-left: 2.5rem;
+            }
+        }
+    }
+
+    .links {
+        a {
+            line-height: 3rem;
+        }
+    }
+}

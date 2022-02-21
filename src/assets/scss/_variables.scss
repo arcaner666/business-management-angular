@@ -5,6 +5,10 @@ $custom-color-3: rgba(2,114,51, 1);
 $custom-color-4: rgba(3,165,60, 1);
 $custom-color-5: rgba(4,216,57, 1);
 
+/* Gradient */
+$gradient-1: linear-gradient(90deg, $custom-color-1 20%, $custom-color-2 100%);
+/* /Gradient */
+
 /* Navbar */
 $passive-link-color: rgba(255, 255, 255, 0.7);
 $active-link-color: rgba(255, 255, 255, 1);
