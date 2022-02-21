@@ -2,14 +2,13 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
             <img src="favicon.ico" alt="Uygulamanın logosu" width="32">
-            İş Yönetim
+            <span>İş Yönetim</span>
         </a>
         <ul class="navbar-nav me-auto">
-            <li class="nav-item nav-link-active"><a class="nav-link">Babasayfa</a></li>
             <li class="nav-item" *ngFor="let link of links">
-                <a class="nav-link" [routerLink]="link.url" [routerLinkActive]="link.url">{{link.title}}</a>
+                <a class="nav-link" [routerLink]="link.url" routerLinkActive="active">{{link.title}}</a>
             </li>
         </ul>
         <button class="btn btn-outline-success">Giriş Yap</button>
-    </div>
+    </div><!--[ngClass]="{'active': activeLinkId == link.id}-->
 </nav>
