@@ -1,14 +1,20 @@
 // Angular Modules
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 // Auth0 Angular JWT Modules
 import { JwtModule } from '@auth0/angular-jwt';
 
 // ng-bootstrap Module
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+// ng-select Module
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
 import { AppComponent } from './app.component';
@@ -54,6 +60,9 @@ import { MenuComponent } from './components/layout/menu/menu.component';
     // Angular Modules
     AppRoutingModule,
     BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
 
     // Auth0 Angular JWT Modules
     JwtModule.forRoot({
@@ -69,7 +78,10 @@ import { MenuComponent } from './components/layout/menu/menu.component';
     }),
 
     // ng-bootstrap Module
-    NgbModule
+    NgbModule,
+
+    // ng-select Module
+    NgSelectModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

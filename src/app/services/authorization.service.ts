@@ -55,6 +55,11 @@ export class AuthorizationService {
     this.authorizationDtoSubject.next(cloneDeep(EMPTY_AUTHORIZATION_DTO));
   }
 
+  // Boş kullanıcıyı dış component'lerden almak için kısayol.
+  get emptyAuthorizationDto(): AuthorizationDto {
+    return cloneDeep(EMPTY_AUTHORIZATION_DTO);
+  }
+
   // Kullanıcıyı dış component'lerden almak için kısayol.
   get authorizationDto(): AuthorizationDto {
     return this.authorizationDtoSubject.value;

@@ -1,0 +1,47 @@
+@import 'src/assets/scss/_variables.scss';
+@import 'src/assets/scss/_mixins.scss';
+
+.login-special {
+    background-color: $custom-bg-color-1;
+
+    .card-header {
+        background-color: $custom-color-2;
+    }
+
+    .card-body {
+        a {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+            
+            span {
+                margin-left: 1rem;
+                font-weight: 500;
+                line-height: 2.2rem;
+            }
+
+            &:hover,
+            &:focus {
+                color: $custom-color-3;
+            }
+        }
+
+        .form-control {
+            &:focus {
+                border-color: $custom-color-3;
+                box-shadow: 0 0 0 3px rgba($custom-color-3, 0.3);
+            }
+        }
+
+        .btn {
+            color: white;
+            background-color: $custom-color-2;
+            border-color: $custom-color-2;
+
+            &:hover {
+                border-color: $custom-color-3;
+                background-color: $custom-color-3;
+            }
+        }
+    }
+}

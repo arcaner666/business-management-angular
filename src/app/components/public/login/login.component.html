@@ -1,1 +1,243 @@
-<p>login works!</p>
+<div class="container-fluid login-special">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <div class="card mb-5 mt-5">
+                <div class="card-header">
+                  <h2>&nbsp;</h2>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <!-- Panel Başlığı -->
+                        <h2 class="card-title text-center">İş Yönetimine Hoşgeldiniz!</h2>
+                        <!-- /Panel Başlığı -->
+
+                        <!-- Panel Yazısı -->
+                        <p class="card-text text-center">Lütfen hesabınızda oturum açın.</p>
+                        <!-- /Panel Yazısı -->
+
+                        <!-- Hata Bildirimi -->
+                        <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="errorPhone !== '' || errorEmail !== ''">
+                            <div class="alert-body">
+                            <p>{{ errorPhone }}</p>
+                            <p>{{ errorEmail }}</p>
+                            </div>
+                        </ngb-alert>
+                        <!-- /Hata Bildirimi -->
+
+                        <!-- Form Konteynırı -->
+                        <ul ngbNav #navWithIcons="ngbNav" class="nav-tabs justify-content-center">
+                            <li ngbNavItem>
+                                <a ngbNavLink (click)="resetForms()">
+                                    <i class="fas fa-phone-alt"></i>
+                                    <span>Telefon</span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    
+                                    <!-- Telefonla Giriş Formu -->
+                                    <form [formGroup]="phoneForm" (ngSubmit)="loginWithPhone()">
+
+                                        <!-- Telefon Numarası -->
+                                        <div class="mt-3 mb-3">
+                                            <label class="form-label" for="phone-form-phone">Telefon Numarası</label>
+                                            <input
+                                                id="phone-form-phone"
+                                                type="number"
+                                                formControlName="phone"
+                                                class="form-control"
+                                                [ngClass]="{ 'is-invalid': submittedPhone && phoneForm.value.phone.errors }"
+                                                placeholder="5554443322"
+                                                autofocus=""
+                                                tabindex="1"
+                                            />
+                                            <div *ngIf="submittedPhone && phoneForm.value.phone.errors" class="invalid-feedback">
+                                                <div *ngIf="phoneForm.value.phone.errors.required">Lütfen telefon numaranızı giriniz.</div>
+                                            </div>
+                                        </div>
+                                        <!-- /Telefon Numarası -->
+
+                                        <!-- Şifre -->
+                                        <div class="mt-3 mb-3">
+                                            <div class="d-flex justify-content-between">
+                                                <label for="phone-form-password">Şifre</label>
+
+                                                <!-- Şifremi Unuttum Linki -->
+                                                <a routerLink="/pages/authentication/forgot-password-v2"><small>Şifremi Unuttum</small></a>
+                                                <!-- /Şifremi Unuttum Linki -->
+
+                                            </div>
+                                            <div class="input-group input-group-merge form-password-toggle">
+                                            <input
+                                                id="phone-form-password"
+                                                [type]="passwordTextType ? 'text' : 'password'"
+                                                formControlName="password"
+                                                class="form-control form-control-merge"
+                                                [ngClass]="{ 'is-invalid error': submittedPhone && phoneForm.value.password.errors }"
+                                                placeholder="············"
+                                                tabindex="2"
+                                            />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text cursor-pointer">
+                                                <i
+                                                    class="feather font-small-4"
+                                                    [ngClass]="{
+                                                    'icon-eye-off': passwordTextType,
+                                                    'icon-eye': !passwordTextType
+                                                    }"
+                                                    (click)="togglePasswordTextType()"
+                                                ></i>
+                                                </span>
+                                            </div>
+                                            </div>
+                                            <div 
+                                                *ngIf="submittedPhone && phoneForm.value.password.errors"
+                                                class="invalid-feedback"
+                                                [ngClass]="{ 'd-block': submittedPhone && phoneForm.value.password.errors }"
+                                            >
+                                                <div *ngIf="phoneForm.value.password.errors.required">Lütfen şifrenizi giriniz.</div>
+                                            </div>
+                                        </div>
+                                        <!-- /Şifre -->
+
+                                        <!-- Oturum Süresi -->
+                                        <div class="mt-3 mb-3">
+                                            <label for="phone-form-auth-duration">Oturum Süresi</label>
+                                            <ng-select
+                                            id="phone-form-auth-duration"
+                                            [items]="refreshTokenDurationOptions"
+                                            formControlName="refreshTokenDuration"
+                                            bindLabel="duration"
+                                            bindValue="id"
+                                            [clearable]="false"
+                                            [searchable]="false"
+                                            tabindex="3">
+                                            </ng-select>
+                                        </div>
+                                        <!-- /Oturum Süresi -->
+
+                                        <!-- Giriş Butonu -->
+                                        <div class="mt-3 mb-3 d-grid col-12">
+                                            <button [disabled]="loadingPhone" class="btn btn-success" tabindex="4">
+                                                <span *ngIf="loadingPhone" class="spinner-border spinner-border-sm mr-1"></span>Giriş Yap
+                                            </button>
+                                        </div>
+                                        <!-- /Giriş Butonu -->
+
+                                    </form>
+                                    <!-- /Telefonla Giriş Formu -->
+
+                                </ng-template>
+                            </li>
+                            <li ngbNavItem>
+                                <a ngbNavLink (click)="resetForms()">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>E-Posta</span>
+                                </a>
+                                <ng-template ngbNavContent>
+
+                                    <!-- E-Postayla Giriş Formu -->
+                                    <form class="auth-login-form mt-2" [formGroup]="emailForm" (ngSubmit)="loginWithEmail()">
+
+                                        <!-- E-Posta -->
+                                        <div class="form-group">
+                                            <label class="form-label" for="email-form-email">E-Posta</label>
+                                            <input
+                                            id="email-form-email"
+                                            type="text"
+                                            formControlName="email"
+                                            class="form-control"
+                                            [ngClass]="{ 'is-invalid': submittedEmail && emailForm.value.email.errors }"
+                                            placeholder="example@mail.com"
+                                            autofocus=""
+                                            tabindex="1"
+                                            />
+                                            <div *ngIf="submittedEmail && emailForm.value.email.errors" class="invalid-feedback">
+                                            <div *ngIf="emailForm.value.errors.required">Lütfen e-posta adresinizi giriniz.</div>
+                                            </div>
+                                        </div>
+                                        <!-- /E-Posta -->
+
+                                        <!-- Şifre -->
+                                        <div class="form-group">
+                                            <div class="d-flex justify-content-between">
+                                            <label for="email-form-password">Şifre</label>
+
+                                            <!-- Şifremi Unuttum Linki -->
+                                            <a routerLink="/pages/authentication/forgot-password-v2"><small>Şifremi Unuttum</small></a>
+                                            <!-- /Şifremi Unuttum Linki -->
+
+                                            </div>
+                                            <div class="input-group input-group-merge form-password-toggle">
+                                            <input
+                                                id="email-form-password"
+                                                [type]="passwordTextType ? 'text' : 'password'"
+                                                formControlName="password"
+                                                class="form-control form-control-merge"
+                                                [ngClass]="{ 'is-invalid error': submittedEmail && emailForm.value.password.errors }"
+                                                placeholder="············"
+                                                tabindex="2"
+                                            />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text cursor-pointer">
+                                                <i
+                                                    class="feather font-small-4"
+                                                    [ngClass]="{
+                                                    'icon-eye-off': passwordTextType,
+                                                    'icon-eye': !passwordTextType
+                                                    }"
+                                                    (click)="togglePasswordTextType()"
+                                                ></i>
+                                                </span>
+                                            </div>
+                                            </div>
+                                            <div
+                                            *ngIf="submittedEmail && emailForm.value.password.errors"
+                                            class="invalid-feedback"
+                                            [ngClass]="{ 'd-block': submittedEmail && emailForm.value.password.errors }"
+                                            >
+                                            <div *ngIf="emailForm.value.password.errors.required">Lütfen şifrenizi giriniz.</div>
+                                            </div>
+                                        </div>
+                                        <!-- /Şifre -->
+
+                                        <!-- Oturum Süresi -->
+                                        <div class="form-group">
+                                            <label for="email-form-auth-duration">Oturum Süresi</label>
+                                            <ng-select
+                                            id="email-form-auth-duration"
+                                            [items]="refreshTokenDurationOptions"
+                                            formControlName="refreshTokenDuration"
+                                            bindLabel="duration"
+                                            bindValue="id"
+                                            [clearable]="false"
+                                            tabindex="3">
+                                            </ng-select>
+                                        </div>
+                                        <!-- /Oturum Süresi -->
+
+                                        <!-- Giriş Butonu -->
+                                        <button [disabled]="loadingEmail" class="btn btn-primary btn-block" tabindex="4" rippleEffect>
+                                            <span *ngIf="loadingEmail" class="spinner-border spinner-border-sm mr-1"></span>Giriş Yap
+                                        </button>
+                                        <!-- /Giriş Butonu -->
+
+                                    </form>
+                                    <!-- /E-Postayla Giriş Formu -->
+                                </ng-template>
+                            </li>
+                        </ul>
+                        <div [ngbNavOutlet]="navWithIcons" class="mt-2"></div>
+                        <!-- /Form Konteynırı -->
+
+                        <!-- Kayıt Sayfasına Geçiş -->
+                        <p class="text-center mt-2">
+                            <span>Hesabınız yok mu?</span
+                            ><a routerLink="/public/register"><span>&nbsp;Hemen Kaydolun.</span></a>
+                        </p>
+                        <!-- /Kayıt Sayfasına Geçiş -->
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
