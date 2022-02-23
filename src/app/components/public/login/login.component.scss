@@ -33,7 +33,7 @@
             }
         }
 
-        .btn {
+        .btn-success {
             color: white;
             background-color: $custom-color-2;
             border-color: $custom-color-2;
@@ -41,6 +41,16 @@
             &:hover {
                 border-color: $custom-color-3;
                 background-color: $custom-color-3;
+            }
+        }
+
+        .btn-outline-success {
+            color: $custom-color-2;
+            border-color: $custom-color-2;
+
+            &:hover {
+                color: white;
+                border-color: $custom-color-3;
             }
         }
     }

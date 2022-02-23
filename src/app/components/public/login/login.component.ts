@@ -8,6 +8,7 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
 import { Role } from 'src/app/models/various/role';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { LayoutService } from 'src/app/services/layout.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
@@ -58,8 +59,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     private _authorizationService: AuthorizationService,
     private _formBuilder: FormBuilder,
     private _navigationService: NavigationService,
+    private _layoutService: LayoutService
   ) {
     console.log("LoginComponent constructor çalıştı.");
+
+    // Bu sayfa için layout ayarlarını düzenler.
+    this._layoutService.layoutConfig = {
+      showNavbar: false,
+      showMenu: false,
+      showFooter: false,
+    };
 
     // Boş AuthorizationDto'yu oluşturur.
     this.authorizationDto = cloneDeep(EMPTY_AUTHORIZATION_DTO);

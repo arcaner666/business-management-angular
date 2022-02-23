@@ -3,40 +3,20 @@
 .navbar-special {
     background: $gradient-1;
 
-    .navbar-nav {
-        .nav-item {
-            .nav-link {
-                color: $passive-link-color;
-
-                &:hover,
-                &:focus,
-                &.active {
-                    color: $active-link-color;
-                }
-                
-            }
-        }
-    }
-
     .btn-outline-success {
         color: $custom-color-5;
         border-color: $custom-color-5;
 
         &:hover {
             color: white;
-            border-color: $custom-color-3;
+            border-color: $custom-color-4;
+            background-color: $custom-color-4;
         }
     }
 
-    a {
-        cursor: pointer;
-        display: block;
-        
-        span {
-            margin-left: 1rem;
-            font-weight: 500;
-            line-height: 2.2rem;
-        }
+    .brand {
+        margin-left: 1rem;
+        font-weight: 500;
+        line-height: 2.2rem;
     }
 }
-

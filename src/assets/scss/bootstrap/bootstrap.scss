@@ -1,0 +1,6 @@
+/* Bootstrap'ın üzerine yazılacak bileşenlerimiz import edilir. */
+@import '../bootstrap-extended/include';
+
+/* node_modules'den Bootstrap'ın kendi SCSS dosyalarını import edilir. */
+/* Bootstrap kurallarının üzerine yazabilmek için bu import bu sayfanın en altında olmalıdır. */
+@import '~bootstrap/scss/bootstrap';

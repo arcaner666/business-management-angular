@@ -1,0 +1,11 @@
+/* Angular'daki style.scss'e eklenecek olan tüm stilleri import eden ana dosya. */
+
+/* Global Stillerimiz */
+@import './global.scss';
+
+/* Bootstrap */
+@import './bootstrap/bootstrap';
+
+/* Angular İçin Yazılmış Dış Kütüphaneler */
+@import './libs/angular/ng-select';
+

@@ -1,0 +1,10 @@
+/* Bootstrap bileşenlerinin orijinal halleri ve üzerine yazılacak olan bileşenlerimiz import edilir. */
+/* Üzerine yazılacak olan Bootstrap bileşeni, bizim kendi bileşenimizin altında yer almalıdır. */
+
+/* Functions */
+@import 'bootstrap/scss/functions'; // Bootstrap'ın orijinal fonksiyonları. SCSS'in compile edilebilmesi için zorunludur.
+
+/* Variables */
+@import '../bootstrap-extended/variables'; // Kendi Bootstrap değişkenlerimiz
+@import 'bootstrap/scss/variables'; // Bootstrap'ın orijinal değişkenleri. SCSS'in compile edilebilmesi için zorunludur.
+

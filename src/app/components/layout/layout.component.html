@@ -1,25 +1,67 @@
-<div class="container-fluid g-0">
-    <div class="row">
-        <div class="col-12">
+<!-- Ana Layout Template'i -->
+<div class="container-fluid p-0 g-0">
+    <!-- Navbar -->
+    <ng-container *ngIf="_layoutService.layoutConfig?.showNavbar">
+        <ng-container *ngTemplateOutlet="navbar"></ng-container>
+    </ng-container>
+    <!-- /Navbar -->
+
+    <!-- Menu -->
+    <ng-container *ngIf="_layoutService.layoutConfig?.showMenu">
+        <ng-container *ngTemplateOutlet="menu"></ng-container>
+    </ng-container>
+    <!-- /Menu -->
+
+    <!-- Content -->
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+    <!-- /Content -->
+
+     <!-- Footer -->
+    <ng-container *ngIf="_layoutService.layoutConfig?.showFooter">
+        <ng-container *ngTemplateOutlet="footer"></ng-container>
+    </ng-container>
+    <!-- /Footer -->
+</div>
+<!-- /Ana Layout Template'i -->
+
+<!---------------------------------- Bileşen Template'leri ---------------------------------------------------------->
+
+<!-- Navbar Template'i -->
+<ng-template #navbar>
+    <div class="row p-0 m-0">
+        <div class="col-12 p-0 m-0">
             <app-navbar></app-navbar>
         </div>
     </div>
+</ng-template>
+<!-- /Navbar Template'i -->
 
-    <div class="row">
-        <div class="col-12">
+<!-- Menu Template'i -->
+<ng-template #menu>
+    <div class="row p-0 m-0">
+        <div class="col-12 p-0 m-0">
             <app-menu></app-menu>
         </div>
     </div>
+</ng-template>
+<!-- /Menu Template'i -->
 
-    <div class="row">
-        <div class="col-12">
+<!-- Content Template'i -->
+<ng-template #content>
+    <div class="row p-0 m-0">
+        <div class="col-12 p-0 m-0">
             <app-content></app-content>
         </div>
     </div>
+</ng-template>
+<!-- /Content Template'i -->
 
-    <div class="row">
-        <div class="col-12">
+<!-- Footer Template'i -->
+<ng-template #footer>
+    <div class="row p-0 m-0">
+        <div class="col-12 p-0 m-0">
             <app-footer></app-footer>
         </div>
     </div>
-</div>
+</ng-template>
+<!-- /Footer Template'i -->

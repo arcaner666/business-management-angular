@@ -1,3 +1,4 @@
+import { LayoutService } from './../../services/layout.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public _layoutService: LayoutService
+  ) { }
 
   ngOnInit(): void {
   }

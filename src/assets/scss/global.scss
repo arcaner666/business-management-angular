@@ -1,0 +1,10 @@
+/* Tüm uygulamada geçerli olacak kurallar buraya yazılır. */
+/* Buraya yazılacak kuralların gerçekten ilgili eleman için genel geçer olması çok önemlidir. */
+
+@import 'src/assets/scss/_variables.scss';
+@import 'src/assets/scss/_mixins.scss';
+
+.default-ul {
+    list-style: none;
+    padding: 0;
+}
