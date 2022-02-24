@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+import { BreakpointService } from 'src/app/services/breakpoint.service';
+
 interface Link {
   id: number;
   title: string;
@@ -16,6 +18,7 @@ interface Link {
 export class NavbarComponent implements OnInit {
 
   activeLinkId: number = 0;
+  isNavbarCollapsed: boolean = true;
   links: Link[] = [
     { id: 0, title: 'Anasayfa', url: 'public/home', fragment: 'one' },
     { id: 1, title: 'Biz Kimiz?', url: 'public/about', fragment: 'two' },
@@ -25,7 +28,11 @@ export class NavbarComponent implements OnInit {
     { id: 5, title: 'Bize Ulaşın', url: 'public/contact', fragment: 'six' },
   ];
   
-  constructor(public route: ActivatedRoute) {}
+  constructor(
+    public route: ActivatedRoute,
+    public _breakpointService: BreakpointService
+  ) {
+  }
 
   ngOnInit(): void {
   }
