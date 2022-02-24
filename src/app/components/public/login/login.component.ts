@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
-import { Role } from 'src/app/models/various/role';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
@@ -16,7 +15,7 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   systemUserId: 0,
   email: "",
   phone: "",
-  role2: "",
+  role: "",
   businessId: 0,
   branchId: 0,
   blocked: false,
@@ -29,7 +28,6 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   password: "",
   refreshTokenDuration: 0,
   accessToken: "",
-  role: Role.Anonymous,
 };
 
 @Component({
@@ -98,22 +96,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.passwordTextType = !this.passwordTextType;
   }
 
-  // Sunucudan authorizationDto.role alanını enum olarak döndürmek istemediğim için string olarak
-  // döndürüp burada Role'a çeviriyorum. Eğer authorizationDto nesnesindeki role alanı boş olursa
-  // menüler düzgün çalışmaz.
-  assignRoles(role2: string): void {
-    if(role2) {
-      switch (role2) {
-        case "Admin": this.authorizationDto.role = Role.Admin; break;
-        case "Manager": this.authorizationDto.role = Role.Manager; break;
-        case "Customer": this.authorizationDto.role = Role.Customer; break;
-      }
-      console.log(role2);
-    } else {
-      console.log("Rol atanmamış!!!");
-    }
-  }
-
   loginWithEmail(): void  {
     // "Giriş Yap" butonuna basıldı.
     this.submittedEmail = true;
@@ -137,9 +119,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (response) => {      
         // Eğer giriş başarılıysa
         if(response.success) {
-          // Rolleri ata. authorizationDto'yu değiştirdiği için en üstte olmalı.
-          this.assignRoles(response.data.role2);
-  
           // Kullanıcı bilgilerini sakla.
           this._authorizationService.authorizationDto = response.data;
           
@@ -181,9 +160,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: (response) => {      
           // Eğer giriş başarılıysa
           if(response.success) {
-            // Rolleri ata. authorizationDto'yu değiştirdiği için en üstte olmalı.
-            this.assignRoles(response.data.role2);
-    
             // Kullanıcı bilgilerini sakla.
             this._authorizationService.authorizationDto = response.data;
             

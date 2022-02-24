@@ -1,10 +1,8 @@
-﻿import { Role } from "src/app/models/various/role";
-
-export interface AuthorizationDto {
+﻿export interface AuthorizationDto {
   systemUserId: number;
   email: string; 
   phone: string;
-  role2: string;
+  role: string;
   businessId: number;
   branchId: number;
   blocked: boolean;
@@ -17,5 +15,4 @@ export interface AuthorizationDto {
   password: string;
   refreshTokenDuration: number;
   accessToken: string;
-  role: Role;
 }

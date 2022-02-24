@@ -2,7 +2,7 @@ export interface SystemUserDto {
     systemUserId: number;
     email: string;
     phone: string;
-    role2: string;
+    role: string;
     businessId: number;
     branchId: number;
     blocked: boolean;

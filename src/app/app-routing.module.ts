@@ -15,9 +15,6 @@ import { RegisterComponent } from './components/public/register/register.compone
 // Guards
 import { AuthorizationGuard } from './guards/authorization.guard';
 
-// Models
-import { Role } from './models/various/role';
-
 const routes: Routes = [
   // Public
   { path: 'public/error', component: ErrorComponent },
@@ -29,19 +26,19 @@ const routes: Routes = [
   // Manager
   {
     path: 'manager/manager-dashboard', component: ManagerDashboardComponent, canActivate: [AuthorizationGuard],
-    data: { roles: [Role.Manager] }
+    data: { roles: ["Manager"] }
   },
 
   // Customer
   {
     path: 'customer/customer-dashboard', component: CustomerDashboardComponent, canActivate: [AuthorizationGuard],
-    data: { roles: [Role.Customer] }
+    data: { roles: ["Customer"] }
   },
 
   // Admin
   {
     path: 'admin/admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthorizationGuard],
-    data: { roles: [Role.Admin] }
+    data: { roles: ["Admin"] }
   },
 
   // Last

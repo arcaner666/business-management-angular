@@ -9,13 +9,12 @@ import { environment } from 'src/environments/environment';
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/singleDataResult';
-import { Role } from '../models/various/role';
 
 const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   systemUserId: 0,
   email: "",
   phone: "",
-  role2: "",
+  role: "",
   businessId: 0,
   branchId: 0,
   blocked: false,
@@ -28,7 +27,6 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   password: "",
   refreshTokenDuration: 0,
   accessToken: "",
-  role: Role.Anonymous,
 };
 
 @Injectable({
