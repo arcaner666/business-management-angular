@@ -15,8 +15,8 @@
                         <!-- Hata Bildirimi -->
                         <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="errorPhone !== '' || errorEmail !== ''">
                             <div class="alert-body">
-                            <p>{{ errorPhone }}</p>
-                            <p>{{ errorEmail }}</p>
+                                <span>{{ errorPhone }}</span>
+                                <span>{{ errorEmail }}</span>
                             </div>
                         </ngb-alert>
                         <!-- /Hata Bildirimi -->
