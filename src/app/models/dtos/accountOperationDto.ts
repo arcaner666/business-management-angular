@@ -1,10 +1,10 @@
 export interface AccountOperationDto {
-    accountOperationId: bigint;
+    accountOperationId: number;
     businessId: number;
-    branchId: bigint;
+    branchId: number;
     accountOperationTypeId: number;
-    employeeId: bigint;
-    accountOperationOrder: bigint;
+    employeeId: number;
+    accountOperationOrder: number;
     title: string;
     cancelled: boolean;
     completed: boolean;

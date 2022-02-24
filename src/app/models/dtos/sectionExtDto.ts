@@ -1,10 +1,10 @@
 export interface SectionExtDto {
     sectionId: number;
-    sectionGroupId: bigint;
+    sectionGroupId: number;
     businessId: number;
-    branchId: bigint;
-    managerId: bigint;
-    fullAddressId: bigint;
+    branchId: number;
+    managerId: number;
+    fullAddressId: number;
     sectionName: string;
     sectionCode: string;
     createdAt: Date;

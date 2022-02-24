@@ -1,9 +1,9 @@
 export interface ApartmentExtDto {
-    apartmentId: bigint;
+    apartmentId: number;
     sectionId: number;
     businessId: number;
-    branchId: bigint;
-    managerId: bigint;
+    branchId: number;
+    managerId: number;
     apartmentName: string;
     apartmentCode: string;
     blockNumber: number;

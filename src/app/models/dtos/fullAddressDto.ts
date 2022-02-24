@@ -1,5 +1,5 @@
 export interface FullAddressDto {
-    fullAddressId: bigint;
+    fullAddressId: number;
     cityId: number;
     districtId: number;
     addressTitle: string;

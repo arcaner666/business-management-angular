@@ -1,8 +1,8 @@
 export interface EmployeeExtDto {
-    employeeId: bigint;
+    employeeId: number;
     businessId: number;
-    branchId: bigint;
-    accountId: bigint;
+    branchId: number;
+    accountId: number;
     employeeTypeId: number;
     nameSurname: string;
     email: string;

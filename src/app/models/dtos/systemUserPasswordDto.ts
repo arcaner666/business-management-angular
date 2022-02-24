@@ -1,5 +1,5 @@
 ﻿export interface SystemUserPasswordDto {
-  systemUserId: bigint;
+  systemUserId: number;
   oldPassword: string;
   newPassword: string;
   newPasswordAgain: string;

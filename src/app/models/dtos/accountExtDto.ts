@@ -1,15 +1,15 @@
 export interface AccountExtDto {
-    accountId: bigint;
+    accountId: number;
     businessId: number;
-    branchId: bigint;
+    branchId: number;
     accountGroupId: number;
     currencyId: number;
     accountOrder: number;
     accountName: string;
     accountCode: string;
     taxOffice: string;
-    taxNumber: bigint;
-    identityNumber: bigint;
+    taxNumber: number;
+    identityNumber: number;
     debitBalance: number;
     creditBalance: number;
     balance: number;

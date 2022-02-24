@@ -1,9 +1,9 @@
 export interface BankDto {
-    bankId: bigint;
+    bankId: number;
     businessId: number;
-    branchId: bigint;
-    accountId: bigint;
-    fullAddressId: bigint;
+    branchId: number;
+    accountId: number;
+    fullAddressId: number;
     bankName: string;
     bankBranchName: string;
     bankCode: string;

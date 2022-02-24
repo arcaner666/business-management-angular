@@ -1,8 +1,8 @@
 export interface HouseOwnerDto {
-    houseOwnerId: bigint;
+    houseOwnerId: number;
     businessId: number;
-    branchId: bigint;
-    accountId: bigint;
+    branchId: number;
+    accountId: number;
     nameSurname: string;
     email: string;
     phone: string;

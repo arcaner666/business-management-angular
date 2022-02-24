@@ -1,7 +1,7 @@
 export interface SectionGroupDto {
-  sectionGroupId: bigint;
+  sectionGroupId: number;
   businessId: number;
-  branchId: bigint;
+  branchId: number;
   sectionGroupName: string;
   createdAt: Date;
   updatedAt: Date;

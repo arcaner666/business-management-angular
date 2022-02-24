@@ -1,11 +1,11 @@
 export interface FlatDto {
-    flatId: bigint;
+    flatId: number;
     sectionId: number;
-    apartmentId: bigint;
+    apartmentId: number;
     businessId: number;
-    branchId: bigint;
-    houseOwnerId: bigint;
-    tenantId: bigint;
+    branchId: number;
+    houseOwnerId: number;
+    tenantId: number;
     flatCode: string;
     doorNumber: number;
     createdAt: Date;

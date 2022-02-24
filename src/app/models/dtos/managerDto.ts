@@ -1,7 +1,7 @@
 export interface ManagerDto {
-    managerId: bigint;
+    managerId: number;
     businessId: number;
-    branchId: bigint;
+    branchId: number;
     nameSurname: string;
     email: string;
     phone: string;

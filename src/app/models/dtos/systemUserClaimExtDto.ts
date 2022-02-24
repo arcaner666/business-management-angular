@@ -1,6 +1,6 @@
 export interface SystemUserClaimExtDto {
-    systemUserClaimId: bigint;
-    systemUserId: bigint;
+    systemUserClaimId: number;
+    systemUserId: number;
     operationClaimId: number;
     createdAt: Date;
     updatedAt: Date;

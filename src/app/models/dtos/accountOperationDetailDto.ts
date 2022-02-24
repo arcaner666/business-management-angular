@@ -1,9 +1,9 @@
 export interface AccountOperationDetailDto {
-    accountOperationDetailId: bigint;
+    accountOperationDetailId: number;
     businessId: number;
-    branchId: bigint;
-    accountOperationId: bigint;
-    accountId: bigint;
+    branchId: number;
+    accountOperationId: number;
+    accountId: number;
     currencyId: number;
     documentCode: string;
     debitBalance: number;

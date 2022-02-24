@@ -1,6 +1,6 @@
 export interface BusinessDto {
     businessId: number;
-    systemUserId: bigint;
+    systemUserId: number;
     businessOrder: number;
     businessName: string;
     businessCode: string;

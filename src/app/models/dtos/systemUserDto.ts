@@ -1,10 +1,10 @@
 export interface SystemUserDto {
-    systemUserId: bigint;
+    systemUserId: number;
     email: string;
     phone: string;
     role2: string;
     businessId: number;
-    branchId: bigint;
+    branchId: number;
     blocked: boolean;
     refreshToken: string;
     refreshTokenExpiryTime: Date;

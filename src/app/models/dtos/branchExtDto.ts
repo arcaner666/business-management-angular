@@ -1,7 +1,7 @@
 export interface BranchExtDto {
-    branchId: bigint;
+    branchId: number;
     businessId: number;
-    fullAddressId: bigint;
+    fullAddressId: number;
     branchOrder: number;
     branchName: string;
     branchCode: string;

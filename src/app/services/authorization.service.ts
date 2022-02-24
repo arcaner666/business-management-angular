@@ -12,13 +12,13 @@ import { SingleDataResult } from 'src/app/models/results/singleDataResult';
 import { Role } from '../models/various/role';
 
 const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
-  systemUserId: BigInt(0),
+  systemUserId: 0,
   email: "",
   phone: "",
   role2: "",
   dateOfBirth: new Date(),
   businessId: 0,
-  branchId: BigInt(0),
+  branchId: 0,
   blocked: false,
   refreshToken: "",
   refreshTokenExpiryTime: new Date(),
