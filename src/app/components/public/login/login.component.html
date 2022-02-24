@@ -41,12 +41,12 @@
                                                 type="number"
                                                 formControlName="phone"
                                                 class="form-control"
-                                                [ngClass]="{ 'is-invalid': submittedPhone && phoneForm.value.phone.errors }"
+                                                [ngClass]="{ 'is-invalid': submittedPhone && phoneForm.controls['phone'].errors}"
                                                 placeholder="5554443322"
                                                 tabindex="1"
                                             />
-                                            <div *ngIf="submittedPhone && phoneForm.value.phone.errors">
-                                                <div *ngIf="phoneForm.value.phone.errors.required">Lütfen telefon numaranızı giriniz.</div>
+                                            <div class="invalid-feedback" *ngIf="submittedPhone && phoneForm.controls['phone'].errors">
+                                                <div *ngIf="phoneForm.controls['phone'].errors?.['required']">Lütfen telefon numaranızı giriniz.</div>
                                             </div>
                                         </div>
                                         <!-- /Telefon Numarası -->
@@ -67,7 +67,7 @@
                                                     [type]="passwordTextType ? 'text' : 'password'"
                                                     formControlName="password"
                                                     class="form-control"
-                                                    [ngClass]="{ 'is-invalid': submittedPhone && phoneForm.value.password.errors }"
+                                                    [ngClass]="{ 'is-invalid': submittedPhone && phoneForm.controls['password'].errors }"
                                                     placeholder="******"
                                                     tabindex="2"
                                                 />
@@ -81,10 +81,12 @@
                                                     >
                                                     </i>
                                                 </button>
+                                                <!-- Yerini değiştirme -->
+                                                <div class="invalid-feedback" *ngIf="submittedPhone && phoneForm.controls['password'].errors">
+                                                    <div *ngIf="phoneForm.controls['password'].errors?.['required']">Lütfen şifrenizi giriniz.</div>
+                                                </div>
                                             </div>
-                                            <div *ngIf="submittedPhone && phoneForm.value.password.errors">
-                                                <div *ngIf="phoneForm.value.password.errors.required">Lütfen şifrenizi giriniz.</div>
-                                            </div>
+
                                         </div>
                                         <!-- /Şifre -->
 
@@ -107,7 +109,7 @@
                                         <!-- Giriş Butonu -->
                                         <div class="mt-4  d-grid col-12">
                                             <button [disabled]="loadingPhone" class="btn btn-success" tabindex="4">
-                                                <span *ngIf="loadingPhone" class="spinner-border spinner-border-sm mr-1"></span>Giriş Yap
+                                                <span *ngIf="loadingPhone" class="spinner-border spinner-border-sm"></span> Giriş Yap
                                             </button>
                                         </div>
                                         <!-- /Giriş Butonu -->
@@ -135,12 +137,12 @@
                                                 type="text"
                                                 formControlName="email"
                                                 class="form-control"
-                                                [ngClass]="{ 'is-invalid': submittedEmail && emailForm.value.email.errors }"
+                                                [ngClass]="{ 'is-invalid': submittedEmail && emailForm.controls['email'].errors }"
                                                 placeholder="example@mail.com"
                                                 tabindex="1"
                                             />
-                                            <div *ngIf="submittedEmail && emailForm.value.email.errors">
-                                                <div *ngIf="emailForm.value.email.errors.required">Lütfen e-posta adresinizi giriniz.</div>
+                                            <div class="invalid-feedback" *ngIf="submittedEmail && emailForm.controls['email'].errors">
+                                                <div *ngIf="emailForm.controls['email'].errors?.['required']">Lütfen e-posta adresinizi giriniz.</div>
                                             </div>
                                         </div>
                                         <!-- /E-Posta -->
@@ -161,7 +163,7 @@
                                                     [type]="passwordTextType ? 'text' : 'password'"
                                                     formControlName="password"
                                                     class="form-control"
-                                                    [ngClass]="{ 'is-invalid': submittedEmail && emailForm.value.password.errors }"
+                                                    [ngClass]="{ 'is-invalid': submittedEmail && emailForm.controls['password'].errors }"
                                                     placeholder="******"
                                                     tabindex="2"
                                                 />
@@ -175,10 +177,12 @@
                                                     >
                                                     </i>
                                                 </button>
+                                                <!-- Yerini değiştirme -->
+                                                <div class="invalid-feedback" *ngIf="submittedEmail && emailForm.controls['password'].errors">
+                                                    <div *ngIf="emailForm.controls['password'].errors?.['required']">Lütfen şifrenizi giriniz.</div>
+                                                </div>
                                             </div>
-                                            <div *ngIf="submittedEmail && emailForm.value.password.errors">
-                                                <div *ngIf="emailForm.value.password.errors.required">Lütfen şifrenizi giriniz.</div>
-                                            </div>
+
                                         </div>
                                         <!-- /Şifre -->
 

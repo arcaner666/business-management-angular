@@ -5,7 +5,6 @@ export interface AuthorizationDto {
   email: string; 
   phone: string;
   role2: string;
-  dateOfBirth: Date;
   businessId: number;
   branchId: number;
   blocked: boolean;

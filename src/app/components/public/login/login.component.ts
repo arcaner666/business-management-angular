@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
@@ -17,7 +17,6 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   email: "",
   phone: "",
   role2: "",
-  dateOfBirth: new Date(),
   businessId: 0,
   branchId: 0,
   blocked: false,
@@ -122,6 +121,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Form geçersizse burada durur.
     if (this.emailForm.invalid) {
       console.log("Form geçersiz.");
+      console.log(this.emailForm);
       return;
     }
 
@@ -133,25 +133,27 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authorizationDto.password = this.emailForm.value.password;
     this.authorizationDto.refreshTokenDuration = this.emailForm.value.refreshTokenDuration;
 
-    // Sunucuya giriş isteği gönderilir.
-    this.sub1 = this._authorizationService.loginWithEmail(this.authorizationDto).subscribe((response) => {
-      // Eğer giriş başarılıysa
-      if(response.success) {
-        // Rolleri ata. authorizationDto'yu değiştirdiği için en üstte olmalı.
-        this.assignRoles(response.data.role2);
-
-        // Kullanıcı bilgilerini sakla.
-        this._authorizationService.authorizationDto = response.data;
-
-        // Oturum açılma durumuna göre kullanıcıları yönlendir.
-        this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+    this.sub1 = this._authorizationService.loginWithEmail(this.authorizationDto).subscribe({
+      next: (response) => {      
+        // Eğer giriş başarılıysa
+        if(response.success) {
+          // Rolleri ata. authorizationDto'yu değiştirdiği için en üstte olmalı.
+          this.assignRoles(response.data.role2);
+  
+          // Kullanıcı bilgilerini sakla.
+          this._authorizationService.authorizationDto = response.data;
+          
+          // Oturum açılma durumuna göre kullanıcıları yönlendir.
+          this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+        }
+        this.loadingEmail = false;
+      },
+      error: (error) => {
+        console.log(error);
+        // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
+        this.errorEmail = error.message;
+        this.loadingEmail = false;
       }
-      this.loadingEmail = false;
-    }, error => {
-      console.log(error);
-      // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-      this.errorEmail = error.message;
-      this.loadingEmail = false;
     });
   }
 
@@ -162,6 +164,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Form geçersizse burada durur.
     if (this.phoneForm.invalid) {
       console.log("Form geçersiz.");
+      console.log(this.phoneForm);
       return;
     }
 
@@ -169,29 +172,32 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loadingPhone = true;
     
     // Formdaki veriler sunucuya gönderilecek modele doldurulur.
-    this.authorizationDto.phone = this.phoneForm.value.phone;
+    this.authorizationDto.phone = this.phoneForm.value.phone.toString();
     this.authorizationDto.password = this.phoneForm.value.password;
     this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
 
     // Sunucuya giriş isteği gönderilir.
-    this.sub2 = this._authorizationService.loginWithPhone(this.authorizationDto).subscribe((response) => {
-      // Eğer giriş başarılıysa
-      if(response.success) {
-        // Rolleri ata. authorizationDto'yu değiştirdiği için en üstte olmalı.
-        this.assignRoles(response.data.role2);
-
-        // Kullanıcı bilgilerini sakla.
-        this._authorizationService.authorizationDto = response.data;
-        
-        // Oturum açılma durumuna göre kullanıcıları yönlendir.
-        this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
-      }
-      this.loadingPhone = false;
-    }, error => {
-      console.log(error);
-      // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-      this.errorPhone = error.message;
-      this.loadingPhone = false;
+    this.sub2 = this._authorizationService.loginWithPhone(this.authorizationDto).subscribe({
+        next: (response) => {      
+          // Eğer giriş başarılıysa
+          if(response.success) {
+            // Rolleri ata. authorizationDto'yu değiştirdiği için en üstte olmalı.
+            this.assignRoles(response.data.role2);
+    
+            // Kullanıcı bilgilerini sakla.
+            this._authorizationService.authorizationDto = response.data;
+            
+            // Oturum açılma durumuna göre kullanıcıları yönlendir.
+            this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+          }
+          this.loadingPhone = false;
+        },
+        error: (error) => {
+          console.log(error);
+          // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
+          this.errorPhone = error.message;
+          this.loadingPhone = false;
+        }
     });
   }
 

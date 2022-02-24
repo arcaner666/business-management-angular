@@ -16,7 +16,6 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   email: "",
   phone: "",
   role2: "",
-  dateOfBirth: new Date(),
   businessId: 0,
   branchId: 0,
   blocked: false,
