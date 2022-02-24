@@ -4,6 +4,10 @@
 @import 'src/assets/scss/_variables.scss';
 @import 'src/assets/scss/_mixins.scss';
 
+html {
+    overflow-x: scroll;
+}
+
 .default-ul {
     list-style: none;
     padding: 0;

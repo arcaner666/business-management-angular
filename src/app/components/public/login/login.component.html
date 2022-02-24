@@ -1,14 +1,11 @@
-<div class="container-fluid login-special">
-    <div class="row">
-        <div class="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-xxl-6 offset-xxl-3">
-            <div class="card mb-5 mt-5">
-                <div class="card-header">
-                  <h2>&nbsp;</h2>
-                </div>
-                <div class="card-body">
+<div class="container-fluid login-special d-flex flex-column justify-content-center" [ngClass]="{'p-2': _breakpointService.screenSize.width < 568 }">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-9 col-lg-7 col-xl-5 col-xxl-4">
+            <div class="card shadow-lg" [ngClass]="{'mt-4 mb-4': _breakpointService.screenSize.width >= 568 }">
+                <div class="card-body mt-4">
                     <form>
                         <!-- Panel Başlığı -->
-                        <h2 class="card-title text-center">İş Yönetimine Hoşgeldiniz!</h2>
+                        <h2 class="card-title text-center fs-3">İş Yönetimine Hoşgeldiniz!</h2>
                         <!-- /Panel Başlığı -->
 
                         <!-- Panel Yazısı -->

@@ -1,0 +1,6 @@
+@import 'src/assets/scss/_variables.scss';
+@import 'src/assets/scss/_mixins.scss';
+
+.btn-gradient {
+    background-image: $gradient-1
+}

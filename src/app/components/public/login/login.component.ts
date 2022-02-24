@@ -8,6 +8,7 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
 import { Role } from 'src/app/models/various/role';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
@@ -59,7 +60,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private _authorizationService: AuthorizationService,
     private _formBuilder: FormBuilder,
     private _navigationService: NavigationService,
-    private _layoutService: LayoutService
+    private _layoutService: LayoutService,
+
+    public _breakpointService: BreakpointService
   ) {
     console.log("LoginComponent constructor çalıştı.");
 

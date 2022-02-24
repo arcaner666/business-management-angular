@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { BreakpointService } from 'src/app/services/breakpoint.service';
+
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
@@ -7,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public _breakpointService: BreakpointService
+  ) { }
 
   ngOnInit(): void {
   }
