@@ -111,7 +111,7 @@
                                     <ng-select
                                         id="register-section-manager-city-id"
                                         (change)="selectCity(sectionManagerForm.controls['cityId'].value)"
-                                        [items]="cityDtos"
+                                        [items]="cityDtos$ | async"
                                         formControlName="cityId"
                                         bindLabel="cityName"
                                         bindValue="cityId"

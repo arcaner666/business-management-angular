@@ -2,12 +2,13 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CityDto } from 'src/app/models/dtos/cityDto';
 import { DistrictDto } from 'src/app/models/dtos/districtDto';
+import { ListDataResult } from 'src/app/models/results/listDataResult';
 import { ManagerExtDto } from 'src/app/models/dtos/managerExtDto';
 import { Result } from 'src/app/models/results/result';
 
@@ -68,6 +69,8 @@ export class RegisterComponent implements OnInit {
   public sectionManagerForm: FormGroup;
   public submittedCompanyManagerForm: boolean = false;
   public submittedSectionManagerForm: boolean = false;
+
+  public cityDtos$: Observable<ListDataResult<CityDto>>;
   
   // Angular 13 kursunda servisten gelen veriyi direk HTML template'ine async pipe'ı ile göndermekten bahsediyordu.
   private sub1: Subscription = new Subscription();
@@ -88,6 +91,8 @@ export class RegisterComponent implements OnInit {
     ) {
     console.log("RegisterComponent constructor çalıştı.");
 
+    this.cityDtos$ = this._cityService.getAll();
+
     // Bu sayfa için layout ayarlarını düzenler.
     this._layoutService.layoutConfig = {
       showNavbar: false,
@@ -96,7 +101,7 @@ export class RegisterComponent implements OnInit {
     };
 
     // Sunucudan şehirleri getirir ve modellere doldurur.
-    this.getCities();
+    //this.getCities();
 
     // Modül formu oluşturulur.
     this.moduleForm = this._formBuilder.group({
