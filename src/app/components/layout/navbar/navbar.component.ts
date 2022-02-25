@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit {
   
   constructor(
     public route: ActivatedRoute,
-    public _breakpointService: BreakpointService
+    public breakpointService: BreakpointService
   ) {
   }
 

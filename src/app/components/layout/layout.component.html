@@ -1,13 +1,13 @@
 <!-- Ana Layout Template'i -->
 <div class="container-fluid p-0 g-0">
     <!-- Navbar -->
-    <ng-container *ngIf="_layoutService.layoutConfig?.showNavbar">
+    <ng-container *ngIf="layoutService.layoutConfig?.showNavbar">
         <ng-container *ngTemplateOutlet="navbar"></ng-container>
     </ng-container>
     <!-- /Navbar -->
 
     <!-- Menu -->
-    <ng-container *ngIf="_layoutService.layoutConfig?.showMenu">
+    <ng-container *ngIf="layoutService.layoutConfig?.showMenu">
         <ng-container *ngTemplateOutlet="menu"></ng-container>
     </ng-container>
     <!-- /Menu -->
@@ -17,7 +17,7 @@
     <!-- /Content -->
 
      <!-- Footer -->
-    <ng-container *ngIf="_layoutService.layoutConfig?.showFooter">
+    <ng-container *ngIf="layoutService.layoutConfig?.showFooter">
         <ng-container *ngTemplateOutlet="footer"></ng-container>
     </ng-container>
     <!-- /Footer -->

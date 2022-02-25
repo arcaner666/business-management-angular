@@ -10,7 +10,7 @@ import { BreakpointService } from 'src/app/services/breakpoint.service';
 export class FooterComponent implements OnInit {
 
   constructor(
-    public _breakpointService: BreakpointService
+    public breakpointService: BreakpointService
   ) { }
 
   ngOnInit(): void {

@@ -34,6 +34,7 @@ export class BreakpointService {
     this.screenSizeSubject.next(screenSize);
   }
 
+  // Belirli bir ekran boyutunu kapsar. ---------------------------------------------------------------------------------
   isScreenXSmall(): boolean {
     if (this.screenSize.width < 576) {
       return true;

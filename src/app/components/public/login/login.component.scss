@@ -2,15 +2,9 @@
 @import 'src/assets/scss/_mixins.scss';
 
 .login-special {
-
     min-height: 100vh;
 
-    .card-header {
-        background-color: $custom-color-2;
-    }
-
     .card-body {
-
         a {
             color: black;
             text-decoration: none;

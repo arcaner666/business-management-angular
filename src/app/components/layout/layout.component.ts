@@ -12,7 +12,8 @@ export class LayoutComponent implements OnInit {
 
   constructor(
     private _breakpointSevice: BreakpointService,
-    public _layoutService: LayoutService
+
+    public layoutService: LayoutService
   ) {
     this._breakpointSevice.screenSize.width = window.screen.width;
     this._breakpointSevice.screenSize.height = window.screen.height;

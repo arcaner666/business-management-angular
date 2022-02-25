@@ -5,11 +5,17 @@ import { Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { Result } from 'src/app/models/results/result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+
+const EMPTY_RESULT: Result = {
+  success: false, 
+  message: "",
+};
 
 const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   systemUserId: 0,
@@ -37,19 +43,18 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
 })
 export class LoginComponent implements OnInit, OnDestroy {
   
-  public authorizationDto: AuthorizationDto;
-  public errorPhone: string = "";
-  public errorEmail: string = "";
+  public authorizationDto: AuthorizationDto = cloneDeep(EMPTY_AUTHORIZATION_DTO);
+  public emailForm: FormGroup;
   public loadingPhone: boolean = false;
   public loadingEmail: boolean = false;
-  public phoneForm: FormGroup;
-  public emailForm: FormGroup;
   public passwordTextType: boolean = false;
+  public phoneForm: FormGroup;
   public refreshTokenDurationOptions = [{ id: 1, duration: '1 saat boyunca' }, { id: 24, duration: '1 gün boyunca' }, { id: 168, duration: '1 hafta boyunca' }, { id: 720, duration: '1 ay boyunca' }, { id: 999999, duration: 'Süresiz' }];
+  public result: Result = cloneDeep(EMPTY_RESULT);
   public submittedPhone: boolean = false;
   public submittedEmail: boolean = false;
 
-  // Subscribe artık Rx.js'de kullanılmayacakmış ayrıca angular 13 kursunda servisten gelen veriyi direk HTML template'ine async pipe'ı ile göndermekten bahsediyordu.
+  // Angular 13 kursunda servisten gelen veriyi direk HTML template'ine async pipe'ı ile göndermekten bahsediyordu.
   private sub1: Subscription = new Subscription();
   private sub2: Subscription = new Subscription();
 
@@ -59,7 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private _navigationService: NavigationService,
     private _layoutService: LayoutService,
 
-    public _breakpointService: BreakpointService
+    public breakpointService: BreakpointService
   ) {
     console.log("LoginComponent constructor çalıştı.");
 
@@ -69,9 +74,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       showMenu: false,
       showFooter: false,
     };
-
-    // Boş AuthorizationDto'yu oluşturur.
-    this.authorizationDto = cloneDeep(EMPTY_AUTHORIZATION_DTO);
 
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
     this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
@@ -130,7 +132,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.log(error);
         // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-        this.errorEmail = error.message;
+        this.result.success = error.success;
+        this.result.message = error.message;
         this.loadingEmail = false;
       }
     });
@@ -171,7 +174,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.log(error);
           // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-          this.errorPhone = error.message;
+          this.result.success = error.success;
+          this.result.message = error.message;
           this.loadingPhone = false;
         }
     });
@@ -179,6 +183,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Giriş tipleri arasında geçiş yapıldığında formları varsayılan hallerine getirir.
   resetForms(): void  {
+    this.result = cloneDeep(EMPTY_RESULT);
+
     this.phoneForm.reset({
       phone: "5554443322",
       password: "123456",

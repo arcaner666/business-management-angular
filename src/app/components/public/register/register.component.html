@@ -1,1 +1,385 @@
-<p>register works!</p>
+<div class="container-fluid register-special d-flex flex-column justify-content-center" [ngClass]="{'p-2': breakpointService.isScreenXSmall() }">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-9 col-lg-7 col-xl-5 col-xxl-4">
+            <div class="card shadow-lg" [ngClass]="{'mt-4 mb-4': breakpointService.screenSize.width >= 568 }">
+                <div class="card-body mt-4">
+                    <form>
+                        <!-- Card Başlığı -->
+                        <h2 class="card-title text-center fs-3">Hemen Kaydolun!</h2>
+                        <!-- /Card Başlığı -->
+
+                        <!-- Card Yazısı -->
+                        <p class="card-text text-center">İşletmenizi kolayca yönetin.</p>
+                        <!-- /Card Yazısı -->
+
+                        <!-- Hata Bildirimi -->
+                        <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="result.message">
+                            <div class="alert-body">
+                                <span>{{ result.message }}</span>
+                            </div>
+                        </ngb-alert>
+                        <!-- /Hata Bildirimi -->
+
+                        <!-- Modül Formu -->
+                        <form class="auth-register-form mt-2" [formGroup]="moduleForm">
+                            <div class="form-group">
+                                <label for="register-module">Modül</label>
+                                <ng-select
+                                    id="register-module"
+                                    [items]="moduleOptions"
+                                    formControlName="module"
+                                    bindLabel="text"
+                                    bindValue="id"
+                                    [clearable]="false"
+                                    [searchable]="false"
+                                    tabindex="1">
+                                </ng-select>
+                            </div>
+                        </form>
+                        <!-- /Modül Formu -->
+
+                        <!-- Form Template Outlet -->
+                        <ng-container *ngIf="moduleForm.controls['module'].value === 1">
+                            <ng-container *ngTemplateOutlet="sectionManagerFormTemplate"></ng-container>
+                        </ng-container>
+                
+                        <ng-container *ngIf="moduleForm.controls['module'].value === 2">
+                            <ng-container *ngTemplateOutlet="companyManagerFormTemplate"></ng-container>
+                        </ng-container>
+                        <!-- /Form Template Outlet -->
+
+                        <!-- Site Yöneticisi Kayıt Formu -->
+                        <ng-template #sectionManagerFormTemplate>
+                            <form [formGroup]="sectionManagerForm" (ngSubmit)="addSectionManager()">
+                                <!-- Yönetici Adı -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-section-manager-name-surname">Yönetici Adı</label>
+                                    <input
+                                        id="register-section-manager-name-surname"
+                                        type="text"
+                                        formControlName="nameSurname"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['nameSurname'].errors }"
+                                        placeholder="Ad Soyad"
+                                        tabindex="2"
+                                    />
+                                    <div class="invalid-feedback" *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['nameSurname'].errors">
+                                        <div *ngIf="sectionManagerForm.controls['nameSurname'].errors['required']">Lütfen adınızı ve soyadınızı giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /Yönetici Adı -->
+                    
+                                <!-- Telefon Numarası -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="section-manager-phone">Telefon Numarası</label>
+                                    <input
+                                        id="section-manager-phone"
+                                        type="number"
+                                        formControlName="phone"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['phone'].errors }"
+                                        placeholder="5554443322"
+                                        tabindex="3"
+                                    />
+                                    <div *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['phone'].errors" class="invalid-feedback">
+                                        <div *ngIf="sectionManagerForm.controls['phone'].errors['required']">Lütfen geçerli bir telefon numarası giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /Telefon Numarası -->
+                    
+                                <!-- İşletme Adı -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-section-manager-business-name">İşletme Adı</label>
+                                    <input
+                                        id="register-section-manager-business-name"
+                                        type="text"
+                                        formControlName="businessName"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['businessName'].errors }"
+                                        placeholder=""
+                                        tabindex="4"
+                                    />
+                                    <div *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['businessName'].errors" class="invalid-feedback">
+                                        <div *ngIf="sectionManagerForm.controls['businessName'].errors['required']">Lütfen işletmenizin adını giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /İşletme Adı -->
+                    
+                                <!-- Şehir -->
+                                <div class="mt-3 mb-3">
+                                    <label class="mb-2" for="register-section-manager-city-id">Şehir</label>
+                                    <ng-select
+                                        id="register-section-manager-city-id"
+                                        (change)="selectCity(sectionManagerForm.controls['cityId'].value)"
+                                        [items]="cityDtos"
+                                        formControlName="cityId"
+                                        bindLabel="cityName"
+                                        bindValue="cityId"
+                                        [clearable]="false"
+                                        [searchable]="false"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['cityId'].errors }"
+                                        tabindex="5"
+                                    >
+                                    </ng-select>
+                                    <span class="invalid-form" *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['cityId'].errors">
+                                        <small class="form-text text-danger" *ngIf="sectionManagerForm.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</small>
+                                    </span>
+                                </div>
+                                <!-- /Şehir -->
+                    
+                                <!-- İlçe -->
+                                <div class="mt-3 mb-3">
+                                    <label class="mb-2" for="register-section-manager-district-id">İlçe</label>
+                                    <ng-select
+                                        id="register-section-manager-district-id"
+                                        [items]="districtDtos"
+                                        formControlName="districtId"
+                                        bindLabel="districtName"
+                                        bindValue="districtId"
+                                        [clearable]="false"
+                                        [searchable]="false"
+                                        tabindex="6"
+                                    >
+                                    </ng-select>
+                                    <span class="invalid-form" *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['districtId'].errors">
+                                        <small class="form-text text-danger" *ngIf="sectionManagerForm.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</small>
+                                    </span>
+                                </div>
+                                <!-- /İlçe -->
+                    
+                                <!-- Adres -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-section-manager-address">Adres</label>
+                                    <textarea
+                                        id="register-section-manager-address"
+                                        type="text"
+                                        formControlName="addressText"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['addressText'].errors }"
+                                        placeholder=""
+                                        tabindex="7"
+                                    ></textarea>
+                                    <span class="invalid-form" *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['addressText'].errors">
+                                        <small class="form-text text-danger" *ngIf="sectionManagerForm.controls['addressText'].errors['required']">Lütfen adres giriniz.</small>
+                                    </span>
+                                </div>
+                                <!-- /Adres -->
+                    
+                                <!-- Kullanıcı Sözleşmesi -->
+                                <div class="mt-3 mb-3">
+                                    <div class="form-check">
+                                        <input
+                                            id="section-manager-user-agreement"
+                                            type="checkbox" 
+                                            formControlName="userAgreement"
+                                            class="form-check-input"
+                                            [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['userAgreement'].errors }" 
+                                            tabindex="8"
+                                        />
+                                        <label class="form-check-label" for="section-manager-user-agreement">
+                                            <a href="javascript:void(0);">Gizlilik Sözleşmesi ve Kullanım Koşulları</a>'nı kabul ediyorum.
+                                        </label>
+                                        <div class="invalid-feedback" *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['userAgreement'].invalid">
+                                            <span>Lütfen kutucuğu işaretleyin.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /Kullanıcı Sözleşmesi -->
+                    
+                                <!-- Kayıt Butonu -->
+                                <div class="mt-4 d-grid col-12">
+                                    <button 
+                                        class="btn btn-success"
+                                        [disabled]="loadingSectionManagerForm"
+                                        tabindex="9"
+                                    >
+                                        <span *ngIf="loadingSectionManagerForm" class="spinner-border spinner-border-sm"></span> Kayıt Ol
+                                    </button>
+                                </div>
+                                <!-- /Kayıt Butonu -->
+                            </form>
+                        </ng-template>
+                        <!-- /Site Yöneticisi Kayıt Formu -->
+
+                        <!-- İşletme Yöneticisi Kayıt Formu Template -->
+                        <ng-template #companyManagerFormTemplate>
+                            <form [formGroup]="companyManagerForm" (ngSubmit)="addCompanyManager()">   
+                                <!-- İşletme Sahibi -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-company-manager-name-surname">İşletme Sahibi</label>
+                                    <input
+                                        id="register-company-manager-name-surname"
+                                        type="text"
+                                        formControlName="nameSurname"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedCompanyManagerForm && companyManagerForm.controls['nameSurname'].errors }"
+                                        placeholder="Ad Soyad"
+                                        tabindex="2"
+                                    />
+                                    <div class="invalid-feedback" *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['nameSurname'].errors">
+                                        <div *ngIf="companyManagerForm.controls['nameSurname'].errors['required']">Lütfen adınızı ve soyadınızı giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /İşletme Sahibi -->
+                    
+                                <!-- Telefon Numarası -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-company-manager-phone">Telefon Numarası</label>
+                                    <input
+                                        id="register-company-manager-phone"
+                                        type="number"
+                                        formControlName="phone"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedCompanyManagerForm && companyManagerForm.controls['phone'].errors }"
+                                        placeholder="5554443322"
+                                        tabindex="3"
+                                    />
+                                    <div *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['phone'].errors" class="invalid-feedback">
+                                        <div *ngIf="companyManagerForm.controls['phone'].errors['required']">Lütfen geçerli bir telefon numarası giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /Telefon Numarası -->
+                    
+                                <!-- İşletme Adı -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-company-manager-business-name">İşletme Adı</label>
+                                    <input
+                                        id="register-company-manager-business-name"
+                                        type="text"
+                                        formControlName="businessName"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedCompanyManagerForm && companyManagerForm.controls['businessName'].errors }"
+                                        placeholder=""
+                                        tabindex="4"
+                                    />
+                                    <div *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['businessName'].errors" class="invalid-feedback">
+                                        <div *ngIf="companyManagerForm.controls['businessName'].errors['required']">Lütfen işletmenizin adını giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /İşletme Adı -->
+                    
+                                <!-- Şehir -->
+                                <div class="mt-3 mb-3">
+                                    <label class="mb-2" for="register-company-manager-city-id">Şehir</label>
+                                    <ng-select
+                                        id="register-company-manager-city-id"
+                                        (change)="selectCity(companyManagerForm.controls['cityId'].value)"
+                                        [items]="cityDtos"
+                                        formControlName="cityId"
+                                        bindLabel="cityName"
+                                        bindValue="cityId"
+                                        [clearable]="false"
+                                        [searchable]="false"
+                                        tabindex="5"
+                                    >
+                                    </ng-select>
+                                    <span class="invalid-form" *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['cityId'].errors">
+                                        <small class="form-text text-danger" *ngIf="companyManagerForm.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</small>
+                                    </span>
+                                </div>
+                                <!-- /Şehir -->
+                    
+                                <!-- İlçe -->
+                                <div class="mt-3 mb-3">
+                                    <label class="mb-2" for="register-company-manager-district-id">İlçe</label>
+                                    <ng-select
+                                        id="register-company-manager-district-id"
+                                        [items]="districtDtos"
+                                        formControlName="districtId"
+                                        bindLabel="districtName"
+                                        bindValue="districtId"
+                                        [clearable]="false"
+                                        [searchable]="false"
+                                        tabindex="6"
+                                    >
+                                    </ng-select>
+                                    <span class="invalid-form" *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['districtId'].errors">
+                                        <small class="form-text text-danger" *ngIf="companyManagerForm.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</small>
+                                    </span>
+                                </div>
+                                <!-- /İlçe -->
+                    
+                                <!-- Adres -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-company-manager-address">Adres</label>
+                                    <textarea
+                                        id="register-company-manager-address"
+                                        type="text"
+                                        formControlName="addressText"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedCompanyManagerForm && companyManagerForm.controls['addressText'].errors }"
+                                        placeholder=""
+                                        tabindex="7"
+                                    ></textarea>
+                                    <span class="invalid-form" *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['addressText'].errors">
+                                        <small class="form-text text-danger" *ngIf="companyManagerForm.controls['addressText'].errors['required']">Lütfen adres giriniz.</small>
+                                    </span>
+                                </div>
+                                <!-- /Adres -->
+                    
+                                <!-- Kullanıcı Sözleşmesi -->
+                                <div class="mt-3 mb-3">
+                                    <div class="form-check">
+                                        <input
+                                            id="register-company-manager-user-agreement"
+                                            type="checkbox" 
+                                            formControlName="userAgreement"
+                                            class="form-check-input"
+                                            [ngClass]="{ 'is-invalid': submittedCompanyManagerForm && companyManagerForm.controls['userAgreement'].errors }" 
+                                            tabindex="8"
+                                        />
+                                        <label class="form-check-label" for="register-company-manager-user-agreement">
+                                            <a href="javascript:void(0);">Gizlilik Sözleşmesi ve Kullanım Koşulları</a>'nı kabul ediyorum.
+                                        </label>
+                                        <div class="invalid-feedback" *ngIf="submittedCompanyManagerForm && companyManagerForm.controls['userAgreement'].invalid">
+                                            <span>Lütfen kutucuğu işaretleyin.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /Kullanıcı Sözleşmesi -->
+                    
+                                <!-- Kayıt Butonu -->
+                                <div class="mt-4 d-grid col-12">
+                                    <button 
+                                        class="btn btn-success"
+                                        [disabled]="loadingSectionManagerForm"
+                                        tabindex="9"
+                                    >
+                                        <span *ngIf="loadingSectionManagerForm" class="spinner-border spinner-border-sm"></span> Kayıt Ol
+                                    </button>
+                                </div>
+                                <!-- /Kayıt Butonu -->
+                            </form>
+                        </ng-template>
+                        <!-- /İşletme Yöneticisi Kayıt Formu Template -->
+
+                        <!-- Giriş Sayfasına Geçiş -->
+                        <p class="text-center mt-2">
+                            <span>Zaten hesabınız var mı?</span
+                            ><a routerLink="/public/login"><span>&nbsp;Oturum açın.</span></a>
+                        </p>
+                        <!-- /Giriş Sayfasına Geçiş -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kayıt Başarılıysa Giriş Ekranına Yönlendirecek Modal -->
+<ng-template #registrationModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Kayıt Başarılı!</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center m-0">Artık hesabınıza giriş yapabilirsiniz!</p>
+    </div>
+    <div class="modal-footer">
+        <div class="d-grid col-12">
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.close('Save click')" routerLink="/public/login">Giriş Yap</button>
+        </div>
+    </div>
+</ng-template>
+<!-- /Kayıt Başarılıysa Giriş Ekranına Yönlendirecek Modal -->

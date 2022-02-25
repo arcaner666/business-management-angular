@@ -1,22 +1,21 @@
-<div class="container-fluid login-special d-flex flex-column justify-content-center" [ngClass]="{'p-2': _breakpointService.screenSize.width < 568 }">
+<div class="container-fluid login-special d-flex flex-column justify-content-center" [ngClass]="{'p-2': breakpointService.screenSize.width < 568 }">
     <div class="row justify-content-center align-items-center">
         <div class="col-sm-12 col-md-9 col-lg-7 col-xl-5 col-xxl-4">
-            <div class="card shadow-lg" [ngClass]="{'mt-4 mb-4': _breakpointService.screenSize.width >= 568 }">
+            <div class="card shadow-lg" [ngClass]="{'mt-4 mb-4': breakpointService.screenSize.width >= 568 }">
                 <div class="card-body mt-4">
                     <form>
-                        <!-- Panel Başlığı -->
+                        <!-- Card Başlığı -->
                         <h2 class="card-title text-center fs-3">İş Yönetimine Hoşgeldiniz!</h2>
-                        <!-- /Panel Başlığı -->
+                        <!-- /Card Başlığı -->
 
-                        <!-- Panel Yazısı -->
+                        <!-- Card Yazısı -->
                         <p class="card-text text-center">Lütfen hesabınızda oturum açın.</p>
-                        <!-- /Panel Yazısı -->
+                        <!-- /Card Yazısı -->
 
                         <!-- Hata Bildirimi -->
-                        <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="errorPhone !== '' || errorEmail !== ''">
+                        <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="result.message">
                             <div class="alert-body">
-                                <span>{{ errorPhone }}</span>
-                                <span>{{ errorEmail }}</span>
+                                <span>{{ result.message }}</span>
                             </div>
                         </ngb-alert>
                         <!-- /Hata Bildirimi -->
@@ -94,21 +93,26 @@
                                         <div class="mt-3 mb-3">
                                             <label class="mb-2" for="phone-form-auth-duration">Oturum Süresi</label>
                                             <ng-select
-                                            id="phone-form-auth-duration"
-                                            [items]="refreshTokenDurationOptions"
-                                            formControlName="refreshTokenDuration"
-                                            bindLabel="duration"
-                                            bindValue="id"
-                                            [clearable]="false"
-                                            [searchable]="false"
-                                            tabindex="3">
+                                                id="phone-form-auth-duration"
+                                                [items]="refreshTokenDurationOptions"
+                                                formControlName="refreshTokenDuration"
+                                                bindLabel="duration"
+                                                bindValue="id"
+                                                [clearable]="false"
+                                                [searchable]="false"
+                                                tabindex="3"
+                                            >
                                             </ng-select>
                                         </div>
                                         <!-- /Oturum Süresi -->
 
                                         <!-- Giriş Butonu -->
-                                        <div class="mt-4  d-grid col-12">
-                                            <button [disabled]="loadingPhone" class="btn btn-success" tabindex="4">
+                                        <div class="mt-4 d-grid col-12">
+                                            <button 
+                                                class="btn btn-success" 
+                                                [disabled]="loadingPhone" 
+                                                tabindex="4"
+                                            >
                                                 <span *ngIf="loadingPhone" class="spinner-border spinner-border-sm"></span> Giriş Yap
                                             </button>
                                         </div>
@@ -190,21 +194,26 @@
                                         <div class="mt-3 mb-3">
                                             <label class="mb-2" for="email-form-auth-duration">Oturum Süresi</label>
                                             <ng-select
-                                            id="email-form-auth-duration"
-                                            [items]="refreshTokenDurationOptions"
-                                            formControlName="refreshTokenDuration"
-                                            bindLabel="duration"
-                                            bindValue="id"
-                                            [clearable]="false"
-                                            [searchable]="false"
-                                            tabindex="3">
+                                                id="email-form-auth-duration"
+                                                [items]="refreshTokenDurationOptions"
+                                                formControlName="refreshTokenDuration"
+                                                bindLabel="duration"
+                                                bindValue="id"
+                                                [clearable]="false"
+                                                [searchable]="false"
+                                                tabindex="3"
+                                            >
                                             </ng-select>
                                         </div>
                                         <!-- /Oturum Süresi -->
 
                                         <!-- Giriş Butonu -->
-                                        <div class="mt-4  d-grid col-12">
-                                            <button [disabled]="loadingEmail" class="btn btn-success" tabindex="4">
+                                        <div class="mt-4 d-grid col-12">
+                                            <button 
+                                                class="btn btn-success" 
+                                                [disabled]="loadingEmail" 
+                                                tabindex="4"
+                                            >
                                                 <span *ngIf="loadingEmail" class="spinner-border spinner-border-sm mr-1"></span>Giriş Yap
                                             </button>
                                         </div>
