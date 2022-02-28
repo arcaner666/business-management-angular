@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Bu sayfa için layout ayarlarını düzenler.
     this._layoutService.layoutConfig = {
       showNavbar: false,
-      showMenu: false,
+      showSidebar: false,
       showFooter: false,
     };
 

@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { BreakpointService } from 'src/app/services/breakpoint.service';
+import { NavLink } from 'src/app/models/various/nav-link'; 
 
-interface Link {
-  id: number;
-  title: string;
-  url: string;
-  fragment: string;
-};
+import { BreakpointService } from 'src/app/services/breakpoint.service';
 
 @Component({
   selector: 'app-navbar',
@@ -19,7 +14,7 @@ export class NavbarComponent implements OnInit {
 
   activeLinkId: number = 0;
   isNavbarCollapsed: boolean = true;
-  links: Link[] = [
+  links: NavLink[] = [
     { id: 0, title: 'Anasayfa', url: 'public/home', fragment: 'one' },
     { id: 1, title: 'Biz Kimiz?', url: 'public/about', fragment: 'two' },
     { id: 2, title: 'Ne Sağlıyoruz?', url: 'public/features', fragment: 'three' },

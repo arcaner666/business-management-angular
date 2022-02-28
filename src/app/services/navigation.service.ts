@@ -14,9 +14,9 @@ export class NavigationService {
   navigateByRole(role: string) {
     if(role) {
       switch (role) {
-        case "Admin": this._router.navigate(['admin/dashboard']); break;
-        case "Manager": this._router.navigate(['manager/dashboard']); break;
-        case "Customer": this._router.navigate(['customer/dashboard']); break;
+        case "Admin": this._router.navigate(['admin/admin-dashboard']); break;
+        case "Manager": this._router.navigate(['manager/manager-dashboard']); break;
+        case "Customer": this._router.navigate(['customer/customer-dashboard']); break;
         default: this._router.navigate(['/']); break;
       }
     } 

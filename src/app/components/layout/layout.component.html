@@ -6,17 +6,17 @@
     </ng-container>
     <!-- /Navbar -->
 
-    <!-- Menu -->
-    <ng-container *ngIf="layoutService.layoutConfig?.showMenu">
+    <!-- Content With Sidebar -->
+    <ng-container *ngIf="layoutService.layoutConfig?.showSidebar">
         <ng-container *ngTemplateOutlet="menu"></ng-container>
     </ng-container>
-    <!-- /Menu -->
+    <!-- /Content With Sidebar -->
 
     <!-- Content -->
     <ng-container *ngTemplateOutlet="content"></ng-container>
     <!-- /Content -->
 
-     <!-- Footer -->
+    <!-- Footer -->
     <ng-container *ngIf="layoutService.layoutConfig?.showFooter">
         <ng-container *ngTemplateOutlet="footer"></ng-container>
     </ng-container>

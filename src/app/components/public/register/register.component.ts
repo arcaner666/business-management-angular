@@ -10,6 +10,7 @@ import { CityDto } from 'src/app/models/dtos/cityDto';
 import { DistrictDto } from 'src/app/models/dtos/districtDto';
 import { ListDataResult } from 'src/app/models/results/listDataResult';
 import { ManagerExtDto } from 'src/app/models/dtos/managerExtDto';
+import { ModuleOption } from 'src/app/models/various/module-option';
 import { Result } from 'src/app/models/results/result';
 
 import { BreakpointService } from 'src/app/services/breakpoint.service';
@@ -55,28 +56,27 @@ export class RegisterComponent implements OnInit {
 
   @ViewChild('registrationModal') registrationModal: ElementRef | undefined;
 
-  public cityDtos: CityDto[] = [];
-  public modalResult: string = "";
+  public cityDtos$!: Observable<ListDataResult<CityDto>>;
   public companyManagerForm: FormGroup;
-  public districtDtos: DistrictDto[] = [];
+  public districtDtos$!: Observable<ListDataResult<DistrictDto>>;
   public loadingCompanyManagerForm: boolean = false;
   public loadingSectionManagerForm: boolean = false;
   public managerExtDto: ManagerExtDto = cloneDeep(EMPTY_MANAGER_EXT_DTO);
   public moduleForm: FormGroup;
-  public moduleOptions = [{ id: 1, text: "Site Yönetimi" }, { id: 2, text: "İşletme Yönetimi" }, { id: 3, text: "Restoran Yönetimi" }, { id: 4, text: "Otel Yönetimi" }];
-  public passwordTextType: boolean = false;
+  public moduleOptions: ModuleOption[] = [
+    { id: 1, name: "Site Yönetimi" }, 
+    { id: 2, name: "İşletme Yönetimi" }, 
+    { id: 3, name: "Otel Yönetimi" },
+  ];
+  public modalResult: string = "";
   public result: Result = cloneDeep(EMPTY_RESULT);
   public sectionManagerForm: FormGroup;
   public submittedCompanyManagerForm: boolean = false;
   public submittedSectionManagerForm: boolean = false;
-
-  public cityDtos$: Observable<ListDataResult<CityDto>>;
   
   // Angular 13 kursunda servisten gelen veriyi direk HTML template'ine async pipe'ı ile göndermekten bahsediyordu.
   private sub1: Subscription = new Subscription();
   private sub2: Subscription = new Subscription();
-  private sub3: Subscription = new Subscription();
-  private sub4: Subscription = new Subscription();
 
   constructor(
     private _cityService: CityService,
@@ -91,17 +91,15 @@ export class RegisterComponent implements OnInit {
     ) {
     console.log("RegisterComponent constructor çalıştı.");
 
-    this.cityDtos$ = this._cityService.getAll();
-
     // Bu sayfa için layout ayarlarını düzenler.
     this._layoutService.layoutConfig = {
       showNavbar: false,
-      showMenu: false,
+      showSidebar: false,
       showFooter: false,
     };
 
     // Sunucudan şehirleri getirir ve modellere doldurur.
-    //this.getCities();
+    this.getCities();
 
     // Modül formu oluşturulur.
     this.moduleForm = this._formBuilder.group({
@@ -228,36 +226,14 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  // Şehirleri sunucudan getirir ve modellere doldurur.
-  getCities(): void {
-    this.sub3 = this._cityService.getAll().subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.cityDtos = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-        // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-        this.result.success = error.success;
-        this.result.message = error.message;
-      }
-    });
+  // Sunucudan şehirleri getirir ve modellere doldurur.
+  getCities() {
+    this.cityDtos$ = this._cityService.getAll();
   }
 
   // İlçeleri sunucudan getirir ve modellere doldurur.
   getDistrictsByCityId(cityId: number): void {
-    this.sub4 = this._districtService.getByCityId(cityId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.districtDtos = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-        // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-        this.result.success = error.success;
-        this.result.message = error.message;
-      }
-    });
+    this.districtDtos$ = this._districtService.getByCityId(cityId);
   }
 
   openRegistrationModal(selectedModal: any) {
@@ -278,17 +254,6 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
+
   }
 }

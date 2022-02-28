@@ -7,11 +7,11 @@
                         <!-- Card Başlığı -->
                         <h2 class="card-title text-center fs-3">Hemen Kaydolun!</h2>
                         <!-- /Card Başlığı -->
-
+            
                         <!-- Card Yazısı -->
                         <p class="card-text text-center">İşletmenizi kolayca yönetin.</p>
                         <!-- /Card Yazısı -->
-
+            
                         <!-- Hata Bildirimi -->
                         <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="result.message">
                             <div class="alert-body">
@@ -19,7 +19,7 @@
                             </div>
                         </ngb-alert>
                         <!-- /Hata Bildirimi -->
-
+            
                         <!-- Modül Formu -->
                         <form class="auth-register-form mt-2" [formGroup]="moduleForm">
                             <div class="form-group">
@@ -28,7 +28,7 @@
                                     id="register-module"
                                     [items]="moduleOptions"
                                     formControlName="module"
-                                    bindLabel="text"
+                                    bindLabel="name"
                                     bindValue="id"
                                     [clearable]="false"
                                     [searchable]="false"
@@ -37,7 +37,7 @@
                             </div>
                         </form>
                         <!-- /Modül Formu -->
-
+            
                         <!-- Form Template Outlet -->
                         <ng-container *ngIf="moduleForm.controls['module'].value === 1">
                             <ng-container *ngTemplateOutlet="sectionManagerFormTemplate"></ng-container>
@@ -47,7 +47,7 @@
                             <ng-container *ngTemplateOutlet="companyManagerFormTemplate"></ng-container>
                         </ng-container>
                         <!-- /Form Template Outlet -->
-
+            
                         <!-- Site Yöneticisi Kayıt Formu -->
                         <ng-template #sectionManagerFormTemplate>
                             <form [formGroup]="sectionManagerForm" (ngSubmit)="addSectionManager()">
@@ -111,7 +111,7 @@
                                     <ng-select
                                         id="register-section-manager-city-id"
                                         (change)="selectCity(sectionManagerForm.controls['cityId'].value)"
-                                        [items]="cityDtos$ | async"
+                                        [items]="(cityDtos$ | async)?.data!"
                                         formControlName="cityId"
                                         bindLabel="cityName"
                                         bindValue="cityId"
@@ -132,7 +132,7 @@
                                     <label class="mb-2" for="register-section-manager-district-id">İlçe</label>
                                     <ng-select
                                         id="register-section-manager-district-id"
-                                        [items]="districtDtos"
+                                        [items]="(districtDtos$ | async)?.data!"
                                         formControlName="districtId"
                                         bindLabel="districtName"
                                         bindValue="districtId"
@@ -200,7 +200,7 @@
                             </form>
                         </ng-template>
                         <!-- /Site Yöneticisi Kayıt Formu -->
-
+            
                         <!-- İşletme Yöneticisi Kayıt Formu Template -->
                         <ng-template #companyManagerFormTemplate>
                             <form [formGroup]="companyManagerForm" (ngSubmit)="addCompanyManager()">   
@@ -264,7 +264,7 @@
                                     <ng-select
                                         id="register-company-manager-city-id"
                                         (change)="selectCity(companyManagerForm.controls['cityId'].value)"
-                                        [items]="cityDtos"
+                                        [items]="(cityDtos$ | async)?.data!"
                                         formControlName="cityId"
                                         bindLabel="cityName"
                                         bindValue="cityId"
@@ -284,7 +284,7 @@
                                     <label class="mb-2" for="register-company-manager-district-id">İlçe</label>
                                     <ng-select
                                         id="register-company-manager-district-id"
-                                        [items]="districtDtos"
+                                        [items]="(districtDtos$ | async)?.data!"
                                         formControlName="districtId"
                                         bindLabel="districtName"
                                         bindValue="districtId"
@@ -352,7 +352,7 @@
                             </form>
                         </ng-template>
                         <!-- /İşletme Yöneticisi Kayıt Formu Template -->
-
+            
                         <!-- Giriş Sayfasına Geçiş -->
                         <p class="text-center mt-2">
                             <span>Zaten hesabınız var mı?</span
@@ -361,7 +361,7 @@
                         <!-- /Giriş Sayfasına Geçiş -->
                     </form>
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

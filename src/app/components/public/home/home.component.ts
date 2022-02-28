@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
     // Bu sayfa için layout ayarlarını düzenler.
     this._layoutService.layoutConfig = {
       showNavbar: true,
-      showMenu: false,
+      showSidebar: false,
       showFooter: true,
     };
   }

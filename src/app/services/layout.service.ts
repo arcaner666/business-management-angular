@@ -7,7 +7,7 @@ import { LayoutConfig } from 'src/app/models/various/layout-config';
 
 const DEFAULT_LAYOUT_CONFIG: LayoutConfig = {
   showNavbar: true,
-  showMenu: false,
+  showSidebar: false,
   showFooter: true,
 };
 
