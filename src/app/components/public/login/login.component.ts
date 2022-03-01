@@ -78,6 +78,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
     this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
 
+    // Navbar linklerini düzenle.
+    this._navigationService.loadNavbarLinksByRole();
+
     // Telefonla giriş formu oluşturulur.
     this.phoneForm = this._formBuilder.group({
       phone: ["5554443322", [Validators.required]],
@@ -126,6 +129,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           
           // Oturum açılma durumuna göre kullanıcıları yönlendir.
           this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+
+          // Navbar linklerini düzenle.
+          this._navigationService.loadNavbarLinksByRole();
         }
         this.loadingEmail = false;
       },
@@ -168,6 +174,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             
             // Oturum açılma durumuna göre kullanıcıları yönlendir.
             this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+
+            // Navbar linklerini düzenle.
+            this._navigationService.loadNavbarLinksByRole();
           }
           this.loadingPhone = false;
         },

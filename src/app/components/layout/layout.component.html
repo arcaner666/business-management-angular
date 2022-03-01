@@ -8,13 +8,15 @@
 
     <!-- Content With Sidebar -->
     <ng-container *ngIf="layoutService.layoutConfig?.showSidebar">
-        <ng-container *ngTemplateOutlet="menu"></ng-container>
+        <ng-container *ngTemplateOutlet="contentWithSidebar"></ng-container>
     </ng-container>
     <!-- /Content With Sidebar -->
 
-    <!-- Content -->
-    <ng-container *ngTemplateOutlet="content"></ng-container>
-    <!-- /Content -->
+    <!-- Only Content -->
+    <ng-container *ngIf="!layoutService.layoutConfig?.showSidebar">
+        <ng-container *ngTemplateOutlet="onlyContent"></ng-container>
+    </ng-container>
+    <!-- /Only Content -->
 
     <!-- Footer -->
     <ng-container *ngIf="layoutService.layoutConfig?.showFooter">
@@ -36,25 +38,29 @@
 </ng-template>
 <!-- /Navbar Template'i -->
 
-<!-- Menu Template'i -->
-<ng-template #menu>
-    <div class="row p-0 m-0">
-        <div class="col-12 p-0 m-0">
+<!-- Content With Sidebar Template'i -->
+<ng-template #contentWithSidebar>
+    <!-- Content With Sidebar Template'i -->
+    <div class="row p-0 m-0 g-0">
+        <div class="col-2 p-0 m-0">
             <app-menu></app-menu>
+        </div>
+        <div class="col-10 p-0 m-0">
+            <app-content></app-content>
         </div>
     </div>
 </ng-template>
-<!-- /Menu Template'i -->
+<!-- /Content With Sidebar Template'i -->
 
-<!-- Content Template'i -->
-<ng-template #content>
+<!-- Only Content Template'i -->
+<ng-template #onlyContent>
     <div class="row p-0 m-0 g-0">
         <div class="col-12 p-0 m-0">
             <app-content></app-content>
         </div>
     </div>
 </ng-template>
-<!-- /Content Template'i -->
+<!-- /Only Content Template'i -->
 
 <!-- Footer Template'i -->
 <ng-template #footer>

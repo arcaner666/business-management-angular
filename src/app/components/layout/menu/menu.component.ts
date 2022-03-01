@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { NavLink } from 'src/app/models/various/nav-link';
+import { NavGroup } from 'src/app/models/various/nav-group';
 
 import { BreakpointService } from 'src/app/services/breakpoint.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'app-menu',
@@ -12,15 +13,15 @@ import { BreakpointService } from 'src/app/services/breakpoint.service';
 export class MenuComponent implements OnInit {
 
   isNavbarCollapsed: boolean = true;
-  links: NavLink[] = [
-    { id: 0, title: 'Sidebar Link 1', url: 'public/home', fragment: 'one' },
-    { id: 1, title: 'Sidebar Link 2', url: 'public/about', fragment: 'two' },
-    { id: 2, title: 'Sidebar Link 3', url: 'public/features', fragment: 'three' },
-  ];
+  sidebarNavGroups: NavGroup[] = [];
 
   constructor(
-    public breakpointService: BreakpointService
-  ) { }
+    private _navigationService: NavigationService,
+
+    public breakpointService: BreakpointService,
+  ) {
+    this.sidebarNavGroups = this._navigationService.sidebarLinks;
+  }
 
   ngOnInit(): void {
   }

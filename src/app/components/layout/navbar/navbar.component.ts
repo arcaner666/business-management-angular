@@ -1,9 +1,35 @@
+import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NavLink } from 'src/app/models/various/nav-link'; 
+import { cloneDeep } from 'lodash';
 
+import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { NavGroup } from 'src/app/models/various/nav-group';
+import { NavLink } from 'src/app/models/various/nav-link';
+
+import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
+import { NavigationService } from 'src/app/services/navigation.service';
+
+const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
+  systemUserId: 0,
+  email: "",
+  phone: "",
+  role: "",
+  businessId: 0,
+  branchId: 0,
+  blocked: false,
+  refreshToken: "",
+  refreshTokenExpiryTime: new Date(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
+
+  // Extended
+  password: "",
+  refreshTokenDuration: 0,
+  accessToken: "",
+};
 
 @Component({
   selector: 'app-navbar',
@@ -12,24 +38,33 @@ import { BreakpointService } from 'src/app/services/breakpoint.service';
 })
 export class NavbarComponent implements OnInit {
 
-  activeLinkId: number = 0;
-  isNavbarCollapsed: boolean = true;
-  links: NavLink[] = [
-    { id: 0, title: 'Anasayfa', url: 'public/home', fragment: 'one' },
-    { id: 1, title: 'Biz Kimiz?', url: 'public/about', fragment: 'two' },
-    { id: 2, title: 'Ne Sağlıyoruz?', url: 'public/features', fragment: 'three' },
-    { id: 3, title: 'Referanslarımız', url: 'public/references', fragment: 'four' },
-    { id: 4, title: 'Paketlerimiz', url: 'public/pricing', fragment: 'five' },
-    { id: 5, title: 'Bize Ulaşın', url: 'public/contact', fragment: 'six' },
-  ];
+  public activeLinkId: number = 0;
+  public authorizationDto$: Observable<AuthorizationDto>;
+  public isNavbarCollapsed: boolean = true;
+  public navbarLinks$: Observable<NavLink[]>;
+  public sidebarLinks: NavGroup[] = [];
   
   constructor(
+    private _navigationService: NavigationService,
+    private _authorizationService: AuthorizationService,
+
+    public breakpointService: BreakpointService,
     public route: ActivatedRoute,
-    public breakpointService: BreakpointService
+    public router: Router,
   ) {
+    this._navigationService.loadNavbarLinksByRole();
+    
+    this.authorizationDto$ = this._authorizationService.authorizationDtoObservable;
+    this.navbarLinks$ = this._navigationService.navbarLinks$;
+  }
+
+  logout() {
+    this._authorizationService.clearAuthorizationDto();
+    this._navigationService.loadNavbarLinksByRole();
+    this.router.navigate(["public/home"]);
   }
 
   ngOnInit(): void {
-  }
 
+  }
 }
