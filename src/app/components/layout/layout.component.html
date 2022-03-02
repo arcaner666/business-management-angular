@@ -6,17 +6,17 @@
     </ng-container>
     <!-- /Navbar -->
 
-    <!-- Content With Sidebar -->
-    <ng-container *ngIf="layoutService.layoutConfig?.showSidebar">
-        <ng-container *ngTemplateOutlet="contentWithSidebar"></ng-container>
+    <!-- Content With Sidebar Static -->
+    <ng-container *ngIf="breakpointService.screenSize.width >= 992">
+        <ng-container *ngTemplateOutlet="contentWithSidebarStatic"></ng-container>
     </ng-container>
-    <!-- /Content With Sidebar -->
+    <!-- /Content With Sidebar Static -->
 
-    <!-- Only Content -->
-    <ng-container *ngIf="!layoutService.layoutConfig?.showSidebar">
-        <ng-container *ngTemplateOutlet="onlyContent"></ng-container>
+    <!-- Content With Sidebar Floating -->
+    <ng-container *ngIf="breakpointService.screenSize.width < 992">
+        <ng-container *ngTemplateOutlet="contentWithSidebarFloating"></ng-container>
     </ng-container>
-    <!-- /Only Content -->
+    <!-- Content With Sidebar Floating -->
 
     <!-- Footer -->
     <ng-container *ngIf="layoutService.layoutConfig?.showFooter">
@@ -38,29 +38,41 @@
 </ng-template>
 <!-- /Navbar Template'i -->
 
-<!-- Content With Sidebar Template'i -->
-<ng-template #contentWithSidebar>
-    <!-- Content With Sidebar Template'i -->
+<!-- Content With Sidebar Static Template'i -->
+<ng-template #contentWithSidebarStatic>
     <div class="row p-0 m-0 g-0">
-        <div class="col-2 p-0 m-0">
-            <app-menu></app-menu>
-        </div>
-        <div class="col-10 p-0 m-0">
+        <ng-container *ngIf="(layoutConfig$ | async)?.showSidebarStatic">
+            <div 
+                class="p-0 m-0" 
+                [ngClass]="(layoutConfig$ | async)?.showSidebarStatic ? 'col-lg-2 col-xl-2': 'd-none'"
+            >
+                <app-sidebar-static></app-sidebar-static>
+            </div>
+        </ng-container>
+        <div 
+            class="p-0 m-0"
+            [ngClass]="(layoutConfig$ | async)?.showSidebarStatic ? 'col-lg-10 col-md-10 col-xl-10': 'col-12'"
+        >
             <app-content></app-content>
         </div>
     </div>
 </ng-template>
-<!-- /Content With Sidebar Template'i -->
+<!-- /Content With Sidebar Static Template'i -->
 
-<!-- Only Content Template'i -->
-<ng-template #onlyContent>
+<!-- Content With Sidebar Floating Template'i -->
+<ng-template #contentWithSidebarFloating>
     <div class="row p-0 m-0 g-0">
+        <ng-container *ngIf="(layoutConfig$ | async)?.showSidebarFloating">
+            <div class="col-xs-8 col-sm-6 col-md-4 p-0 m-0">
+                <app-sidebar-floating></app-sidebar-floating>
+            </div>
+        </ng-container>
         <div class="col-12 p-0 m-0">
             <app-content></app-content>
         </div>
     </div>
 </ng-template>
-<!-- /Only Content Template'i -->
+<!-- /Content With Sidebar Floating Template'i -->
 
 <!-- Footer Template'i -->
 <ng-template #footer>

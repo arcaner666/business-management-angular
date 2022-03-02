@@ -1,5 +1,5 @@
 export interface NavLink {
-    id: number;
+    id: string;
     title: string;
     url: string;
     type: string;

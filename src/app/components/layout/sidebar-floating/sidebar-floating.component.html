@@ -1,0 +1,55 @@
+<div class="container-fluid sidebar-floating" [ngClass]="{'sidebar-show' : (layoutConfig$ | async)?.showSidebarFloating }">
+    <div class="item d-flex justify-content-between align-items-center">
+
+        <!-- Marka -->
+        <a class="navbar-brand" href="/">
+            <img src="favicon.ico" alt="Uygulamanın logosu" width="32">
+            <span class="brand text-white">İş Yönetim</span>
+        </a>
+        <!-- /Marka -->
+
+        <!-- Sidebar Kapatma Butonu -->
+        <div class="sidebar-close-btn d-flex justify-content-center align-items-center">
+            <i 
+                class="fas fa-times fa-lg" 
+                (click)="toggleSidebarFloating()"
+            >
+            </i>
+        </div>
+        <!-- /Sidebar Kapatma Butonu -->
+
+    </div>
+    <ng-container *ngFor="let sidebarLink of sidebarLinks$ | async">
+        
+        <!-- Tekil link -->
+        <ng-container *ngIf="sidebarLink.type == 'item'">
+        <div class="item d-flex align-items-center">
+            <a class="item-link" [routerLink]="sidebarLink.url" routerLinkActive="active">{{sidebarLink.title}}</a>
+        </div>
+        </ng-container>
+        <!-- /Tekil link -->
+
+        <!-- Link Grubu -->
+        <ng-container *ngIf="sidebarLink.type == 'collapsible'">
+
+        <!-- Accordion -->
+        <ngb-accordion #accordion="ngbAccordion" activeIds="ngb-panel-0">
+            <ngb-panel [id]="sidebarLink.id" [title]="sidebarLink.title" [disabled]="sidebarLink.disabled" [hidden]="sidebarLink.hidden">
+            <ng-template ngbPanelContent>
+
+                <!-- Accordion İç Linkler -->
+                <ng-container *ngFor="let navLink of sidebarLink.navLinks">
+                <a class="collapsible-link d-flex flex-row p-2" [routerLink]="navLink.url" routerLinkActive="active">{{navLink.title}}</a>
+                </ng-container>
+                <!-- /Accordion İç Linkler -->
+
+            </ng-template>
+            </ngb-panel>
+        </ngb-accordion>
+        <!-- /Accordion -->
+
+        </ng-container>
+        <!-- /Link Grubu -->
+
+    </ng-container>
+</div>

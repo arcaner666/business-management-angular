@@ -1,34 +1,44 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-special shadow-lg">
     <div class="container-fluid">
-        <!-- Eğer ekran lg breakpoint'inden küçükse alttaki hamburger butonu görünür, büyükse bu buton görünmez. -->
-        <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <!-- Hamburger butonu görünmüyorsa solda, görünüyorsa ortada markamız görünür. -->
+        <!-- Sidebar Butonu --> 
+        <!-- Sadece küçük ekranlarda görünür. -->
+        <i 
+            *ngIf="breakpointService.screenSize.width < 992"
+            class="fas fa-bars fa-lg hamburger-button text-white p-2"
+            (click)="toggleSidebarFloating()"
+        >
+        </i>
+        <!-- /Sidebar Butonu-->
+
+        <!-- Marka -->
         <a class="navbar-brand" href="/">
             <img src="favicon.ico" alt="Uygulamanın logosu" width="32">
             <span class="brand">İş Yönetim</span>
         </a>
+        <!-- /Marka -->
 
+        <!-- Giriş-Çıkış Butonu -->
         <ng-container *ngIf="breakpointService.screenSize.width >= 576 && breakpointService.screenSize.width < 992">
             <button *ngIf="!(authorizationDto$ | async)?.role" class="btn btn-outline-success" routerLink="public/login">Giriş Yap</button>
             <button *ngIf="(authorizationDto$ | async)?.role" class="btn btn-outline-danger" (click)="logout()">Çıkış Yap</button>
         </ng-container>
+        <!-- /Giriş-Çıkış Butonu -->
 
-        <!-- Public Navbar Link Bloğu -->
-        <!-- Eğer ekran lg breakpoint'inden küçükse alttaki link bloğu yokolur, büyükse görünür. -->
-        <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse">
+        <!--  -->
+        <ng-container *ngIf="breakpointService.screenSize.width >= 992 && !(authorizationDto$ | async)?.role">
             <ul class="navbar-nav">
                 <li class="nav-item" *ngIf="breakpointService.isScreenXSmall()">
                     <a class="nav-link" routerLink="public/login" routerLinkActive="active">Giriş Yap</a>
                 </li>
-                <li class="nav-item" *ngFor="let navbarLink of navbarLinks$ | async">
-                    <a class="nav-link" [routerLink]="navbarLink.url" routerLinkActive="active">{{navbarLink.title}}</a>
+                <li class="nav-item" *ngFor="let sidebarLink of sidebarLinks$ | async">
+                    <a class="nav-link" [routerLink]="sidebarLink.url" routerLinkActive="active">{{sidebarLink.title}}</a>
                 </li>
             </ul>
-        </div>
-        <!-- /Public Navbar Link Bloğu -->
+        </ng-container>
+        <!-- / -->
+
+        <button class="btn btn-outline-danger" (click)="toggleSidebarFloating()">Sidebar</button>
 
         <ng-container *ngIf="breakpointService.screenSize.width >= 992">
             <button *ngIf="!(authorizationDto$ | async)?.role" class="btn btn-outline-success" routerLink="public/login">Giriş Yap</button>

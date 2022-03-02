@@ -8,9 +8,9 @@ import { NavLink } from 'src/app/models/various/nav-link';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 
-const PUBLIC_NAVBAR_LINKS: NavLink[] = [
+const PUBLIC_SIDEBAR_LINKS: NavGroup[] = [
   {
-    id: 0,
+    id: "home",
     title: "Anasayfa",
     url: "public/home",
     type: "item",
@@ -18,9 +18,10 @@ const PUBLIC_NAVBAR_LINKS: NavLink[] = [
     icon: "",
     disabled: false,
     hidden: false,
+    navLinks: [],
   },
   {
-    id: 1,
+    id: "about",
     title: "Biz Kimiz?",
     url: "public/about",
     type: "item",
@@ -28,9 +29,10 @@ const PUBLIC_NAVBAR_LINKS: NavLink[] = [
     icon: "",
     disabled: false,
     hidden: false,
+    navLinks: [],
   },
   {
-    id: 2,
+    id: "features",
     title: "Ne Sağlıyoruz?",
     url: "public/features",
     type: "item",
@@ -38,9 +40,10 @@ const PUBLIC_NAVBAR_LINKS: NavLink[] = [
     icon: "",
     disabled: false,
     hidden: false,
+    navLinks: [],
   },
   {
-    id: 3,
+    id: "references",
     title: "Referanslarımız",
     url: "public/references",
     type: "item",
@@ -48,9 +51,10 @@ const PUBLIC_NAVBAR_LINKS: NavLink[] = [
     icon: "",
     disabled: false,
     hidden: false,
+    navLinks: [],
   },
   {
-    id: 4,
+    id: "pricing",
     title: "Paketlerimiz",
     url: "public/pricing",
     type: "item",
@@ -58,9 +62,10 @@ const PUBLIC_NAVBAR_LINKS: NavLink[] = [
     icon: "",
     disabled: false,
     hidden: false,
+    navLinks: [],
   },
   {
-    id: 5,
+    id: "contact",
     title: "Bize Ulaşın",
     url: "public/contact",
     type: "item",
@@ -68,37 +73,111 @@ const PUBLIC_NAVBAR_LINKS: NavLink[] = [
     icon: "",
     disabled: false,
     hidden: false,
+    navLinks: [],
   },
 ];
 
 const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
   {
-    id: 10,
-    title: "Section Manager",
+    id: "manager-dashboard",
+    title: "Özet",
+    url: "manager/manager-dashboard",
+    type: "item",
+    role: ["Manager"],
+    icon: "",
+    disabled: false,
+    hidden: false,
+    navLinks: [],
+  },
+  {
+    id: "management-menu",
+    title: "Yönetim",
     url: "",
-    type: "",
-    role: [],
+    type: "collapsible",
+    role: ["Manager"],
     icon: "",
     disabled: false,
     hidden: false,
     navLinks: [
       {
-        id: 11,
-        title: "Section Manager",
-        url: "",
-        type: "",
-        role: [],
+        id: "business",
+        title: "İşletme",
+        url: "manager/business",
+        type: "item",
+        role: ["Manager"],
         icon: "",
         disabled: false,
         hidden: false,
-      }
+      },
+      {
+        id: "branch",
+        title: "Şubeler",
+        url: "manager/branch-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+    ],
+  },
+  {
+    id: "section-menu",
+    title: "Siteler",
+    url: "",
+    type: "collapsible",
+    role: ["Manager"],
+    icon: "",
+    disabled: false,
+    hidden: false,
+    navLinks: [
+      {
+        id: "section-group-list",
+        title: "Site Grupları",
+        url: "manager/section-group-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+      {
+        id: "section-list",
+        title: "Site",
+        url: "manager/section-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+      {
+        id: "apartment-list",
+        title: "Apartman",
+        url: "manager/apartment-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+      {
+        id: "flat-list",
+        title: "Daire",
+        url: "manager/flat-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
     ],
   },
 ];
 
 const COMPANY_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
   {
-    id: 10,
+    id: "company",
     title: "Company Manager",
     url: "",
     type: "",
@@ -108,7 +187,7 @@ const COMPANY_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
     hidden: false,
     navLinks: [
       {
-        id: 11,
+        id: "company",
         title: "Company Manager",
         url: "",
         type: "",
@@ -123,51 +202,29 @@ const COMPANY_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
 
 const ADMIN_SIDEBAR_LINKS: NavGroup[] = [
   {
-    id: 10,
-    title: "Admin",
-    url: "",
-    type: "",
-    role: [],
+    id: "admin-dashboard",
+    title: "Özet",
+    url: "admin/admin-dashboard",
+    type: "item",
+    role: ["Admin"],
     icon: "",
     disabled: false,
     hidden: false,
-    navLinks: [
-      {
-        id: 11,
-        title: "Admin",
-        url: "",
-        type: "",
-        role: [],
-        icon: "",
-        disabled: false,
-        hidden: false,
-      }
-    ],
+    navLinks: [],
   },
 ];
 
 const CUSTOMER_SIDEBAR_LINKS: NavGroup[] = [
   {
-    id: 10,
-    title: "Customer",
-    url: "",
-    type: "",
-    role: [],
+    id: "customer-dashboard",
+    title: "Özet",
+    url: "customer/customer-dashboard",
+    type: "item",
+    role: ["Customer"],
     icon: "",
     disabled: false,
     hidden: false,
-    navLinks: [
-      {
-        id: 11,
-        title: "Customer",
-        url: "",
-        type: "",
-        role: [],
-        icon: "",
-        disabled: false,
-        hidden: false,
-      }
-    ],
+    navLinks: [],
   },
 ];
 
@@ -176,14 +233,12 @@ const CUSTOMER_SIDEBAR_LINKS: NavGroup[] = [
 })
 export class NavigationService {
 
-  private navbarLinksSubject: BehaviorSubject<NavLink[]>;
   private sidebarLinksSubject: BehaviorSubject<NavGroup[]>;
 
   public adminSidebarLinks: NavGroup[] = ADMIN_SIDEBAR_LINKS;
   public companyManagerSidebarLinks: NavGroup[] = COMPANY_MANAGER_SIDEBAR_LINKS;
   public customerSidebarLinks: NavGroup[] = CUSTOMER_SIDEBAR_LINKS;
-  public navbarLinks$: Observable<NavLink[]>;
-  public publicNavbarLinks: NavLink[] = PUBLIC_NAVBAR_LINKS;
+  public publicSidebarLinks: NavGroup[] = PUBLIC_SIDEBAR_LINKS;
   public sectionManagerSidebarLinks: NavGroup[] = SECTION_MANAGER_SIDEBAR_LINKS;
   public sidebarLinks$: Observable<NavGroup[]>;
 
@@ -191,18 +246,8 @@ export class NavigationService {
     private _authorizationService: AuthorizationService,
     private _router: Router
   ) {
-    this.navbarLinksSubject = new BehaviorSubject<NavLink[]>(PUBLIC_NAVBAR_LINKS);
-    this.sidebarLinksSubject = new BehaviorSubject<NavGroup[]>(SECTION_MANAGER_SIDEBAR_LINKS);
-    this.navbarLinks$ = this.navbarLinksSubject.asObservable();
+    this.sidebarLinksSubject = new BehaviorSubject<NavGroup[]>(PUBLIC_SIDEBAR_LINKS);
     this.sidebarLinks$ = this.sidebarLinksSubject.asObservable();
-  }
-
-  get navbarLinks(): NavLink[] {
-    return this.navbarLinksSubject.value;
-  }
-
-  set navbarLinks(navbarLinks: NavLink[]){
-    this.navbarLinksSubject.next(navbarLinks);
   }
 
   get sidebarLinks(): NavGroup[] {
@@ -213,14 +258,6 @@ export class NavigationService {
     this.sidebarLinksSubject.next(sidebarLinks);
   }
 
-  loadNavbarLinksByRole() {
-    if(!this._authorizationService.authorizationDto?.role){
-      this.navbarLinks = this.publicNavbarLinks;
-    } else {
-      this.navbarLinks = [];
-    }
-  }
-
   loadSidebarLinksByRole() {
     if(this._authorizationService.authorizationDto?.role == "Admin"){
       this.sidebarLinks = this.adminSidebarLinks;
@@ -228,6 +265,8 @@ export class NavigationService {
       this.sidebarLinks = this.sectionManagerSidebarLinks;
     } else if (this._authorizationService.authorizationDto?.role == "Customer") {
       this.sidebarLinks = this.customerSidebarLinks;
+    } else {
+      this.sidebarLinks = this.publicSidebarLinks;
     }
   }
 

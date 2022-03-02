@@ -17,26 +17,27 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { AppComponent } from './app.component';
+import { CustomerDashboardComponent } from './components/customer/customer-dashboard/customer-dashboard.component';
+import { ContentComponent } from './components/layout/content/content.component';
 import { ErrorComponent } from './components/public/error/error.component';
+import { FooterComponent } from './components/layout/footer/footer.component';
 import { HomeComponent } from './components/public/home/home.component';
+import { LayoutComponent } from './components/layout/layout.component';
 import { LoginComponent } from './components/public/login/login.component';
+import { ManagerDashboardComponent } from './components/manager/manager-dashboard/manager-dashboard.component';
+import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import { NotAuthorizedComponent } from './components/public/not-authorized/not-authorized.component';
 import { RegisterComponent } from './components/public/register/register.component';
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
-import { ManagerDashboardComponent } from './components/manager/manager-dashboard/manager-dashboard.component';
-import { CustomerDashboardComponent } from './components/customer/customer-dashboard/customer-dashboard.component';
+import { SidebarFloatingComponent } from './components/layout/sidebar-floating/sidebar-floating.component';
+import { SidebarStaticComponent } from './components/layout/sidebar-static/sidebar-static.component';
 
 // Interceptors
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
-import { LayoutComponent } from './components/layout/layout.component';
-import { ContentComponent } from './components/layout/content/content.component';
-import { NavbarComponent } from './components/layout/navbar/navbar.component';
-import { FooterComponent } from './components/layout/footer/footer.component';
-import { MenuComponent } from './components/layout/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -51,10 +52,11 @@ import { MenuComponent } from './components/layout/menu/menu.component';
     LayoutComponent,
     LoginComponent,
     ManagerDashboardComponent,
-    MenuComponent,
     NavbarComponent,
     NotAuthorizedComponent,
     RegisterComponent,
+    SidebarFloatingComponent,
+    SidebarStaticComponent,
   ],
   imports: [
     // Angular Modules

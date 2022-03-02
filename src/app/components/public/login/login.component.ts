@@ -71,15 +71,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Bu sayfa için layout ayarlarını düzenler.
     this._layoutService.layoutConfig = {
       showNavbar: false,
-      showSidebar: false,
+      showSidebarStatic: false,
+      showSidebarFloating: false,
       showFooter: false,
     };
 
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
     this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
 
-    // Navbar linklerini düzenle.
-    this._navigationService.loadNavbarLinksByRole();
+    // Sidebar linklerini düzenle.
+    this._navigationService.loadSidebarLinksByRole();
 
     // Telefonla giriş formu oluşturulur.
     this.phoneForm = this._formBuilder.group({
@@ -130,8 +131,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           // Oturum açılma durumuna göre kullanıcıları yönlendir.
           this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
 
-          // Navbar linklerini düzenle.
-          this._navigationService.loadNavbarLinksByRole();
+          // Sidebar linklerini düzenle.
+          this._navigationService.loadSidebarLinksByRole();
         }
         this.loadingEmail = false;
       },
@@ -175,8 +176,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             // Oturum açılma durumuna göre kullanıcıları yönlendir.
             this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
 
-            // Navbar linklerini düzenle.
-            this._navigationService.loadNavbarLinksByRole();
+            // Sidebar linklerini düzenle.
+            this._navigationService.loadSidebarLinksByRole();
           }
           this.loadingPhone = false;
         },

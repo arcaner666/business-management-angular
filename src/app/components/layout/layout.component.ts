@@ -1,5 +1,11 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 
+import { Observable } from 'rxjs';
+
+import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { LayoutConfig } from 'src/app/models/various/layout-config';
+
+import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { LayoutService } from 'src/app/services/layout.service';
 
@@ -10,13 +16,20 @@ import { LayoutService } from 'src/app/services/layout.service';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor(
-    private _breakpointSevice: BreakpointService,
+  public authorizationDto$: Observable<AuthorizationDto>;
+  public layoutConfig$: Observable<LayoutConfig>;
 
-    public layoutService: LayoutService
+  constructor(
+    private _authorizationService: AuthorizationService,
+
+    public layoutService: LayoutService,
+    public breakpointService: BreakpointService,
   ) {
-    this._breakpointSevice.screenSize.width = window.screen.width;
-    this._breakpointSevice.screenSize.height = window.screen.height;
+    this.authorizationDto$ = this._authorizationService.authorizationDtoObservable;
+    this.layoutConfig$ = this.layoutService.layoutConfigObservable;
+    
+    this.breakpointService.screenSize.width = window.screen.width;
+    this.breakpointService.screenSize.height = window.screen.height;
   }
 
   ngOnInit(): void {
@@ -24,7 +37,7 @@ export class LayoutComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
-    this._breakpointSevice.screenSize.width = window.innerWidth;
-    this._breakpointSevice.screenSize.height = window.innerHeight;
+    this.breakpointService.screenSize.width = window.innerWidth;
+    this.breakpointService.screenSize.height = window.innerHeight;
   }
 }

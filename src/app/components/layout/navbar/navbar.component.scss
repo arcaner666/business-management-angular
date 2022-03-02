@@ -3,6 +3,11 @@
 .navbar-special {
     background: $gradient-1;
 
+    .hamburger-button {
+        display: block;
+        cursor: pointer;
+    }
+
     .btn-outline-success {
         color: $custom-color-5;
         border-color: $custom-color-5;

@@ -1,5 +1,6 @@
 export interface LayoutConfig {
     showNavbar: boolean;
-    showSidebar: boolean;
+    showSidebarStatic: boolean;
+    showSidebarFloating: boolean;
     showFooter: boolean;
 }

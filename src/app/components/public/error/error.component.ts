@@ -14,7 +14,8 @@ export class ErrorComponent implements OnInit {
     // Bu sayfa için layout ayarlarını düzenler.
     this._layoutService.layoutConfig = {
       showNavbar: false,
-      showSidebar: false,
+      showSidebarStatic: false,
+      showSidebarFloating: false,
       showFooter: false,
     };
   }

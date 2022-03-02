@@ -7,7 +7,8 @@ import { LayoutConfig } from 'src/app/models/various/layout-config';
 
 const DEFAULT_LAYOUT_CONFIG: LayoutConfig = {
   showNavbar: true,
-  showSidebar: false,
+  showSidebarStatic: false,
+  showSidebarFloating: false,
   showFooter: true,
 };
 
@@ -48,5 +49,9 @@ export class LayoutService {
   set layoutConfig(layoutConfig: LayoutConfig){
     localStorage.setItem("layoutConfig", JSON.stringify(layoutConfig));
     this.layoutConfigSubject.next(layoutConfig);
+  }
+
+  toggleSidebarFloating() {
+    this.layoutConfig.showSidebarFloating = !this.layoutConfig.showSidebarFloating;
   }
 }
