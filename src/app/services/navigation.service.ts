@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { NavGroup } from 'src/app/models/various/nav-group';
-import { NavLink } from 'src/app/models/various/nav-link';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 
