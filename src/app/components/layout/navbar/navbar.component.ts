@@ -26,8 +26,8 @@ export class NavbarComponent implements OnInit {
   
   constructor(
     private _navigationService: NavigationService,
-    private _authorizationService: AuthorizationService,
-    private _layoutService: LayoutService,
+    private authorizationService: AuthorizationService,
+    private layoutService: LayoutService,
 
     public breakpointService: BreakpointService,
     public route: ActivatedRoute,
@@ -35,17 +35,17 @@ export class NavbarComponent implements OnInit {
   ) {
     this._navigationService.loadSidebarLinksByRole();
     
-    this.authorizationDto$ = this._authorizationService.authorizationDtoObservable;
-    this.layoutConfig$ = this._layoutService.layoutConfigObservable;
+    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
+    this.layoutConfig$ = this.layoutService.layoutConfigObservable;
     this.sidebarLinks$ = this._navigationService.sidebarLinks$;
   }
 
   toggleSidebarFloating() {
-    this._layoutService.toggleSidebarFloating();
+    this.layoutService.toggleSidebarFloating();
   }
 
   logout() {
-    this._authorizationService.clearAuthorizationDto();
+    this.authorizationService.clearAuthorizationDto();
     this._navigationService.loadSidebarLinksByRole();
     this.router.navigate(["public/home"]);
   }

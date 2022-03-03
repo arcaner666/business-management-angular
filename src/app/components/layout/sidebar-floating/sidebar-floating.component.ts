@@ -24,28 +24,28 @@ export class SidebarFloatingComponent implements OnInit {
   public layoutConfig$: Observable<LayoutConfig>;
 
   constructor(
-    private _authorizationService: AuthorizationService,
+    private authorizationService: AuthorizationService,
     private _navigationService: NavigationService,
-    private _layoutService: LayoutService,
+    private layoutService: LayoutService,
     private _router: Router,
 
     public breakpointService: BreakpointService
   ) {
     this._navigationService.loadSidebarLinksByRole();
 
-    this.authorizationDto$ = this._authorizationService.authorizationDtoObservable;
-    this.layoutConfig$ = this._layoutService.layoutConfigObservable;
+    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
+    this.layoutConfig$ = this.layoutService.layoutConfigObservable;
     this.sidebarLinks$ = this._navigationService.sidebarLinks$;
   }
 
   logout() {
-    this._authorizationService.clearAuthorizationDto();
+    this.authorizationService.clearAuthorizationDto();
     this._navigationService.loadSidebarLinksByRole();
     this._router.navigate(["public/home"]);
   }
 
   toggleSidebarFloating() {
-    this._layoutService.toggleSidebarFloating();
+    this.layoutService.toggleSidebarFloating();
   }
 
   ngOnInit(): void {

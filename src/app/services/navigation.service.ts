@@ -242,7 +242,7 @@ export class NavigationService {
   public sidebarLinks$: Observable<NavGroup[]>;
 
   constructor(
-    private _authorizationService: AuthorizationService,
+    private authorizationService: AuthorizationService,
     private _router: Router
   ) {
     this.sidebarLinksSubject = new BehaviorSubject<NavGroup[]>(PUBLIC_SIDEBAR_LINKS);
@@ -258,11 +258,11 @@ export class NavigationService {
   }
 
   loadSidebarLinksByRole() {
-    if(this._authorizationService.authorizationDto?.role == "Admin"){
+    if(this.authorizationService.authorizationDto?.role == "Admin"){
       this.sidebarLinks = this.adminSidebarLinks;
-    } else if (this._authorizationService.authorizationDto?.role == "Manager") {
+    } else if (this.authorizationService.authorizationDto?.role == "Manager") {
       this.sidebarLinks = this.sectionManagerSidebarLinks;
-    } else if (this._authorizationService.authorizationDto?.role == "Customer") {
+    } else if (this.authorizationService.authorizationDto?.role == "Customer") {
       this.sidebarLinks = this.customerSidebarLinks;
     } else {
       this.sidebarLinks = this.publicSidebarLinks;

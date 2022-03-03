@@ -82,7 +82,7 @@ export class RegisterComponent implements OnInit {
     private _cityService: CityService,
     private _districtService: DistrictService,
     private _formBuilder: FormBuilder,
-    private _layoutService: LayoutService,
+    private layoutService: LayoutService,
     private _managerService: ManagerService,
     private _modalService: NgbModal,
     private _router: Router,
@@ -92,7 +92,7 @@ export class RegisterComponent implements OnInit {
     console.log("RegisterComponent constructor çalıştı.");
 
     // Bu sayfa için layout ayarlarını düzenler.
-    this._layoutService.layoutConfig = {
+    this.layoutService.layoutConfig = {
       showNavbar: false,
       showSidebarStatic: false,
       showSidebarFloating: false,

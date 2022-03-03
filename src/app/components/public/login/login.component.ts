@@ -59,17 +59,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   private sub2: Subscription = new Subscription();
 
   constructor(
-    private _authorizationService: AuthorizationService,
+    private authorizationService: AuthorizationService,
     private _formBuilder: FormBuilder,
     private _navigationService: NavigationService,
-    private _layoutService: LayoutService,
+    private layoutService: LayoutService,
 
     public breakpointService: BreakpointService
   ) {
     console.log("LoginComponent constructor çalıştı.");
 
     // Bu sayfa için layout ayarlarını düzenler.
-    this._layoutService.layoutConfig = {
+    this.layoutService.layoutConfig = {
       showNavbar: false,
       showSidebarStatic: false,
       showSidebarFloating: false,
@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     };
 
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
-    this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+    this._navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
     // Sidebar linklerini düzenle.
     this._navigationService.loadSidebarLinksByRole();
@@ -121,15 +121,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authorizationDto.password = this.emailForm.value.password;
     this.authorizationDto.refreshTokenDuration = this.emailForm.value.refreshTokenDuration;
 
-    this.sub1 = this._authorizationService.loginWithEmail(this.authorizationDto).subscribe({
+    this.sub1 = this.authorizationService.loginWithEmail(this.authorizationDto).subscribe({
       next: (response) => {      
         // Eğer giriş başarılıysa
         if(response.success) {
           // Kullanıcı bilgilerini sakla.
-          this._authorizationService.authorizationDto = response.data;
+          this.authorizationService.authorizationDto = response.data;
           
           // Oturum açılma durumuna göre kullanıcıları yönlendir.
-          this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+          this._navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
           // Sidebar linklerini düzenle.
           this._navigationService.loadSidebarLinksByRole();
@@ -166,15 +166,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
 
     // Sunucuya giriş isteği gönderilir.
-    this.sub2 = this._authorizationService.loginWithPhone(this.authorizationDto).subscribe({
+    this.sub2 = this.authorizationService.loginWithPhone(this.authorizationDto).subscribe({
         next: (response) => {      
           // Eğer giriş başarılıysa
           if(response.success) {
             // Kullanıcı bilgilerini sakla.
-            this._authorizationService.authorizationDto = response.data;
+            this.authorizationService.authorizationDto = response.data;
             
             // Oturum açılma durumuna göre kullanıcıları yönlendir.
-            this._navigationService.navigateByRole(this._authorizationService.authorizationDto?.role);
+            this._navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
             // Sidebar linklerini düzenle.
             this._navigationService.loadSidebarLinksByRole();

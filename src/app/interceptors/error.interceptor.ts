@@ -11,7 +11,7 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
-    private _authorizationService: AuthorizationService,
+    private authorizationService: AuthorizationService,
     private _router: Router,
   ) {}
 
@@ -22,7 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError(err => {
         console.log(err);
         if (err.error.message == "TokenInvalid" || err.error.message == "CanNotGetPrincipal") {
-          this._authorizationService.clearAuthorizationDto();
+          this.authorizationService.clearAuthorizationDto();
           this._router.navigate(['public/not-authorized', 'public/login']);
         }
         // catchError backend'den dönen hatayı ekstra bir hata katmanıyla sarmalıyor.

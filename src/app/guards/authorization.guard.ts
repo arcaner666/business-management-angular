@@ -12,18 +12,18 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthorizationGuard implements CanActivate {
 
   constructor(
-    private _authorizationService: AuthorizationService,
+    private authorizationService: AuthorizationService,
     private _router: Router,
     private _jwtHelperService: JwtHelperService,
   ) {}
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
-    const authorizationDto = this._authorizationService.authorizationDto;
+    const authorizationDto = this.authorizationService.authorizationDto;
     console.log("AuthGuard çalıştı.");
     if (authorizationDto) {
       // Gidilmek istenen route için gerekli yetkiler var mı kontrol edilir.
       // Burası en üstte olmalı.
-      if (route.data['roles'] && route.data['roles'].indexOf(authorizationDto.role) === -1) {
+      if (route.data['roles'] && route.data['roles'].indexOf(authorizationDto.role) == -1) {
         // Gerekli yetkiler yoksa oturum açılma durumuna göre kullanıcıların not-authorized 
         // sayfasından kendi ana sayfalarına yönlendirecek URL bilgileri parametre olarak
         // gönderilir.
@@ -46,7 +46,7 @@ export class AuthorizationGuard implements CanActivate {
           // REFRESH TOKEN'IN SÜRESİ BİTTİĞİNDE YENİLEME YAPAMADIYSA LOGİNE YÖNLENDİRİYOR
           // FAKAT TEMAYI BOZUYOR. DÜZELT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           console.log("RefreshToken'ın süresi bitmiş, AccessToken yenilenemedi, giriş sayfasına yönlendiriliyor...");
-          this._authorizationService.clearAuthorizationDto();
+          this.authorizationService.clearAuthorizationDto();
           this._router.navigate(["public/login"]);
           //window.location.assign("public/login");
         }
@@ -63,13 +63,13 @@ export class AuthorizationGuard implements CanActivate {
   async tryRefreshAccessToken(authorizationDto: AuthorizationDto): Promise<boolean> {
     let isRefreshSuccessful: boolean = false;
     try {
-      let response = await firstValueFrom(this._authorizationService.refreshAccessToken(authorizationDto));
+      let response = await firstValueFrom(this.authorizationService.refreshAccessToken(authorizationDto));
       if(response.success) {
         isRefreshSuccessful = true;
         // Token yenileme isteğinden dönen authorizationDto'da yalnızca accessToken var. Dikkat!
         authorizationDto.accessToken = response.data.accessToken;
         // Yenilenmiş kullanıcı bilgilerini kaydet.
-        this._authorizationService.authorizationDto = authorizationDto;
+        this.authorizationService.authorizationDto = authorizationDto;
         console.log("AccessToken yenilendi.");
       }
     } catch (error) {

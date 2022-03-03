@@ -10,10 +10,10 @@ import { LayoutService } from 'src/app/services/layout.service';
 export class HomeComponent implements OnInit {
 
   constructor(
-    private _layoutService: LayoutService
+    private layoutService: LayoutService
   ) {
     // Bu sayfa için layout ayarlarını düzenler.
-    this._layoutService.layoutConfig = {
+    this.layoutService.layoutConfig = {
       showNavbar: true,
       showSidebarStatic: false,
       showSidebarFloating: false,

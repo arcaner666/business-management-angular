@@ -9,10 +9,10 @@ import { LayoutService } from 'src/app/services/layout.service';
 export class ErrorComponent implements OnInit {
 
   constructor(
-    private _layoutService: LayoutService
+    private layoutService: LayoutService
   ) {
     // Bu sayfa için layout ayarlarını düzenler.
-    this._layoutService.layoutConfig = {
+    this.layoutService.layoutConfig = {
       showNavbar: false,
       showSidebarStatic: false,
       showSidebarFloating: false,

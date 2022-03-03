@@ -20,12 +20,12 @@ export class LayoutComponent implements OnInit {
   public layoutConfig$: Observable<LayoutConfig>;
 
   constructor(
-    private _authorizationService: AuthorizationService,
+    private authorizationService: AuthorizationService,
 
     public layoutService: LayoutService,
     public breakpointService: BreakpointService,
   ) {
-    this.authorizationDto$ = this._authorizationService.authorizationDtoObservable;
+    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
     this.layoutConfig$ = this.layoutService.layoutConfigObservable;
     
     this.breakpointService.screenSize.width = window.screen.width;
@@ -39,5 +39,22 @@ export class LayoutComponent implements OnInit {
   onWindowResize() {
     this.breakpointService.screenSize.width = window.innerWidth;
     this.breakpointService.screenSize.height = window.innerHeight;
+
+    // Eğer ekran yeterince büyükse statik sidebar'ı gösterir.
+    if (this.breakpointService.screenSize.width >= 992 && this.authorizationService.authorizationDto) {
+      this.layoutService.layoutConfig = {
+        showNavbar: true,
+        showSidebarStatic: true,
+        showSidebarFloating: false,
+        showFooter: true,
+      };
+    } else {
+      this.layoutService.layoutConfig = {
+        showNavbar: true,
+        showSidebarStatic: false,
+        showSidebarFloating: false,
+        showFooter: true,
+      };
+    }
   }
 }

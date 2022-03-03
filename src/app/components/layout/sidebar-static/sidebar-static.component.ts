@@ -21,13 +21,13 @@ export class SidebarStaticComponent implements OnInit {
 
   constructor(
     private _navigationService: NavigationService,
-    private _layoutService: LayoutService,
+    private layoutService: LayoutService,
 
     public breakpointService: BreakpointService
   ) {
     this._navigationService.loadSidebarLinksByRole();
 
-    this.layoutConfig$ = this._layoutService.layoutConfigObservable
+    this.layoutConfig$ = this.layoutService.layoutConfigObservable
     this.sidebarLinks$ = this._navigationService.sidebarLinks$;
   }
 
