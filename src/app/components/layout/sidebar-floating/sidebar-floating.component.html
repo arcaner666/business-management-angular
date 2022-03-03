@@ -19,37 +19,48 @@
         <!-- /Sidebar Kapatma Butonu -->
 
     </div>
+
+    <!-- Giriş Yap Butonu -->
+    <!-- Küçük ekranlarda bu buton navbara sığmadığı için sidebar floating içerisinde olmalı. -->
+    <div class="item d-flex align-items-center" *ngIf="breakpointService.screenSize.width < 576 && !(authorizationDto$ | async)?.role">
+        <a class="item-link" routerLink="public/login" routerLinkActive="active">Giriş Yap</a>
+    </div>
+    <!-- /Giriş Yap Butonu -->
+
     <ng-container *ngFor="let sidebarLink of sidebarLinks$ | async">
-        
         <!-- Tekil link -->
         <ng-container *ngIf="sidebarLink.type == 'item'">
-        <div class="item d-flex align-items-center">
-            <a class="item-link" [routerLink]="sidebarLink.url" routerLinkActive="active">{{sidebarLink.title}}</a>
-        </div>
+            <div class="item d-flex align-items-center">
+                <a class="item-link" [routerLink]="sidebarLink.url" routerLinkActive="active">{{sidebarLink.title}}</a>
+            </div>
         </ng-container>
         <!-- /Tekil link -->
 
         <!-- Link Grubu -->
         <ng-container *ngIf="sidebarLink.type == 'collapsible'">
+            <!-- Accordion -->
+            <ngb-accordion #accordion="ngbAccordion" activeIds="ngb-panel-0">
+                <ngb-panel [id]="sidebarLink.id" [title]="sidebarLink.title" [disabled]="sidebarLink.disabled" [hidden]="sidebarLink.hidden">
+                    <ng-template ngbPanelContent>
 
-        <!-- Accordion -->
-        <ngb-accordion #accordion="ngbAccordion" activeIds="ngb-panel-0">
-            <ngb-panel [id]="sidebarLink.id" [title]="sidebarLink.title" [disabled]="sidebarLink.disabled" [hidden]="sidebarLink.hidden">
-            <ng-template ngbPanelContent>
+                        <!-- Accordion İç Linkler -->
+                        <ng-container *ngFor="let navLink of sidebarLink.navLinks">
+                        <a class="collapsible-link d-flex flex-row p-2" [routerLink]="navLink.url" routerLinkActive="active">{{navLink.title}}</a>
+                        </ng-container>
+                        <!-- /Accordion İç Linkler -->
 
-                <!-- Accordion İç Linkler -->
-                <ng-container *ngFor="let navLink of sidebarLink.navLinks">
-                <a class="collapsible-link d-flex flex-row p-2" [routerLink]="navLink.url" routerLinkActive="active">{{navLink.title}}</a>
-                </ng-container>
-                <!-- /Accordion İç Linkler -->
-
-            </ng-template>
-            </ngb-panel>
-        </ngb-accordion>
-        <!-- /Accordion -->
-
+                    </ng-template>
+                </ngb-panel>
+            </ngb-accordion>
+            <!-- /Accordion -->
         </ng-container>
         <!-- /Link Grubu -->
-
     </ng-container>
+
+    <!-- Çıkış Yap Butonu -->
+    <!-- Küçük ekranlarda bu buton navbara sığmadığı için sidebar floating içerisinde olmalı. -->
+    <div class="item d-flex align-items-center" *ngIf="breakpointService.screenSize.width < 576 && (authorizationDto$ | async)?.role">
+        <a class="item-link" (click)="logout()">Çıkış Yap</a>
+    </div>
+    <!-- /Çıkış Yap Butonu -->
 </div>
