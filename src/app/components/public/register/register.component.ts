@@ -16,7 +16,6 @@ import { Result } from 'src/app/models/results/result';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
-import { LayoutService } from 'src/app/services/layout.service';
 import { ManagerService } from 'src/app/services/manager.service';
 
 const EMPTY_RESULT: Result = {
@@ -79,36 +78,27 @@ export class RegisterComponent implements OnInit {
   private sub2: Subscription = new Subscription();
 
   constructor(
-    private _cityService: CityService,
-    private _districtService: DistrictService,
-    private _formBuilder: FormBuilder,
-    private layoutService: LayoutService,
-    private _managerService: ManagerService,
-    private _modalService: NgbModal,
-    private _router: Router,
+    private cityService: CityService,
+    private districtService: DistrictService,
+    private formBuilder: FormBuilder,
+    private managerService: ManagerService,
+    private modalService: NgbModal,
+    private router: Router,
 
     public breakpointService: BreakpointService
     ) {
     console.log("RegisterComponent constructor çalıştı.");
 
-    // Bu sayfa için layout ayarlarını düzenler.
-    this.layoutService.layoutConfig = {
-      showNavbar: false,
-      showSidebarStatic: false,
-      showSidebarFloating: false,
-      showFooter: false,
-    };
-
     // Sunucudan şehirleri getirir ve modellere doldurur.
     this.getCities();
 
     // Modül formu oluşturulur.
-    this.moduleForm = this._formBuilder.group({
+    this.moduleForm = this.formBuilder.group({
       module: [1, [Validators.required]],
     });
 
     // Site yöneticisi kayıt formu oluşturulur.
-    this.sectionManagerForm = this._formBuilder.group({
+    this.sectionManagerForm = this.formBuilder.group({
       businessName: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       districtId: ['', [Validators.required]],
@@ -119,7 +109,7 @@ export class RegisterComponent implements OnInit {
     });
 
     // İşletme yöneticisi kayıt formu oluşturulur.
-    this.companyManagerForm = this._formBuilder.group({
+    this.companyManagerForm = this.formBuilder.group({
       businessName: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       districtId: ['', [Validators.required]],
@@ -148,7 +138,7 @@ export class RegisterComponent implements OnInit {
     this.fillManagerExtDto(this.moduleForm.controls['module'].value);
 
     // Sunucuya kayıt isteği gönderilir.
-    this.sub1 = this._managerService.addSectionManager(this.managerExtDto).subscribe({
+    this.sub1 = this.managerService.addSectionManager(this.managerExtDto).subscribe({
       next: (response) => {
         // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
         if (response.success) {
@@ -186,7 +176,7 @@ export class RegisterComponent implements OnInit {
     this.fillManagerExtDto(this.moduleForm.controls['module'].value);
 
     // Sunucuya kayıt isteği gönderilir.
-    this.sub2 = this._managerService.addSectionManager(this.managerExtDto).subscribe({
+    this.sub2 = this.managerService.addSectionManager(this.managerExtDto).subscribe({
       next: (response) => {
         // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
         if (response.success) {
@@ -229,16 +219,16 @@ export class RegisterComponent implements OnInit {
 
   // Sunucudan şehirleri getirir ve modellere doldurur.
   getCities() {
-    this.cityDtos$ = this._cityService.getAll();
+    this.cityDtos$ = this.cityService.getAll();
   }
 
   // İlçeleri sunucudan getirir ve modellere doldurur.
   getDistrictsByCityId(cityId: number): void {
-    this.districtDtos$ = this._districtService.getByCityId(cityId);
+    this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
   openRegistrationModal(selectedModal: any) {
-    this._modalService.open(selectedModal, {ariaLabelledBy: 'modal-basic-title'});
+    this.modalService.open(selectedModal, {ariaLabelledBy: 'modal-basic-title'});
   }
 
   // Formda herhangi bir şehir seçildiğinde çalışır.

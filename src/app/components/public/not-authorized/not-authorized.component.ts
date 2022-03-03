@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { LayoutService } from 'src/app/services/layout.service';
-
 @Component({
   selector: 'app-not-authorized',
   templateUrl: './not-authorized.component.html',
@@ -9,16 +7,8 @@ import { LayoutService } from 'src/app/services/layout.service';
 })
 export class NotAuthorizedComponent implements OnInit {
 
-  constructor(
-    private layoutService: LayoutService
-  ) {
-    // Bu sayfa için layout ayarlarını düzenler.
-    this.layoutService.layoutConfig = {
-      showNavbar: true,
-      showSidebarStatic: false,
-      showSidebarFloating: false,
-      showFooter: true,
-    };
+  constructor() {
+    console.log("NotAuthorizedComponent constructor çalıştı.");
   }
 
   ngOnInit(): void {

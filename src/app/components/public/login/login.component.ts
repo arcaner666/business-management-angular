@@ -60,37 +60,31 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private authorizationService: AuthorizationService,
-    private _formBuilder: FormBuilder,
-    private _navigationService: NavigationService,
+    private formBuilder: FormBuilder,
     private layoutService: LayoutService,
+    private navigationService: NavigationService,
 
     public breakpointService: BreakpointService
   ) {
     console.log("LoginComponent constructor çalıştı.");
 
-    // Bu sayfa için layout ayarlarını düzenler.
-    this.layoutService.layoutConfig = {
-      showNavbar: false,
-      showSidebarStatic: false,
-      showSidebarFloating: false,
-      showFooter: false,
-    };
+    this.layoutService.layoutConfig.blank = true;
 
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
-    this._navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
+    this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
     // Sidebar linklerini düzenle.
-    this._navigationService.loadSidebarLinksByRole();
+    this.navigationService.loadSidebarLinksByRole();
 
     // Telefonla giriş formu oluşturulur.
-    this.phoneForm = this._formBuilder.group({
+    this.phoneForm = this.formBuilder.group({
       phone: ["5554443322", [Validators.required]],
       password: ["123456", [Validators.required]],
       refreshTokenDuration: [1, [Validators.required]],
     });
 
     // E-postayla giriş formu oluşturulur.
-    this.emailForm = this._formBuilder.group({
+    this.emailForm = this.formBuilder.group({
       email: ["caner@mail.com", [Validators.required]],
       password: ["123456", [Validators.required]],
       refreshTokenDuration: [1, [Validators.required]],
@@ -129,10 +123,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.authorizationService.authorizationDto = response.data;
           
           // Oturum açılma durumuna göre kullanıcıları yönlendir.
-          this._navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
+          this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
           // Sidebar linklerini düzenle.
-          this._navigationService.loadSidebarLinksByRole();
+          this.navigationService.loadSidebarLinksByRole();
         }
         this.loadingEmail = false;
       },
@@ -174,10 +168,10 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.authorizationService.authorizationDto = response.data;
             
             // Oturum açılma durumuna göre kullanıcıları yönlendir.
-            this._navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
+            this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
             // Sidebar linklerini düzenle.
-            this._navigationService.loadSidebarLinksByRole();
+            this.navigationService.loadSidebarLinksByRole();
           }
           this.loadingPhone = false;
         },
@@ -213,6 +207,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+
+    this.layoutService.resetLayoutConfig();
+
     if (this.sub1) {
       this.sub1.unsubscribe();
     }

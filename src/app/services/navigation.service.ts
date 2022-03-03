@@ -243,7 +243,7 @@ export class NavigationService {
 
   constructor(
     private authorizationService: AuthorizationService,
-    private _router: Router
+    private router: Router
   ) {
     this.sidebarLinksSubject = new BehaviorSubject<NavGroup[]>(PUBLIC_SIDEBAR_LINKS);
     this.sidebarLinks$ = this.sidebarLinksSubject.asObservable();
@@ -273,10 +273,10 @@ export class NavigationService {
   navigateByRole(role: string) {
     if(role) {
       switch (role) {
-        case "Admin": this._router.navigate(['admin/admin-dashboard']); break;
-        case "Manager": this._router.navigate(['manager/manager-dashboard']); break;
-        case "Customer": this._router.navigate(['customer/customer-dashboard']); break;
-        default: this._router.navigate(['/']); break;
+        case "Admin": this.router.navigate(['admin/admin-dashboard']); break;
+        case "Manager": this.router.navigate(['manager/manager-dashboard']); break;
+        case "Customer": this.router.navigate(['customer/customer-dashboard']); break;
+        default: this.router.navigate(['/']); break;
       }
     } 
   }

@@ -12,7 +12,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
     private authorizationService: AuthorizationService,
-    private _router: Router,
+    private router: Router,
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -23,7 +23,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         console.log(err);
         if (err.error.message == "TokenInvalid" || err.error.message == "CanNotGetPrincipal") {
           this.authorizationService.clearAuthorizationDto();
-          this._router.navigate(['public/not-authorized', 'public/login']);
+          this.router.navigate(['public/not-authorized', 'public/login']);
         }
         // catchError backend'den dönen hatayı ekstra bir hata katmanıyla sarmalıyor.
         // Backend'den dönen yanıta erişmek için err.error dememiz gerekiyor.

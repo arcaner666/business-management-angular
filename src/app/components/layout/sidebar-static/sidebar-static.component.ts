@@ -20,15 +20,15 @@ export class SidebarStaticComponent implements OnInit {
   public layoutConfig$: Observable<LayoutConfig>;
 
   constructor(
-    private _navigationService: NavigationService,
+    private navigationService: NavigationService,
     private layoutService: LayoutService,
 
     public breakpointService: BreakpointService
   ) {
-    this._navigationService.loadSidebarLinksByRole();
+    this.navigationService.loadSidebarLinksByRole();
 
     this.layoutConfig$ = this.layoutService.layoutConfigObservable
-    this.sidebarLinks$ = this._navigationService.sidebarLinks$;
+    this.sidebarLinks$ = this.navigationService.sidebarLinks$;
   }
 
   ngOnInit(): void {

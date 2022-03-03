@@ -13,7 +13,7 @@ export class AuthorizationGuard implements CanActivate {
 
   constructor(
     private authorizationService: AuthorizationService,
-    private _router: Router,
+    private router: Router,
     private _jwtHelperService: JwtHelperService,
   ) {}
 
@@ -28,9 +28,9 @@ export class AuthorizationGuard implements CanActivate {
         // sayfasından kendi ana sayfalarına yönlendirecek URL bilgileri parametre olarak
         // gönderilir.
         switch (authorizationDto.role) {
-          case "Admin": this._router.navigate(['public/not-authorized', 'admin/dashboard']); break;
-          case "Manager": this._router.navigate(['public/not-authorized', 'manager/dashboard']); break;
-          case "Customer": this._router.navigate(['public/not-authorized', 'customer/dashboard']); break;
+          case "Admin": this.router.navigate(['public/not-authorized', 'admin/dashboard']); break;
+          case "Manager": this.router.navigate(['public/not-authorized', 'manager/dashboard']); break;
+          case "Customer": this.router.navigate(['public/not-authorized', 'customer/dashboard']); break;
           default: break;
         }
         return false;
@@ -47,7 +47,7 @@ export class AuthorizationGuard implements CanActivate {
           // FAKAT TEMAYI BOZUYOR. DÜZELT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           console.log("RefreshToken'ın süresi bitmiş, AccessToken yenilenemedi, giriş sayfasına yönlendiriliyor...");
           this.authorizationService.clearAuthorizationDto();
-          this._router.navigate(["public/login"]);
+          this.router.navigate(["public/login"]);
           //window.location.assign("public/login");
         }
         return refreshResult;
@@ -56,7 +56,7 @@ export class AuthorizationGuard implements CanActivate {
     }
 
     // Eğer oturum açılmadıysa giriş sayfasına yönlendir.  
-    this._router.navigate(['public/login']);
+    this.router.navigate(['public/login']);
     return false;
   }
 

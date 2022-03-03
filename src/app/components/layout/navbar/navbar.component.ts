@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
   public layoutConfig$: Observable<LayoutConfig>;
   
   constructor(
-    private _navigationService: NavigationService,
+    private navigationService: NavigationService,
     private authorizationService: AuthorizationService,
     private layoutService: LayoutService,
 
@@ -33,11 +33,11 @@ export class NavbarComponent implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
   ) {
-    this._navigationService.loadSidebarLinksByRole();
+    this.navigationService.loadSidebarLinksByRole();
     
     this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
     this.layoutConfig$ = this.layoutService.layoutConfigObservable;
-    this.sidebarLinks$ = this._navigationService.sidebarLinks$;
+    this.sidebarLinks$ = this.navigationService.sidebarLinks$;
   }
 
   toggleSidebarFloating() {
@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this.authorizationService.clearAuthorizationDto();
-    this._navigationService.loadSidebarLinksByRole();
+    this.navigationService.loadSidebarLinksByRole();
     this.router.navigate(["public/home"]);
   }
 

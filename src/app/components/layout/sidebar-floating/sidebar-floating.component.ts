@@ -25,23 +25,23 @@ export class SidebarFloatingComponent implements OnInit {
 
   constructor(
     private authorizationService: AuthorizationService,
-    private _navigationService: NavigationService,
+    private navigationService: NavigationService,
     private layoutService: LayoutService,
-    private _router: Router,
+    private router: Router,
 
     public breakpointService: BreakpointService
   ) {
-    this._navigationService.loadSidebarLinksByRole();
+    this.navigationService.loadSidebarLinksByRole();
 
     this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
     this.layoutConfig$ = this.layoutService.layoutConfigObservable;
-    this.sidebarLinks$ = this._navigationService.sidebarLinks$;
+    this.sidebarLinks$ = this.navigationService.sidebarLinks$;
   }
 
   logout() {
     this.authorizationService.clearAuthorizationDto();
-    this._navigationService.loadSidebarLinksByRole();
-    this._router.navigate(["public/home"]);
+    this.navigationService.loadSidebarLinksByRole();
+    this.router.navigate(["public/home"]);
   }
 
   toggleSidebarFloating() {

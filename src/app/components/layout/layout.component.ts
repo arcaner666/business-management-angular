@@ -28,8 +28,43 @@ export class LayoutComponent implements OnInit {
     this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
     this.layoutConfig$ = this.layoutService.layoutConfigObservable;
     
-    this.breakpointService.screenSize.width = window.screen.width;
-    this.breakpointService.screenSize.height = window.screen.height;
+    this.setScreenSize();
+    this.selectLayout();
+    
+    // Oturum durumu değiştiğinde selectLayout() metodunun tekrar tetiklenmesi gerekiyor.
+    this.subscribeAuthorizationChanges();
+  }
+
+  setScreenSize() {
+    this.breakpointService.screenSize.width = window.innerWidth;
+    this.breakpointService.screenSize.height = window.innerHeight;
+  }
+
+  selectLayout() {
+    if (this.breakpointService.screenSize.width >= 992 && this.authorizationService.authorizationDto?.role) {
+      let config = this.layoutService.layoutConfig;
+      config.layoutType = "sidebar-static";
+      this.layoutService.layoutConfig = config;
+    } else if (this.breakpointService.screenSize.width < 992) {
+      let config = this.layoutService.layoutConfig;
+      config.layoutType = "sidebar-floating";
+      this.layoutService.layoutConfig = config;
+    } else if (this.breakpointService.screenSize.width >= 992 && !this.authorizationService.authorizationDto?.role) {
+      let config = this.layoutService.layoutConfig;
+      config.layoutType = "only-content";
+      this.layoutService.layoutConfig = config;
+    } else {
+      let config = this.layoutService.layoutConfig;
+      config.layoutType = "only-content";
+      this.layoutService.layoutConfig = config;
+    }
+  }
+  subscribeAuthorizationChanges() {
+    this.authorizationService.authorizationDtoObservable.subscribe({
+      next: () => {
+        this.selectLayout();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -37,24 +72,7 @@ export class LayoutComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
-    this.breakpointService.screenSize.width = window.innerWidth;
-    this.breakpointService.screenSize.height = window.innerHeight;
-
-    // Eğer ekran yeterince büyükse statik sidebar'ı gösterir.
-    if (this.breakpointService.screenSize.width >= 992 && this.authorizationService.authorizationDto) {
-      this.layoutService.layoutConfig = {
-        showNavbar: true,
-        showSidebarStatic: true,
-        showSidebarFloating: false,
-        showFooter: true,
-      };
-    } else {
-      this.layoutService.layoutConfig = {
-        showNavbar: true,
-        showSidebarStatic: false,
-        showSidebarFloating: false,
-        showFooter: true,
-      };
-    }
+    this.setScreenSize();
+    this.selectLayout();
   }
 }
