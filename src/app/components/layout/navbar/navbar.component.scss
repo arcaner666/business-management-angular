@@ -8,14 +8,14 @@
         cursor: pointer;
     }
 
-    .btn-outline-success {
-        color: $custom-color-5;
-        border-color: $custom-color-5;
+    .btn-outline-light {
+        color: $passive-link-color;
+        border-color: $passive-link-color;
 
         &:hover {
-            color: white;
-            border-color: $custom-color-4;
-            background-color: $custom-color-4;
+            color: $custom-color-1;
+            border-color: $active-link-color;
+            background-color: $active-link-color;
         }
     }
 }

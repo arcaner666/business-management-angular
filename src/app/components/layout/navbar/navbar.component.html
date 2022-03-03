@@ -20,8 +20,8 @@
 
         <!-- Giriş-Çıkış Butonu -->
         <ng-container *ngIf="breakpointService.screenSize.width >= 576 && breakpointService.screenSize.width < 992">
-            <button *ngIf="!(authorizationDto$ | async)?.role" class="btn btn-outline-success" routerLink="public/login">Giriş Yap</button>
-            <button *ngIf="(authorizationDto$ | async)?.role" class="btn btn-outline-danger" (click)="logout()">Çıkış Yap</button>
+            <button *ngIf="!(authorizationDto$ | async)?.role" class="btn btn-outline-light" routerLink="public/login">Giriş Yap</button>
+            <button *ngIf="(authorizationDto$ | async)?.role" class="btn btn-outline-light" (click)="logout()">Çıkış Yap</button>
         </ng-container>
         <!-- /Giriş-Çıkış Butonu -->
 
@@ -37,8 +37,8 @@
         <!-- /Anasayfa Linkleri -->
 
         <ng-container *ngIf="breakpointService.screenSize.width >= 992">
-            <button *ngIf="!(authorizationDto$ | async)?.role" class="btn btn-outline-success" routerLink="public/login">Giriş Yap</button>
-            <button *ngIf="(authorizationDto$ | async)?.role" class="btn btn-outline-danger" (click)="logout()">Çıkış Yap</button>
+            <button *ngIf="!(authorizationDto$ | async)?.role" class="btn btn-outline-light" routerLink="public/login">Giriş Yap</button>
+            <button *ngIf="(authorizationDto$ | async)?.role" class="btn btn-outline-light" (click)="logout()">Çıkış Yap</button>
         </ng-container>
     </div>
 </nav>
