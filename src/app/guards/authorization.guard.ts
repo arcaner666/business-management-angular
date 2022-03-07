@@ -11,11 +11,10 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable({ providedIn: 'root' })
 export class AuthorizationGuard implements CanActivate {
 
-  private canActivateSubject: BehaviorSubject<boolean>;
   private authorizationDto: AuthorizationDto;
   private authorizationDto$: Observable<AuthorizationDto>;
-
-  public canActivate$: Observable<boolean>;
+  private canActivateSubject: BehaviorSubject<boolean>;
+  private canActivate$: Observable<boolean>;
 
   constructor(
     private authorizationService: AuthorizationService,
