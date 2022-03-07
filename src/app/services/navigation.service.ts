@@ -172,6 +172,48 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
       },
     ],
   },
+  {
+    id: "accounting-menu",
+    title: "Muhasebe",
+    url: "",
+    type: "collapsible",
+    role: ["Manager"],
+    icon: "",
+    disabled: false,
+    hidden: false,
+    navLinks: [
+      {
+        id: "account-group",
+        title: "Hesap Grupları",
+        url: "manager/account-group-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+      {
+        id: "account",
+        title: "Cari Hesaplar",
+        url: "manager/account-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+      {
+        id: "cash",
+        title: "Kasa",
+        url: "manager/cash-list",
+        type: "item",
+        role: ["Manager"],
+        icon: "",
+        disabled: false,
+        hidden: false,
+      },
+    ],
+  },
 ];
 
 const COMPANY_MANAGER_SIDEBAR_LINKS: NavGroup[] = [

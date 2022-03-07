@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   public submittedPhone: boolean = false;
   public submittedEmail: boolean = false;
 
-  // Angular 13 kursunda servisten gelen veriyi direk HTML template'ine async pipe'ı ile göndermekten bahsediyordu.
   private sub1: Subscription = new Subscription();
   private sub2: Subscription = new Subscription();
 

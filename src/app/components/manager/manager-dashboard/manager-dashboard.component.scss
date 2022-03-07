@@ -1,0 +1,24 @@
+@import 'src/assets/scss/_variables.scss';
+@import 'src/assets/scss/_mixins.scss';
+
+.icon-bg {
+    width: 55px;
+    height: 55px;
+    margin-right: 0.75rem;
+}
+
+.bg-1 {
+    background-color: rgba($bs-info, $alpha: 0.2);
+}
+
+.bg-2 {
+    background-color: rgba($bs-success, $alpha: 0.2);
+}
+
+.bg-3 {
+    background-color: rgba($bs-warning, $alpha: 0.2);
+}
+
+.bg-4 {
+    background-color: rgba($bs-danger, $alpha: 0.2);
+}

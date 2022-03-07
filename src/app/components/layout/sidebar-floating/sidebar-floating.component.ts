@@ -33,7 +33,7 @@ export class SidebarFloatingComponent implements OnInit {
   ) {
     this.navigationService.loadSidebarLinksByRole();
 
-    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
+    this.authorizationDto$ = this.authorizationService.authorizationDto$;
     this.layoutConfig$ = this.layoutService.layoutConfigObservable;
     this.sidebarLinks$ = this.navigationService.sidebarLinks$;
   }

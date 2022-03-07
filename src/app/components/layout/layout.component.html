@@ -2,12 +2,19 @@
 
 <div class="container-fluid p-0 g-0">
     <!-- Navbar -->
+    <div class="row p-0 m-0 fixed-top">
+        <div class="col-12 p-0 m-0">
+            <app-navbar></app-navbar>
+        </div>
+    </div>
+    <!-- /Navbar -->
+    <!-- Navbar For Fixing Fixed Top Problems -->
     <div class="row p-0 m-0">
         <div class="col-12 p-0 m-0">
             <app-navbar></app-navbar>
         </div>
     </div>
-    <!-- Navbar -->
+    <!-- /Navbar For Fixing Fixed Top Problems -->
 
     <div class="row p-0 m-0 g-0">
 
@@ -30,7 +37,7 @@
         <!-- /Only Content -->
 
         <div
-            class="p-0 m-0"
+            class="p-0 m-0 min-vh-100"
             [ngClass]="layoutService.layoutConfig.layoutType == 'sidebar-static' ? 'col-lg-10 col-xl-10': 'col-12'"
         >
             <app-content></app-content>
@@ -43,7 +50,7 @@
             <app-footer></app-footer>
         </div>
     </div>
-    <!-- Footer -->
+    <!-- /Footer -->
 </div>
 
 <!------ Templates ---------------------------------------------------------------------------------------------------->

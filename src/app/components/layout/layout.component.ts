@@ -25,7 +25,7 @@ export class LayoutComponent implements OnInit {
     public layoutService: LayoutService,
     public breakpointService: BreakpointService,
   ) {
-    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
+    this.authorizationDto$ = this.authorizationService.authorizationDto$;
     this.layoutConfig$ = this.layoutService.layoutConfigObservable;
     
     this.setScreenSize();
@@ -52,7 +52,7 @@ export class LayoutComponent implements OnInit {
     }
   }
   subscribeAuthorizationChanges() {
-    this.authorizationService.authorizationDtoObservable.subscribe({
+    this.authorizationService.authorizationDto$.subscribe({
       next: () => {
         this.selectLayout();
       }

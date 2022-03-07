@@ -21,7 +21,7 @@ export class AuthorizationGuard implements CanActivate {
     private router: Router,
     private _jwtHelperService: JwtHelperService,
   ) {
-    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
+    this.authorizationDto$ = this.authorizationService.authorizationDto$;
     this.authorizationDto = this.authorizationService.authorizationDto;
     this.subscribeAutorizationDtoChanges();
     this.canActivateSubject = new BehaviorSubject<boolean>(false);

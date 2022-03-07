@@ -37,13 +37,13 @@ export class AuthorizationService {
   private controllerUrl: string = "authorization";
   private authorizationDtoSubject: BehaviorSubject<AuthorizationDto>;
 
-  public authorizationDtoObservable: Observable<AuthorizationDto>;
+  public authorizationDto$: Observable<AuthorizationDto>;
 
   constructor(
     private _http: HttpClient,
   ) {
     this.authorizationDtoSubject = new BehaviorSubject<AuthorizationDto>(JSON.parse(localStorage.getItem('authorizationDto')!));
-    this.authorizationDtoObservable = this.authorizationDtoSubject.asObservable();
+    this.authorizationDto$ = this.authorizationDtoSubject.asObservable();
   }
 
   // Kullanıcıyı localStorage'dan ve auth service'den silmek için kısayol.
