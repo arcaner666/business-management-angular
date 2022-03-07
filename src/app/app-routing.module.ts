@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'public/error', component: ErrorComponent },
   { path: 'public/home', component: HomeComponent },
   { path: 'public/login', component: LoginComponent },
-  { path: 'public/not-authorized/:returnUrl', component: NotAuthorizedComponent },
+  { path: 'public/not-authorized', component: NotAuthorizedComponent },
   { path: 'public/register', component: RegisterComponent },
 
   // Manager

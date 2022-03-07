@@ -153,7 +153,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Formdaki veriler sunucuya gönderilecek modele doldurulur.
     this.authorizationDto.phone = this.phoneForm.value.phone.toString();
     this.authorizationDto.password = this.phoneForm.value.password;
-    this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
+    //this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
+    // TEST
+    this.authorizationDto.refreshTokenDuration = 15;
 
     // Sunucuya giriş isteği gönderilir.
     this.sub2 = this.authorizationService.loginWithPhone(this.authorizationDto).subscribe({

@@ -50,7 +50,6 @@ export class LayoutComponent implements OnInit {
     } else {
       this.layoutService.layoutConfig.layoutType = "only-content";
     }
-    console.log(this.layoutService.layoutConfig);
   }
   subscribeAuthorizationChanges() {
     this.authorizationService.authorizationDtoObservable.subscribe({

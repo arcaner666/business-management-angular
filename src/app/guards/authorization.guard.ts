@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
-import { firstValueFrom  } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
 
@@ -11,132 +11,76 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable({ providedIn: 'root' })
 export class AuthorizationGuard implements CanActivate {
 
+  private canActivateSubject: BehaviorSubject<boolean>;
+  private authorizationDto: AuthorizationDto;
+  private authorizationDto$: Observable<AuthorizationDto>;
+
+  public canActivate$: Observable<boolean>;
+
   constructor(
     private authorizationService: AuthorizationService,
     private router: Router,
     private _jwtHelperService: JwtHelperService,
-  ) {}
+  ) {
+    this.authorizationDto$ = this.authorizationService.authorizationDtoObservable;
+    this.authorizationDto = this.authorizationService.authorizationDto;
+    this.subscribeAutorizationDtoChanges();
+    this.canActivateSubject = new BehaviorSubject<boolean>(false);
+    this.canActivate$ = this.canActivateSubject.asObservable();
+  }
 
-  async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
-    const authorizationDto = this.authorizationService.authorizationDto;
+  subscribeAutorizationDtoChanges(){
+    this.authorizationDto$.subscribe({
+      next: (response) => {
+        this.authorizationDto = response;
+      }
+    });
+  }
+
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     console.log("AuthGuard çalıştı.");
-    if (authorizationDto) {
-      // Gidilmek istenen route için gerekli yetkiler var mı kontrol edilir.
-      // Burası en üstte olmalı.
-      if (route.data['roles'] && route.data['roles'].indexOf(authorizationDto.role) == -1) {
-        // Gerekli yetkiler yoksa oturum açılma durumuna göre kullanıcıların not-authorized 
-        // sayfasından kendi ana sayfalarına yönlendirecek URL bilgileri parametre olarak
-        // gönderilir.
-        switch (authorizationDto.role) {
-          case "Admin": this.router.navigate(['public/not-authorized', 'admin/dashboard']); break;
-          case "Manager": this.router.navigate(['public/not-authorized', 'manager/dashboard']); break;
-          case "Customer": this.router.navigate(['public/not-authorized', 'customer/dashboard']); break;
-          default: break;
+    // Oturum açılmışsa;
+    if (this.authorizationDto) {
+      // Gidilmek istenen route için gerekli yetkiler varsa;
+      if (route.data['roles'] && route.data['roles'].indexOf(this.authorizationDto.role) != -1) {
+        // Eğer access token'ın süresi bittiyse;
+        if (this._jwtHelperService.isTokenExpired(this.authorizationDto.accessToken)) {
+          console.log("AccessToken'ın süresi bitmiş, yenilemeye çalışılıyor...");
+          // Yenilemeye çalış.
+          this.authorizationService.refreshAccessToken(this.authorizationDto).subscribe({
+            next: (response) => {
+              if (response.success) {
+                // Token yenileme isteğinden dönen authorizationDto'da yalnızca accessToken var. Dikkat!
+                this.authorizationDto.accessToken = response.data.accessToken;
+                this.authorizationService.authorizationDto = this.authorizationDto;
+                console.log("AccessToken yenilendi.");
+                this.canActivateSubject.next(true);
+              }
+            }, error: (error) => {
+              console.log("RefreshToken'ın süresi bitmiş, AccessToken yenilenemedi, giriş sayfasına yönlendiriliyor...");
+              this.authorizationService.clearAuthorizationDto();
+              this.router.navigate(["public/login"]);
+            }
+          });
         }
-        return false;
-      }
-
-      // Eğer access token'ın süresi bittiyse
-      if (this._jwtHelperService.isTokenExpired(authorizationDto.accessToken)) {
-        console.log("AccessToken'ın süresi bitmiş, yenilemeye çalışılıyor...");
-        // Yenilemeye çalış.
-        let refreshResult = await this.tryRefreshAccessToken(authorizationDto);
-        // Yenilenmiyorsa kullanıcı bilgilerini temizle giriş sayfasına yönlendir.
-        if(!refreshResult) {
-          // REFRESH TOKEN'IN SÜRESİ BİTTİĞİNDE YENİLEME YAPAMADIYSA LOGİNE YÖNLENDİRİYOR
-          // FAKAT TEMAYI BOZUYOR. DÜZELT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          console.log("RefreshToken'ın süresi bitmiş, AccessToken yenilenemedi, giriş sayfasına yönlendiriliyor...");
-          this.authorizationService.clearAuthorizationDto();
-          this.router.navigate(["public/login"]);
-          //window.location.assign("public/login");
+        // Eğer access token hala geçerliyse;
+        else {
+          this.canActivateSubject.next(true);
         }
-        return refreshResult;
+      } 
+      // Gidilmek istenen route için gerekli yetkiler yoksa;
+      else {
+        console.log("AuthGuard gerekli yetkiler yok!");
+        this.router.navigate(['public/not-authorized']);
+        this.canActivateSubject.next(false);
       }
-      return true;
+    } 
+    // Oturum açılmamışsa;
+    else {
+      console.log("AuthGuard oturum açılmamış!");
+      this.router.navigate(["public/login"]);
+      this.canActivateSubject.next(false);
     }
-
-    // Eğer oturum açılmadıysa giriş sayfasına yönlendir.  
-    this.router.navigate(['public/login']);
-    return false;
+    return this.canActivate$;
   }
-
-  async tryRefreshAccessToken(authorizationDto: AuthorizationDto): Promise<boolean> {
-    let isRefreshSuccessful: boolean = false;
-    try {
-      let response = await firstValueFrom(this.authorizationService.refreshAccessToken(authorizationDto));
-      if(response.success) {
-        isRefreshSuccessful = true;
-        // Token yenileme isteğinden dönen authorizationDto'da yalnızca accessToken var. Dikkat!
-        authorizationDto.accessToken = response.data.accessToken;
-        // Yenilenmiş kullanıcı bilgilerini kaydet.
-        this.authorizationService.authorizationDto = authorizationDto;
-        console.log("AccessToken yenilendi.");
-      }
-    } catch (error) {
-      isRefreshSuccessful = false;
-    }
-    return isRefreshSuccessful;
-  }
-
-
-  // async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
-  //   const authorizationDto = this.authorizationService.authorizationDto;
-  //   console.log("AuthGuard çalıştı.");
-  //   if (authorizationDto) {
-  //     // Gidilmek istenen route için gerekli yetkiler var mı kontrol edilir.
-  //     // Burası en üstte olmalı.
-  //     if (route.data['roles'] && route.data['roles'].indexOf(authorizationDto.role) == -1) {
-  //       // Gerekli yetkiler yoksa oturum açılma durumuna göre kullanıcıların not-authorized 
-  //       // sayfasından kendi ana sayfalarına yönlendirecek URL bilgileri parametre olarak
-  //       // gönderilir.
-  //       switch (authorizationDto.role) {
-  //         case "Admin": this.router.navigate(['public/not-authorized', 'admin/dashboard']); break;
-  //         case "Manager": this.router.navigate(['public/not-authorized', 'manager/dashboard']); break;
-  //         case "Customer": this.router.navigate(['public/not-authorized', 'customer/dashboard']); break;
-  //         default: break;
-  //       }
-  //       return false;
-  //     }
-
-  //     // Eğer access token'ın süresi bittiyse
-  //     if (this._jwtHelperService.isTokenExpired(authorizationDto.accessToken)) {
-  //       console.log("AccessToken'ın süresi bitmiş, yenilemeye çalışılıyor...");
-  //       // Yenilemeye çalış.
-  //       let refreshResult = await this.tryRefreshAccessToken(authorizationDto);
-  //       // Yenilenmiyorsa kullanıcı bilgilerini temizle giriş sayfasına yönlendir.
-  //       if(!refreshResult) {
-  //         // REFRESH TOKEN'IN SÜRESİ BİTTİĞİNDE YENİLEME YAPAMADIYSA LOGİNE YÖNLENDİRİYOR
-  //         // FAKAT TEMAYI BOZUYOR. DÜZELT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //         console.log("RefreshToken'ın süresi bitmiş, AccessToken yenilenemedi, giriş sayfasına yönlendiriliyor...");
-  //         this.authorizationService.clearAuthorizationDto();
-  //         this.router.navigate(["public/login"]);
-  //         //window.location.assign("public/login");
-  //       }
-  //       return refreshResult;
-  //     }
-  //     return true;
-  //   }
-
-  //   // Eğer oturum açılmadıysa giriş sayfasına yönlendir.  
-  //   this.router.navigate(['public/login']);
-  //   return false;
-  // }
-
-  // async tryRefreshAccessToken(authorizationDto: AuthorizationDto): Promise<boolean> {
-  //   let isRefreshSuccessful: boolean = false;
-  //   try {
-  //     let response = await firstValueFrom(this.authorizationService.refreshAccessToken(authorizationDto));
-  //     if(response.success) {
-  //       isRefreshSuccessful = true;
-  //       // Token yenileme isteğinden dönen authorizationDto'da yalnızca accessToken var. Dikkat!
-  //       authorizationDto.accessToken = response.data.accessToken;
-  //       // Yenilenmiş kullanıcı bilgilerini kaydet.
-  //       this.authorizationService.authorizationDto = authorizationDto;
-  //       console.log("AccessToken yenilendi.");
-  //     }
-  //   } catch (error) {
-  //     isRefreshSuccessful = false;
-  //   }
-  //   return isRefreshSuccessful;
-  // }
 }
