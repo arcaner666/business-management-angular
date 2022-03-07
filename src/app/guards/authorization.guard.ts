@@ -51,13 +51,14 @@ export class AuthorizationGuard implements CanActivate {
             next: (response) => {
               if (response.success) {
                 // Token yenileme isteğinden dönen authorizationDto'da yalnızca accessToken var. Dikkat!
-                this.authorizationDto.accessToken = response.data.accessToken;
-                this.authorizationService.authorizationDto = this.authorizationDto;
                 console.log("AccessToken yenilendi.");
                 this.canActivateSubject.next(true);
+                this.authorizationDto.accessToken = response.data.accessToken;
+                this.authorizationService.authorizationDto = this.authorizationDto;
               }
             }, error: (error) => {
               console.log("RefreshToken'ın süresi bitmiş, AccessToken yenilenemedi, giriş sayfasına yönlendiriliyor...");
+              this.canActivateSubject.next(false);
               this.authorizationService.clearAuthorizationDto();
               this.router.navigate(["public/login"]);
             }
@@ -71,15 +72,15 @@ export class AuthorizationGuard implements CanActivate {
       // Gidilmek istenen route için gerekli yetkiler yoksa;
       else {
         console.log("AuthGuard gerekli yetkiler yok!");
-        this.router.navigate(['public/not-authorized']);
         this.canActivateSubject.next(false);
+        this.router.navigate(['public/not-authorized']);
       }
     } 
     // Oturum açılmamışsa;
     else {
       console.log("AuthGuard oturum açılmamış!");
-      this.router.navigate(["public/login"]);
       this.canActivateSubject.next(false);
+      this.router.navigate(["public/login"]);
     }
     return this.canActivate$;
   }
