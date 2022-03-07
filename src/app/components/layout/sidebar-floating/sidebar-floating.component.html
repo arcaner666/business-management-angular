@@ -23,7 +23,7 @@
     <!-- Giriş Yap Butonu -->
     <!-- Küçük ekranlarda bu buton navbara sığmadığı için sidebar floating içerisinde olmalı. -->
     <div class="item d-flex align-items-center" *ngIf="breakpointService.screenSize.width < 576 && !(authorizationDto$ | async)?.role">
-        <a class="item-link" routerLink="public/login" routerLinkActive="active">Giriş Yap</a>
+        <a class="item-link" routerLink="public/login" routerLinkActive="active" (click)="toggleSidebarFloating()">Giriş Yap</a>
     </div>
     <!-- /Giriş Yap Butonu -->
 
@@ -31,7 +31,7 @@
         <!-- Tekil link -->
         <ng-container *ngIf="sidebarLink.type == 'item'">
             <div class="item d-flex align-items-center">
-                <a class="item-link" [routerLink]="sidebarLink.url" routerLinkActive="active">{{sidebarLink.title}}</a>
+                <a class="item-link" [routerLink]="sidebarLink.url" routerLinkActive="active" (click)="toggleSidebarFloating()">{{sidebarLink.title}}</a>
             </div>
         </ng-container>
         <!-- /Tekil link -->
@@ -45,7 +45,7 @@
 
                         <!-- Accordion İç Linkler -->
                         <ng-container *ngFor="let navLink of sidebarLink.navLinks">
-                        <a class="collapsible-link d-flex flex-row p-2" [routerLink]="navLink.url" routerLinkActive="active">{{navLink.title}}</a>
+                            <a class="collapsible-link d-flex flex-row p-2" [routerLink]="navLink.url" routerLinkActive="active" (click)="toggleSidebarFloating()">{{navLink.title}}</a>
                         </ng-container>
                         <!-- /Accordion İç Linkler -->
 

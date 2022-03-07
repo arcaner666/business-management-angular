@@ -2,92 +2,66 @@
 
 <div class="container-fluid p-0 g-0">
     <!-- Navbar -->
-    <ng-container *ngIf="!layoutService.layoutConfig.blank">
-        <ng-container *ngTemplateOutlet="navbar"></ng-container>
-    </ng-container>
-    <!-- Navbar -->
-
-    <!-- Content With Sidebar Static -->
-    <ng-container *ngIf="layoutService.layoutConfig.layoutType == 'sidebar-static'">
-        <ng-container *ngTemplateOutlet="contentWithSidebarStatic"></ng-container>
-    </ng-container>
-    <!-- /Content With Sidebar Static -->
-
-    <!-- Content With Sidebar Floating -->
-    <ng-container *ngIf="layoutService.layoutConfig.layoutType == 'sidebar-floating'">
-        <ng-container *ngTemplateOutlet="contentWithSidebarFloating"></ng-container>
-    </ng-container>
-    <!-- /Content With Sidebar Floating -->
-
-    <!-- Only Content -->
-    <ng-container *ngIf="layoutService.layoutConfig.layoutType == 'only-content'">
-        <ng-container *ngTemplateOutlet="onlyContent"></ng-container>
-    </ng-container>
-    <!-- /Only Content -->
-
-    <!-- Footer -->
-    <ng-container *ngIf="!layoutService.layoutConfig.blank">
-        <ng-container *ngTemplateOutlet="footer"></ng-container>
-    </ng-container>
-    <!-- Footer -->
-</div>
-
-<!------ Templates ---------------------------------------------------------------------------------------------------->
-
-<!-- Navbar -->
-<ng-template #navbar>
     <div class="row p-0 m-0">
         <div class="col-12 p-0 m-0">
             <app-navbar></app-navbar>
         </div>
     </div>
-</ng-template>
-<!-- /Navbar -->
+    <!-- Navbar -->
 
-<!-- Footer -->
-<ng-template #footer>
+    <div class="row p-0 m-0 g-0">
+
+        <!-- Content With Sidebar Static -->
+        <ng-container *ngIf="layoutService.layoutConfig.layoutType == 'sidebar-static'">
+            <ng-container *ngTemplateOutlet="contentWithSidebarStatic"></ng-container>
+        </ng-container>
+        <!-- /Content With Sidebar Static -->
+
+        <!-- Content With Sidebar Floating -->
+        <ng-container *ngIf="layoutService.layoutConfig.layoutType == 'sidebar-floating'">
+            <ng-container *ngTemplateOutlet="contentWithSidebarFloating"></ng-container>
+        </ng-container>
+        <!-- /Content With Sidebar Floating -->
+
+        <!-- Only Content -->
+        <ng-container *ngIf="layoutService.layoutConfig.layoutType == 'only-content'">
+            <!-- Burası boş çünkü only-content'te sadece app-content bulunmalı. -->
+        </ng-container>
+        <!-- /Only Content -->
+
+        <div
+            class="p-0 m-0"
+            [ngClass]="layoutService.layoutConfig.layoutType == 'sidebar-static' ? 'col-lg-10 col-xl-10': 'col-12'"
+        >
+            <app-content></app-content>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <div class="row p-0 m-0">
         <div class="col-12 p-0 m-0">
             <app-footer></app-footer>
         </div>
     </div>
-</ng-template>
-<!-- /Footer -->
+    <!-- Footer -->
+</div>
+
+<!------ Templates ---------------------------------------------------------------------------------------------------->
 
 <!-- Content With Sidebar Static -->
 <ng-template #contentWithSidebarStatic>
-    <div class="row p-0 m-0 g-0">
-        <div class="col-lg-2 col-xl-2 p-0 m-0">
-            <app-sidebar-static></app-sidebar-static>
-        </div>
-        <div class="col-lg-10 col-xl-10 p-0 m-0">
-            <app-content></app-content>
-        </div>
+    <div class="col-lg-2 col-xl-2 p-0 m-0">
+        <app-sidebar-static></app-sidebar-static>
     </div>
 </ng-template>
 <!-- /Content With Sidebar Static -->
 
 <!-- Content With Sidebar Floating -->
 <ng-template #contentWithSidebarFloating>
-    <div class="row p-0 m-0 g-0">
-        <ng-container *ngIf="(layoutConfig$ | async)?.showSidebarFloating">
-            <div class="col-3 p-0 m-0">
-                <app-sidebar-floating></app-sidebar-floating>
-            </div>
-        </ng-container>
-        <div class="col-12 p-0 m-0">
-            <app-content></app-content>
+    <ng-container *ngIf="(layoutConfig$ | async)?.showSidebarFloating">
+        <div class="col-3 p-0 m-0">
+            <app-sidebar-floating></app-sidebar-floating>
         </div>
-    </div>
+    </ng-container>
 </ng-template>
 <!-- /Content With Sidebar Floating -->
-
-<!-- Only Content -->
-<ng-template #onlyContent>
-    <div class="row p-0 m-0 g-0">
-        <div class="col-12 p-0 m-0">
-            <app-content></app-content>
-        </div>
-    </div>
-</ng-template>
-<!-- /Only Content -->

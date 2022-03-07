@@ -9,7 +9,6 @@ import { Result } from 'src/app/models/results/result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
-import { LayoutService } from 'src/app/services/layout.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 const EMPTY_RESULT: Result = {
@@ -61,14 +60,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private authorizationService: AuthorizationService,
     private formBuilder: FormBuilder,
-    private layoutService: LayoutService,
     private navigationService: NavigationService,
 
     public breakpointService: BreakpointService
   ) {
     console.log("LoginComponent constructor çalıştı.");
-
-    this.layoutService.layoutConfig.blank = true;
 
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
     this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
@@ -121,7 +117,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         if(response.success) {
           // Kullanıcı bilgilerini sakla.
           this.authorizationService.authorizationDto = response.data;
-          
+
           // Oturum açılma durumuna göre kullanıcıları yönlendir.
           this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
@@ -166,7 +162,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if(response.success) {
             // Kullanıcı bilgilerini sakla.
             this.authorizationService.authorizationDto = response.data;
-            
+
             // Oturum açılma durumuna göre kullanıcıları yönlendir.
             this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
@@ -207,9 +203,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
-    this.layoutService.resetLayoutConfig();
-
     if (this.sub1) {
       this.sub1.unsubscribe();
     }

@@ -42,22 +42,15 @@ export class LayoutComponent implements OnInit {
 
   selectLayout() {
     if (this.breakpointService.screenSize.width >= 992 && this.authorizationService.authorizationDto?.role) {
-      let config = this.layoutService.layoutConfig;
-      config.layoutType = "sidebar-static";
-      this.layoutService.layoutConfig = config;
+      this.layoutService.layoutConfig.layoutType = "sidebar-static";
     } else if (this.breakpointService.screenSize.width < 992) {
-      let config = this.layoutService.layoutConfig;
-      config.layoutType = "sidebar-floating";
-      this.layoutService.layoutConfig = config;
+      this.layoutService.layoutConfig.layoutType = "sidebar-floating";
     } else if (this.breakpointService.screenSize.width >= 992 && !this.authorizationService.authorizationDto?.role) {
-      let config = this.layoutService.layoutConfig;
-      config.layoutType = "only-content";
-      this.layoutService.layoutConfig = config;
+      this.layoutService.layoutConfig.layoutType = "only-content";
     } else {
-      let config = this.layoutService.layoutConfig;
-      config.layoutType = "only-content";
-      this.layoutService.layoutConfig = config;
+      this.layoutService.layoutConfig.layoutType = "only-content";
     }
+    console.log(this.layoutService.layoutConfig);
   }
   subscribeAuthorizationChanges() {
     this.authorizationService.authorizationDtoObservable.subscribe({

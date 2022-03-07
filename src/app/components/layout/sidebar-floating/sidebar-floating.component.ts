@@ -41,6 +41,7 @@ export class SidebarFloatingComponent implements OnInit {
   logout() {
     this.authorizationService.clearAuthorizationDto();
     this.navigationService.loadSidebarLinksByRole();
+    this.toggleSidebarFloating();
     this.router.navigate(["public/home"]);
   }
 
