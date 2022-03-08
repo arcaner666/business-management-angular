@@ -13,8 +13,17 @@ html {
     padding: 0;
 }
 
+.icon {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
 .brand {
-    margin-left: 1rem;
     font-weight: 500;
     line-height: 2.2rem;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

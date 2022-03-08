@@ -24,7 +24,7 @@
                         <ul ngbNav #navWithIcons="ngbNav" class="nav-tabs justify-content-center">
                             <li ngbNavItem>
                                 <a ngbNavLink (click)="resetForms()">
-                                    <i class="fas fa-phone-alt"></i>
+                                    <i class="fas fa-phone-alt me-2"></i>
                                     <span>Telefon</span>
                                 </a>
                                 <ng-template ngbNavContent>
@@ -113,7 +113,7 @@
                                                 [disabled]="loadingPhone" 
                                                 tabindex="4"
                                             >
-                                                <span *ngIf="loadingPhone" class="spinner-border spinner-border-sm"></span> Giriş Yap
+                                                <span *ngIf="loadingPhone" class="spinner-border spinner-border-sm me-2"></span>Giriş Yap
                                             </button>
                                         </div>
                                         <!-- /Giriş Butonu -->
@@ -125,7 +125,7 @@
                             </li>
                             <li ngbNavItem>
                                 <a ngbNavLink (click)="resetForms()">
-                                    <i class="fas fa-envelope"></i>
+                                    <i class="fas fa-envelope me-2"></i>
                                     <span>E-Posta</span>
                                 </a>
                                 <ng-template ngbNavContent>
@@ -214,7 +214,7 @@
                                                 [disabled]="loadingEmail" 
                                                 tabindex="4"
                                             >
-                                                <span *ngIf="loadingEmail" class="spinner-border spinner-border-sm mr-1"></span>Giriş Yap
+                                                <span *ngIf="loadingEmail" class="spinner-border spinner-border-sm me-2"></span>Giriş Yap
                                             </button>
                                         </div>
                                         <!-- /Giriş Butonu -->
@@ -229,8 +229,8 @@
 
                         <!-- Kayıt Sayfasına Geçiş -->
                         <p class="text-center mt-2">
-                            <span>Hesabınız yok mu?</span
-                            ><a routerLink="/public/register"><span>&nbsp;Hemen Kaydolun.</span></a>
+                            <span class="me-2">Hesabınız yok mu?</span>
+                            <a routerLink="/public/register"><span>&nbsp;Hemen Kaydolun.</span></a>
                         </p>
                         <!-- /Kayıt Sayfasına Geçiş -->
 

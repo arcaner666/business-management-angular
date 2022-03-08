@@ -19,8 +19,11 @@ import { NgSelectModule } from '@ng-select/ng-select';
 // Components
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { AppComponent } from './app.component';
-import { CustomerDashboardComponent } from './components/customer/customer-dashboard/customer-dashboard.component';
+import { BranchComponent } from './components/manager/branch/branch.component';
+import { BranchEditComponent } from './components/manager/branch/branch-edit/branch-edit.component';
+import { BranchListComponent } from './components/manager/branch/branch-list/branch-list.component';
 import { ContentComponent } from './components/layout/content/content.component';
+import { CustomerDashboardComponent } from './components/customer/customer-dashboard/customer-dashboard.component';
 import { ErrorComponent } from './components/public/error/error.component';
 import { FooterComponent } from './components/layout/footer/footer.component';
 import { HomeComponent } from './components/public/home/home.component';
@@ -30,6 +33,9 @@ import { ManagerDashboardComponent } from './components/manager/manager-dashboar
 import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import { NotAuthorizedComponent } from './components/public/not-authorized/not-authorized.component';
 import { RegisterComponent } from './components/public/register/register.component';
+import { SectionComponent } from './components/manager/section/section.component';
+import { SectionEditComponent } from './components/manager/section/section-edit/section-edit.component';
+import { SectionListComponent } from './components/manager/section/section-list/section-list.component';
 import { SidebarFloatingComponent } from './components/layout/sidebar-floating/sidebar-floating.component';
 import { SidebarStaticComponent } from './components/layout/sidebar-static/sidebar-static.component';
 
@@ -44,6 +50,9 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
     // Components
     AdminDashboardComponent,
     AppComponent,
+    BranchComponent,
+    BranchEditComponent,
+    BranchListComponent,
     ContentComponent,
     CustomerDashboardComponent,
     ErrorComponent,
@@ -55,6 +64,9 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
     NavbarComponent,
     NotAuthorizedComponent,
     RegisterComponent,
+    SectionComponent,
+    SectionEditComponent,
+    SectionListComponent,
     SidebarFloatingComponent,
     SidebarStaticComponent,
   ],

@@ -4,12 +4,12 @@
         <!-- Marka -->
         <a class="navbar-brand" href="/">
             <img src="favicon.ico" alt="Uygulamanın logosu" width="32">
-            <span class="brand text-white">İş Yönetim</span>
+            <span class="brand ms-3 text-white">İş Yönetim</span>
         </a>
         <!-- /Marka -->
 
         <!-- Sidebar Kapatma Butonu -->
-        <div class="sidebar-close-btn d-flex justify-content-center align-items-center">
+        <div class="sidebar-close-btn d-flex justify-content-center align-items-center ms-5">
             <i 
                 class="fas fa-times fa-lg" 
                 (click)="toggleSidebarFloating()"
@@ -45,7 +45,7 @@
 
                         <!-- Accordion İç Linkler -->
                         <ng-container *ngFor="let navLink of sidebarLink.navLinks">
-                            <a class="collapsible-link d-flex flex-row p-2" [routerLink]="navLink.url" routerLinkActive="active" (click)="toggleSidebarFloating()">{{navLink.title}}</a>
+                            <a class="collapsible-link d-flex flex-row p-2 ms-3" [routerLink]="navLink.url" routerLinkActive="active" (click)="toggleSidebarFloating()">{{navLink.title}}</a>
                         </ng-container>
                         <!-- /Accordion İç Linkler -->
 

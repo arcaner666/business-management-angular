@@ -3,17 +3,19 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // Components
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
-import { CustomerDashboardComponent } from './components/customer/customer-dashboard/customer-dashboard.component';
-import { ErrorComponent } from './components/public/error/error.component';
-import { HomeComponent } from './components/public/home/home.component';
-import { LoginComponent } from './components/public/login/login.component';
-import { ManagerDashboardComponent } from './components/manager/manager-dashboard/manager-dashboard.component';
-import { NotAuthorizedComponent } from './components/public/not-authorized/not-authorized.component';
-import { RegisterComponent } from './components/public/register/register.component';
+import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
+import { CustomerDashboardComponent } from 'src/app/components/customer/customer-dashboard/customer-dashboard.component';
+import { BranchEditComponent } from 'src/app/components/manager/branch/branch-edit/branch-edit.component';
+import { BranchListComponent } from 'src/app/components/manager/branch/branch-list/branch-list.component';
+import { ErrorComponent } from 'src/app/components/public/error/error.component';
+import { HomeComponent } from 'src/app/components/public/home/home.component';
+import { LoginComponent } from 'src/app/components/public/login/login.component';
+import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
+import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
+import { RegisterComponent } from 'src/app/components/public/register/register.component';
 
 // Guards
-import { AuthorizationGuard } from './guards/authorization.guard';
+import { AuthorizationGuard } from 'src/app/guards/authorization.guard';
 
 const routes: Routes = [
   // Public
@@ -25,20 +27,28 @@ const routes: Routes = [
 
   // Manager
   {
-    path: 'manager/manager-dashboard', component: ManagerDashboardComponent, canActivate: [AuthorizationGuard],
-    data: { roles: ["Manager"] }
+    path: 'manager/manager-dashboard', component: ManagerDashboardComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/branch-list', component: BranchListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/branch-edit', component: BranchEditComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 
   // Customer
   {
-    path: 'customer/customer-dashboard', component: CustomerDashboardComponent, canActivate: [AuthorizationGuard],
-    data: { roles: ["Customer"] }
+    path: 'customer/customer-dashboard', component: CustomerDashboardComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Customer"] },
   },
 
   // Admin
   {
-    path: 'admin/admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthorizationGuard],
-    data: { roles: ["Admin"] }
+    path: 'admin/admin-dashboard', component: AdminDashboardComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Admin"] },
   },
 
   // Last
@@ -54,7 +64,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    // Her route değişiminde gidilen sayfanın en üstüne odaklanır.
+    scrollPositionRestoration: 'enabled',
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
