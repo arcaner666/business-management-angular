@@ -85,8 +85,8 @@ export class BranchService {
     return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, branchExtDto);
   }
 
-  deleteExt(branchExtDto: BranchExtDto): Observable<Result> {
-    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext`, branchExtDto);
+  delete(id: number): Observable<Result> {
+    return this._http.get<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
 
   generateBranchCode(businessId: number): Observable<SingleDataResult<BranchCodeDto>> {
@@ -101,8 +101,12 @@ export class BranchService {
     return this._http.get<ListDataResult<BranchDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
   }
 
-  getById(id: bigint): Observable<SingleDataResult<BranchDto>> {
+  getById(id: number): Observable<SingleDataResult<BranchDto>> {
     return this._http.get<SingleDataResult<BranchDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
+  }
+
+  getExtById(id: number): Observable<SingleDataResult<BranchExtDto>> {
+    return this._http.get<SingleDataResult<BranchExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
   }
 
   getExtsByBusinessId(businessId: number): Observable<ListDataResult<BranchExtDto>> {

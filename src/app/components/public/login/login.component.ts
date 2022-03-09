@@ -1,3 +1,4 @@
+import { Toast } from 'src/app/models/various/toast';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -10,11 +11,7 @@ import { Result } from 'src/app/models/results/result';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-
-const EMPTY_RESULT: Result = {
-  success: false, 
-  message: "",
-};
+import { ToastService } from 'src/app/services/toast.service';
 
 const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   systemUserId: 0,
@@ -33,6 +30,11 @@ const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   password: "",
   refreshTokenDuration: 0,
   accessToken: "",
+};
+
+const EMPTY_RESULT: Result = {
+  success: false, 
+  message: "",
 };
 
 @Component({
@@ -60,6 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authorizationService: AuthorizationService,
     private formBuilder: FormBuilder,
     private navigationService: NavigationService,
+    private toastService: ToastService,
 
     public breakpointService: BreakpointService
   ) {
@@ -159,6 +162,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: (response) => {      
           // Eğer giriş başarılıysa
           if(response.success) {
+            // Ekranda girişin başarılı olduğuna dair toast mesajı gösterir.
+            this.toastService.success("", "Giriş başarılı, hoşgeldiniz.", 5000);
+
             // Kullanıcı bilgilerini sakla.
             this.authorizationService.authorizationDto = response.data;
 

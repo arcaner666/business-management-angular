@@ -1,7 +1,7 @@
 @import 'src/assets/scss/_variables.scss';
 
 .navbar-special {
-    background: $gradient-1;
+    background: $c-gradient-1;
 
     .hamburger-button {
         display: block;
@@ -9,13 +9,13 @@
     }
 
     .btn-outline-light {
-        color: $passive-link-color;
-        border-color: $passive-link-color;
+        color: $c-passive-link-color;
+        border-color: $c-passive-link-color;
 
         &:hover {
-            color: $custom-color-1;
-            border-color: $active-link-color;
-            background-color: $active-link-color;
+            color: $c-color-1;
+            border-color: $c-active-link-color;
+            background-color: $c-active-link-color;
         }
     }
 }

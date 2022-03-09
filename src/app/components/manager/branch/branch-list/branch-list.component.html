@@ -1,5 +1,5 @@
 <div class="container-fluid g-0 p-3">
-    <div class="card">
+    <div class="card shadow-lg">
         <!-- Sayfa Başına Kayıt Menüsü -->
         <div class="row g-0 p-3">
             <div class="col-6 d-flex justify-content-start">
@@ -93,6 +93,27 @@
 </div>
   
 <!-- Silme Onay Modal'ı -->
-<!-- <swal #deleteConfirmModal (open)="toggleModal()"></swal> -->
+<ng-template #deleteModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Şube Silme</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.close('cancel')"></button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center m-0">{{selectedBranchDto.branchName}} adlı şube silinecektir. Onaylıyor musunuz?</p>
+    </div>
+    <div class="modal-footer w-100">
+        <div class="container-fluid m-0">
+            <div class="row">
+                <div class="col-6">
+                    <button type="button" class="btn btn-danger w-100" (click)="modal.close('ok')">Sil</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-secondary w-100" (click)="modal.close('cancel')">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
 <!-- /Silme Onay Modal'ı -->
     

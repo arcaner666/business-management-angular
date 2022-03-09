@@ -10,19 +10,19 @@ $bs-warning:       #ffc107;
 $bs-danger:        #dc3545;
 
 /* https://stock.adobe.com/tr/270218690/ */
-$custom-color-1: rgb(1,34,63);
-$custom-color-2: rgb(1,89,57);
-$custom-color-3: rgb(2,114,51);
-$custom-color-4: rgb(3,165,60);
-$custom-color-5: rgb(4,216,57);
+$c-color-1: #01223f;
+$c-color-2: #015939;
+$c-color-3: #027233;
+$c-color-4: #03a53c;
+$c-color-5: #04d839;
 
-$custom-bg-color-1: rgb(211, 234, 255);
+$c-bg-color-1: #d3eaff;
 
 /* Gradient */
-$gradient-1: linear-gradient(90deg, $custom-color-1 20%, $custom-color-2 100%);
+$c-gradient-1: linear-gradient(90deg, $c-color-1 20%, $c-color-2 100%);
 /* /Gradient */
 
 /* Navbar */
-$passive-link-color: rgba(255, 255, 255, 0.7);
-$active-link-color: rgba(255, 255, 255, 1);
+$c-passive-link-color: rgba(255, 255, 255, 0.7);
+$c-active-link-color: rgba(255, 255, 255, 1);
 /* /Navbar */

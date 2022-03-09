@@ -228,7 +228,10 @@ export class RegisterComponent implements OnInit {
   }
 
   openRegistrationModal(selectedModal: any) {
-    this.modalService.open(selectedModal, {ariaLabelledBy: 'modal-basic-title'});
+    this.modalService.open(selectedModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    });
   }
 
   // Formda herhangi bir şehir seçildiğinde çalışır.

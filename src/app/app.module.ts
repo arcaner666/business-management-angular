@@ -44,6 +44,8 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { ToastComponent } from './components/toast/toast.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,8 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
     SectionListComponent,
     SidebarFloatingComponent,
     SidebarStaticComponent,
+    ToastComponent,
+    ModalComponent,
   ],
   imports: [
     // Angular Modules

@@ -3,11 +3,11 @@
 
 .sidebar-static {
     height: 100%;
-    background-color: lighten($custom-color-1, 5%);
+    background-color: lighten($c-color-1, 5%);
 
     .item {
         padding: 0.75rem 1.25rem;
-        border: 1px solid $custom-color-1;
+        border: 1px solid $c-color-1;
     }
     
     .item-link {

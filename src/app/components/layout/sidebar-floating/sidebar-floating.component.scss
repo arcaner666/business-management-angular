@@ -9,7 +9,7 @@
     top: 0;
     left: 0;
     overflow-x: hidden;
-    background-color: lighten($custom-color-1, 5%);
+    background-color: lighten($c-color-1, 5%);
 
     &.sidebar-show {
         width: fit-content;
@@ -28,7 +28,7 @@
 
     .item {
         padding: 0.75rem 1.25rem;
-        border: 1px solid $custom-color-1;
+        border: 1px solid $c-color-1;
     }
     
     .item-link {

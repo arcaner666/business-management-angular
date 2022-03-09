@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { Subscription, Observable, concatMap } from 'rxjs';
 import { cloneDeep } from 'lodash';
-
-import { Subscription, Observable } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { BranchDto } from 'src/app/models/dtos/branchDto';
 import { BranchExtDto } from 'src/app/models/dtos/branchExtDto';
@@ -12,6 +12,7 @@ import { Result } from 'src/app/models/results/result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 const EMPTY_BRANCH_DTO: BranchDto = {
   branchId: 0,
@@ -31,6 +32,8 @@ const EMPTY_BRANCH_DTO: BranchDto = {
 })
 export class BranchListComponent implements OnInit, OnDestroy {
 
+  @ViewChild('deleteModal') deleteModal: ElementRef | undefined;
+
   public branchDtos: BranchDto[] = [];
   public currentPage: number = 1;
   public elementIndex: number = 0;
@@ -45,7 +48,9 @@ export class BranchListComponent implements OnInit, OnDestroy {
   constructor(
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
+    private modalService: NgbModal,
     private router: Router,
+    private toastService: ToastService,
   ) {
     console.log("BranchListComponent constructor çalıştı.");
 
@@ -97,64 +102,45 @@ export class BranchListComponent implements OnInit, OnDestroy {
 
   // Seçili şubeyi silme onay penceresini açar.
   openDeleteBranchModal(selectedBranchDto: BranchDto) {
-    // this.selectedBranchExtDto = cloneDeep(selectedBranchExtDto);
-
-    // Swal.fire({
-    //   title: "Dikkat!",
-    //   text: `"${this.selectedBranchExtDto.branchName}" adlı şube silinecektir. Onaylıyor musunuz?`,
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   background: `${this.coreConfig.layout.skin == "default" ? this.colorPalette.solid.body : this.colorPalette.solid.dark}`,
-    //   confirmButtonText: "Sil",
-    //   cancelButtonText: "İptal",
-    //   customClass: {
-    //     confirmButton: "btn btn-danger",
-    //     cancelButton: "btn btn-primary",
-    //     content: `${this.coreConfig.layout.skin == "default" ? "text-black" : "text-white"}`,
-    //   }
-    // }).then((response) => {
-    //   // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-    //   // Modal onaylanırsa true, reddedilirse false döner.
-    //   if (response.value) {
-    //     // Sunucuya seçili şubeyi silme isteği gönderilir.
-    //     this.sub2 = this.branchService.deleteExt(this.selectedBranchExtDto).pipe(
-    //       concatMap(() => {
-    //         // Kayıt başarıyla eklendiğinde toastr ile bildirir.
-    //         this._toastrService.success(`Kayıt silindi.`, 'İşlem Başarılı!', {
-    //           closeButton: true,
-    //           easeTime: 300,
-    //           positionClass: 'toast-top-right',
-    //           progressBar: true,
-    //           timeOut: 3000,
-    //           toastClass: 'toast ngx-toastr',
-    //         });
+    this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result.then((response) => {
+      // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
+      // Modal onaylanırsa true, reddedilirse false döner.
+      console.log(response);
+      if (response == "ok") {
+        // Sunucuya seçili şubeyi silme isteği gönderilir.
+        this.sub2 = this.branchService.delete(selectedBranchDto.branchId).pipe(
+          concatMap(() => {
+            // Kayıt başarıyla silindiğinde toastr ile bildirir.
+            this.toastService.success("", "Kayıt Silindi.", 5000);
             
-    //         // Sunucudan şubeleri getirir ve modellere doldurur.
-    //         return this.branchService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-    //       })
-    //       ).subscribe((response) => {
-    //         if (response.success) {
-    //           this.branchExtDtos = response.data;
-    //         }
-    //       }, error => {
-    //         console.log(error);
-    //         // İşletmeye ait bütün şubeler silindiğinde hiç şube kalmadıysa sunucudan ErrorResult 
-    //         // döndüğü için response.data şeklinde bir uzantı da olmuyor. Bu sebeple alttaki gibi boş dizi atıyoruz.
-    //         if (error.message == "BranchesNotFound") {
-    //           this.branchExtDtos = [];
-    //         }
-    //         // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
-    //         this.result.success = error.success;
-    //         this.result.message = error.message;
-    //       });
-    //   }
-    // });
+            // Sunucudan şubeleri getirir ve modellere doldurur.
+            return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+          }
+        )).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.branchDtos = response.data;
+            }
+          }, error: (error) => {
+            console.log(error);
+            // İşletmeye ait bütün şubeler silindiğinde hiç şube kalmadıysa sunucudan ErrorResult 
+            // döndüğü için response.data şeklinde bir uzantı da olmuyor. Bu sebeple alttaki gibi boş dizi atıyoruz.
+            if (error.message == "BranchesNotFound") {
+              this.branchDtos = [];
+            }
+            // error.interceptor.ts'de dönen yanıt ile ilgili açıklama yapılmıştır.
+            this.result.success = error.success;
+            this.result.message = error.message;
 
-    // this.toggleModal();
-  }
-
-  // Modal'ı tetikler.
-  toggleModal() {
+            // Kayıt silinemezse sunucudan gelen hata mesajını toastr ile bildirir.
+            this.toastService.danger("", this.result.message, 5000);
+          }
+        });
+      }
+    });
   }
 
   ngOnInit(): void {

@@ -17,35 +17,35 @@
     
             &:hover,
             &:focus {
-                color: $custom-color-3;
+                color: $c-color-3;
             }
         }
     
         .form-control {
             &:focus {
-                border-color: $custom-color-3;
-                box-shadow: 0 0 0 3px rgba($custom-color-3, 0.3);
+                border-color: $c-color-3;
+                box-shadow: 0 0 0 3px rgba($c-color-3, 0.3);
             }
         }
     
         .btn-success {
             color: white;
-            background-color: $custom-color-2;
-            border-color: $custom-color-2;
+            background-color: $c-color-2;
+            border-color: $c-color-2;
     
             &:hover {
-                border-color: $custom-color-3;
-                background-color: $custom-color-3;
+                border-color: $c-color-3;
+                background-color: $c-color-3;
             }
         }
     
         .btn-outline-success {
-            color: $custom-color-2;
-            border-color: $custom-color-2;
+            color: $c-color-2;
+            border-color: $c-color-2;
     
             &:hover {
                 color: white;
-                border-color: $custom-color-3;
+                border-color: $c-color-3;
             }
         }
     }
