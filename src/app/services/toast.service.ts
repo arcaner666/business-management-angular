@@ -4,7 +4,6 @@ import { Injectable, TemplateRef } from '@angular/core';
 import { Toast } from 'src/app/models/various/toast';
 
 const EMPTY_TOAST: Toast = {
-  header: "",
   message: "",
   delay: 0,
   classes: "",
@@ -29,10 +28,9 @@ export class ToastService {
     this.toasts = this.toasts.filter(t => t != toast);
   }
 
-  public success(header: string, message: string, delay: number) {
+  public success(message: string, delay: number = 5000) {
     let toast: Toast = cloneDeep(EMPTY_TOAST);
 
-    toast.header = header;
     toast.message = message;
     toast.delay = delay;
     toast.classes = "bg-success text-light";
@@ -40,10 +38,9 @@ export class ToastService {
     this.show(toast);
   }
 
-  public danger(header: string, message: string, delay: number) {
+  public danger(message: string, delay: number = 5000) {
     let toast: Toast = cloneDeep(EMPTY_TOAST);
 
-    toast.header = header;
     toast.message = message;
     toast.delay = delay;
     toast.classes = "bg-danger text-light";

@@ -8,7 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CityDto } from 'src/app/models/dtos/cityDto';
 import { DistrictDto } from 'src/app/models/dtos/districtDto';
-import { ListDataResult } from 'src/app/models/results/listDataResult';
+import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerExtDto } from 'src/app/models/dtos/managerExtDto';
 import { ModuleOption } from 'src/app/models/various/module-option';
 import { Result } from 'src/app/models/results/result';
@@ -72,10 +72,8 @@ export class RegisterComponent implements OnInit {
   public sectionManagerForm: FormGroup;
   public submittedCompanyManagerForm: boolean = false;
   public submittedSectionManagerForm: boolean = false;
-  
-  // Angular 13 kursunda servisten gelen veriyi direk HTML template'ine async pipe'ı ile göndermekten bahsediyordu.
-  private sub1: Subscription = new Subscription();
-  private sub2: Subscription = new Subscription();
+  public sub1: Subscription = new Subscription();
+  public sub2: Subscription = new Subscription();
 
   constructor(
     private cityService: CityService,
@@ -83,7 +81,6 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private managerService: ManagerService,
     private modalService: NgbModal,
-    private router: Router,
 
     public breakpointService: BreakpointService
     ) {
@@ -140,10 +137,14 @@ export class RegisterComponent implements OnInit {
     // Sunucuya kayıt isteği gönderilir.
     this.sub1 = this.managerService.addSectionManager(this.managerExtDto).subscribe({
       next: (response) => {
-        // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
         if (response.success) {
-          this.openRegistrationModal(this.registrationModal);
+          // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
+          this.modalService.open(this.registrationModal, {
+            ariaLabelledBy: 'modal-basic-title',
+            centered: true
+          }).result.then(() => {}).catch(() => {});
         }
+
         this.loadingCompanyManagerForm = false;
       }, error: (error) => {
         console.log(error);
@@ -178,10 +179,14 @@ export class RegisterComponent implements OnInit {
     // Sunucuya kayıt isteği gönderilir.
     this.sub2 = this.managerService.addSectionManager(this.managerExtDto).subscribe({
       next: (response) => {
-        // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
         if (response.success) {
-          this.openRegistrationModal(this.registrationModal);
+          // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
+          this.modalService.open(this.registrationModal, {
+            ariaLabelledBy: 'modal-basic-title',
+            centered: true
+          }).result.then(() => {}).catch(() => {});
         }
+
         this.loadingSectionManagerForm = false;
       }, error: (error) => {
         console.log(error);
@@ -227,13 +232,6 @@ export class RegisterComponent implements OnInit {
     this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
-  openRegistrationModal(selectedModal: any) {
-    this.modalService.open(selectedModal, {
-      ariaLabelledBy: 'modal-basic-title',
-      centered: true
-    });
-  }
-
   // Formda herhangi bir şehir seçildiğinde çalışır.
   selectCity(cityId: number){
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
@@ -248,6 +246,11 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
+    if (this.sub2) {
+      this.sub2.unsubscribe();
+    }
   }
 }

@@ -6,7 +6,7 @@ import { cloneDeep } from 'lodash';
 
 import { environment } from 'src/environments/environment';
 
-import { ListDataResult } from 'src/app/models/results/listDataResult';
+import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerExtDto } from 'src/app/models/dtos/managerExtDto';
 import { Result } from 'src/app/models/results/result';
 

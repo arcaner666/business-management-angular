@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
 import { Result } from 'src/app/models/results/result';
-import { SingleDataResult } from 'src/app/models/results/singleDataResult';
+import { SingleDataResult } from 'src/app/models/results/single-data-result';
 
 const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
   systemUserId: 0,

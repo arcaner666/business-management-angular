@@ -163,7 +163,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           // Eğer giriş başarılıysa
           if(response.success) {
             // Ekranda girişin başarılı olduğuna dair toast mesajı gösterir.
-            this.toastService.success("", "Giriş başarılı, hoşgeldiniz.", 5000);
+            this.toastService.success(response.message);
 
             // Kullanıcı bilgilerini sakla.
             this.authorizationService.authorizationDto = response.data;

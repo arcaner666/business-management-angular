@@ -9,9 +9,9 @@ import { environment } from 'src/environments/environment';
 import { BranchCodeDto } from 'src/app/models/dtos/branchCodeDto';
 import { BranchDto } from 'src/app/models/dtos/branchDto';
 import { BranchExtDto } from 'src/app/models/dtos/branchExtDto';
-import { ListDataResult } from 'src/app/models/results/listDataResult';
+import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { Result } from 'src/app/models/results/result';
-import { SingleDataResult } from 'src/app/models/results/singleDataResult';
+import { SingleDataResult } from 'src/app/models/results/single-data-result';
 
 const EMPTY_BRANCH_DTO: BranchDto = {
   branchId: 0,

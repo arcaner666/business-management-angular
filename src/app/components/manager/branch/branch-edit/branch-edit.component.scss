@@ -1,0 +1,11 @@
+@import 'src/assets/scss/_variables.scss';
+@import 'src/assets/scss/_mixins.scss';
+
+.code-link {
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $c-color-3;
+    }
+}
