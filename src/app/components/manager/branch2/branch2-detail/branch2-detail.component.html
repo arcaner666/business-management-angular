@@ -1,0 +1,174 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <!-- Card Başlığı -->
+            <h2 class="card-title text-center fs-4">{{cardHeader}}</h2>
+            <!-- /Card Başlığı -->
+
+            <!-- Şube Ekleme/Düzenleme Formu -->
+            <form [formGroup]="branchExtForm" (ngSubmit)="submit(selectedProcessType)">
+                <!-- Şube Adı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="branch-form-branch-name">Şube Adı</label>
+                    <input
+                        id="branch-form-branch-name"
+                        type="text"
+                        formControlName="branchName"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['branchName'].errors }"
+                        tabindex="1"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['branchName'].errors">
+                        <div *ngIf="branchExtForm.controls['branchName'].errors['required']">Lütfen şube adı giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Şube Adı -->
+    
+                <!-- Şube Kodu -->
+                <div class="mt-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label" for="branch-form-branch-code">Şube Kodu</label>
+
+                        <!-- Şube Kodu Üretme Butonu -->
+                        <a class="code-link cursor-pointer" (click)="generateBranchCode()" *ngIf="selectedProcessType == 1"><small>Kod Üret</small></a>
+                        <!-- /Şube Kodu Üretme Butonu -->
+                    </div>
+                    <input
+                        id="branch-form-branch-code"
+                        type="text"
+                        formControlName="branchCode"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['branchCode'].errors }"
+                        [readOnly]="selectedProcessType == 2"
+                        tabindex="2"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['branchCode'].errors">
+                        <div *ngIf="branchExtForm.controls['branchCode'].errors['required']">Lütfen şube kodu giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Şube Kodu -->
+
+                <!-- Şehir -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="branch-form-city-id">Şehir</label>
+                    <ng-select
+                        id="branch-form-city-id"
+                        (change)="selectCity(branchExtForm.controls['cityId'].value)"
+                        [items]="(cityDtos$ | async)?.data!"
+                        formControlName="cityId"
+                        bindLabel="cityName"
+                        bindValue="cityId"
+                        [clearable]="false"
+                        [searchable]="false"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['cityId'].errors }"
+                        tabindex="3"
+                    >
+                    </ng-select>
+                    <span class="invalid-form" *ngIf="submitted && branchExtForm.controls['cityId'].errors">
+                        <small class="form-text text-danger" *ngIf="branchExtForm.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</small>
+                    </span>
+                </div>
+                <!-- /Şehir -->
+    
+                <!-- İlçe -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="branch-form-district-id">İlçe</label>
+                    <ng-select
+                        id="branch-form-district-id"
+                        [items]="districtDtos"
+                        formControlName="districtId"
+                        bindLabel="districtName"
+                        bindValue="districtId"
+                        [clearable]="false"
+                        [searchable]="false"
+                        tabindex="4"
+                    >
+                    </ng-select>
+                    <span class="invalid-form" *ngIf="submitted && branchExtForm.controls['districtId'].errors">
+                        <small class="form-text text-danger" *ngIf="branchExtForm.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</small>
+                    </span>
+                </div>
+                <!-- /İlçe -->
+    
+                <!-- Adres Başlığı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="branch-form-address-title">Adres Başlığı</label>
+                    <input
+                        id="branch-form-address-title"
+                        type="text"
+                        formControlName="addressTitle"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['addressTitle'].errors }"
+                        tabindex="5"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['addressTitle'].errors">
+                        <div *ngIf="branchExtForm.controls['addressTitle'].errors['required']">Lütfen adres başlığı giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Adres Başlığı -->
+
+                <!-- Posta Kodu -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="branch-form-postal-code">Posta Kodu</label>
+                    <input
+                        id="branch-form-postal-code"
+                        type="number"
+                        formControlName="postalCode"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['postalCode'].errors }"
+                        tabindex="6"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['postalCode'].errors">
+                        <div *ngIf="branchExtForm.controls['postalCode'].errors['required']">Lütfen posta kodu giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Posta Kodu -->
+                
+                <!-- Adres -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="register-section-manager-address">Adres</label>
+                    <textarea
+                        id="register-section-manager-address"
+                        type="text"
+                        formControlName="addressText"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['addressText'].errors }"
+                        placeholder=""
+                        tabindex="7"
+                    ></textarea>
+                    <span class="invalid-form" *ngIf="submitted && branchExtForm.controls['addressText'].errors">
+                        <small class="form-text text-danger" *ngIf="branchExtForm.controls['addressText'].errors['required']">Lütfen adres giriniz.</small>
+                    </span>
+                </div>
+                <!-- /Adres -->
+                
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="8"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
+            </form>
+            <!-- /Şube Ekleme/Düzenleme Formu -->
+        </div>
+    </div>
+</div>
+    

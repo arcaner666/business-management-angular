@@ -46,6 +46,9 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
 import { ToastComponent } from './components/toast/toast.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { Branch2Component } from './components/manager/branch2/branch2.component';
+import { Branch2ListComponent } from './components/manager/branch2/branch2-list/branch2-list.component';
+import { Branch2DetailComponent } from './components/manager/branch2/branch2-detail/branch2-detail.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +76,9 @@ import { ModalComponent } from './components/modal/modal.component';
     SidebarStaticComponent,
     ToastComponent,
     ModalComponent,
+    Branch2Component,
+    Branch2ListComponent,
+    Branch2DetailComponent,
   ],
   imports: [
     // Angular Modules

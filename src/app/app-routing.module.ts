@@ -18,6 +18,11 @@ import { RegisterComponent } from 'src/app/components/public/register/register.c
 // Guards
 import { AuthorizationGuard } from 'src/app/guards/authorization.guard';
 
+// TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+import { Branch2DetailComponent } from './components/manager/branch2/branch2-detail/branch2-detail.component';
+import { Branch2ListComponent } from './components/manager/branch2/branch2-list/branch2-list.component';
+import { Branch2Component } from './components/manager/branch2/branch2.component';
+
 const routes: Routes = [
   // Public
   { path: 'public/error', component: ErrorComponent },
@@ -41,6 +46,20 @@ const routes: Routes = [
   },
   {
     path: 'manager/branch-edit', component: BranchEditComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+
+  // TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  {
+    path: 'manager/branch2', component: Branch2Component, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/branch2-list', component: Branch2ListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/branch2-detail', component: Branch2DetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 
