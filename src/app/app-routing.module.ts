@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 // Components
 import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
 import { CustomerDashboardComponent } from 'src/app/components/customer/customer-dashboard/customer-dashboard.component';
+import { BranchComponent } from 'src/app/components/manager/branch/branch.component';
 import { BranchEditComponent } from 'src/app/components/manager/branch/branch-edit/branch-edit.component';
 import { BranchListComponent } from 'src/app/components/manager/branch/branch-list/branch-list.component';
 import { ErrorComponent } from 'src/app/components/public/error/error.component';
@@ -28,6 +29,10 @@ const routes: Routes = [
   // Manager
   {
     path: 'manager/manager-dashboard', component: ManagerDashboardComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/branch', component: BranchComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
