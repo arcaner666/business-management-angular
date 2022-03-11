@@ -1,6 +1,18 @@
+import { cloneDeep } from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { BranchDto } from 'src/app/models/dtos/branchDto';
+
+const EMPTY_BRANCH_DTO: BranchDto = {
+  branchId: 0,
+  businessId: 0,
+  fullAddressId: 0,
+  branchOrder: 0,
+  branchName: "",
+  branchCode: "",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
 
 @Component({
   selector: 'app-branch2-list',
@@ -10,9 +22,9 @@ import { BranchDto } from 'src/app/models/dtos/branchDto';
 export class Branch2ListComponent {
 
   @Input() branchDtos: BranchDto[] = [];
-  @Output() branchSelected = new EventEmitter<number>();
-  @Output() branchDeleted = new EventEmitter<number>();
-  @Output() processTypeSelected = new EventEmitter<number>();
+
+  @Output() branchSelected = new EventEmitter<BranchDto>();
+  @Output() branchDeleted = new EventEmitter<BranchDto>();
 
   public currentPage: number = 1;
   public elementIndex: number = 0;
@@ -20,7 +32,7 @@ export class Branch2ListComponent {
   public pageSize: number = 0;
 
   constructor() {
-    console.log("BranchListComponent constructor çalıştı.");
+    console.log("Branch2ListComponent constructor çalıştı.");
   }
 
   // Paginator'daki değişiklikleri tabloya uygular.
@@ -34,14 +46,14 @@ export class Branch2ListComponent {
   }
 
   openAddBranchPage(): void {
-    this.branchSelected.emit(0);
+    this.branchSelected.emit(cloneDeep(EMPTY_BRANCH_DTO));
   }
 
   openEditBranchPage(selectedBranchDto: BranchDto): void {
-    this.branchSelected.emit(selectedBranchDto.branchId);
+    this.branchSelected.emit(cloneDeep(selectedBranchDto));
   }
 
   openDeleteBranchModal(selectedBranchDto: BranchDto) {
-    this.branchDeleted.emit(selectedBranchDto.branchId);
+    this.branchDeleted.emit(cloneDeep(selectedBranchDto));
   }
 }

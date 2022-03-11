@@ -1,20 +1,31 @@
-<ng-container *ngIf="processType == 0">
+<ng-container *ngIf="activePage == 'list'">
     <ng-container *ngTemplateOutlet="branch2List"></ng-container>
 </ng-container>
 
-<ng-container *ngIf="processType == 1">
+<ng-container *ngIf="activePage == 'detail'">
     <ng-container *ngTemplateOutlet="branch2Detail"></ng-container>
 </ng-container>
 
 <ng-template #branch2List>
     <app-branch2-list
         [branchDtos]="(branchDtos$ | async)?.data || []"
+        (branchDeleted)="deleteBranch($event)"
         (branchSelected)="selectBranch($event)"
     ></app-branch2-list>
 </ng-template>
 
 <ng-template #branch2Detail>
-    <app-branch2-detail></app-branch2-detail>
+    <app-branch2-detail
+        [cardHeader]="cardHeader"
+        [cityDtos]="(cityDtos$ | async)?.data || []"
+        [districtDtos]="(districtDtos$ | async)?.data || []"
+        [loading]="loading"
+        [selectedBranchExtDto]="selectedBranchExtDto"
+        (branchCancelled)="cancelBranch()"
+        (branchCodeGenerated)="generateBranchCode()"
+        (branchSaved)="saveBranch($event)"
+        (citySelected)="getDistrictsByCityId($event)"
+    ></app-branch2-detail>
 </ng-template>
 
 <!-- Silme Onay Modal'ı -->

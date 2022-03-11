@@ -7,14 +7,15 @@
             <!-- /Card Başlığı -->
 
             <!-- Şube Ekleme/Düzenleme Formu -->
-            <form [formGroup]="branchExtForm" (ngSubmit)="submit(selectedProcessType)">
+            <form #branchExtForm="ngForm" (ngSubmit)="saveBranch(selectedBranchExtDto)">
                 <!-- Şube Adı -->
                 <div class="mt-3 mb-3">
                     <label class="form-label" for="branch-form-branch-name">Şube Adı</label>
                     <input
                         id="branch-form-branch-name"
                         type="text"
-                        formControlName="branchName"
+                        name="branchName"
+                        [(ngModel)]="selectedBranchExtDto.branchName"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['branchName'].errors }"
                         tabindex="1"
@@ -31,16 +32,17 @@
                         <label class="form-label" for="branch-form-branch-code">Şube Kodu</label>
 
                         <!-- Şube Kodu Üretme Butonu -->
-                        <a class="code-link cursor-pointer" (click)="generateBranchCode()" *ngIf="selectedProcessType == 1"><small>Kod Üret</small></a>
+                        <a class="code-link cursor-pointer" (click)="generateBranchCode()" *ngIf="selectedBranchExtDto.branchId == 0"><small>Kod Üret</small></a>
                         <!-- /Şube Kodu Üretme Butonu -->
                     </div>
                     <input
                         id="branch-form-branch-code"
                         type="text"
-                        formControlName="branchCode"
+                        name="branchCode"
+                        [(ngModel)]="selectedBranchExtDto.branchCode"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['branchCode'].errors }"
-                        [readOnly]="selectedProcessType == 2"
+                        [readOnly]="selectedBranchExtDto.branchId != 0"
                         tabindex="2"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['branchCode'].errors">
@@ -52,42 +54,52 @@
                 <!-- Şehir -->
                 <div class="mt-3 mb-3">
                     <label class="mb-2" for="branch-form-city-id">Şehir</label>
-                    <ng-select
+                    <select 
                         id="branch-form-city-id"
-                        (change)="selectCity(branchExtForm.controls['cityId'].value)"
-                        [items]="(cityDtos$ | async)?.data!"
-                        formControlName="cityId"
-                        bindLabel="cityName"
-                        bindValue="cityId"
-                        [clearable]="false"
-                        [searchable]="false"
+                        name="cityId"
+                        class="form-select"
+                        [(ngModel)]="selectedBranchExtDto.cityId"
+                        (change)="selectCity(selectedBranchExtDto.cityId)"
                         [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['cityId'].errors }"
                         tabindex="3"
                     >
-                    </ng-select>
-                    <span class="invalid-form" *ngIf="submitted && branchExtForm.controls['cityId'].errors">
-                        <small class="form-text text-danger" *ngIf="branchExtForm.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</small>
-                    </span>
+                        <option 
+                            *ngFor="let cityDto of cityDtos"
+                            [value]="cityDto.cityId"
+                        >
+                            {{cityDto.cityName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['cityId'].errors">
+                        <div *ngIf="branchExtForm.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</div>
+                        <div *ngIf="branchExtForm.controls['cityId'].errors['min']">Lütfen şehir seçiniz.</div>
+                    </div>
                 </div>
                 <!-- /Şehir -->
     
                 <!-- İlçe -->
                 <div class="mt-3 mb-3">
                     <label class="mb-2" for="branch-form-district-id">İlçe</label>
-                    <ng-select
+                    <select 
                         id="branch-form-district-id"
-                        [items]="districtDtos"
-                        formControlName="districtId"
-                        bindLabel="districtName"
-                        bindValue="districtId"
-                        [clearable]="false"
-                        [searchable]="false"
+                        name="districtId"
+                        class="form-select"
+                        [(ngModel)]="selectedBranchExtDto.districtId"
+                        (change)="selectDistrict(selectedBranchExtDto.districtId)"
+                        [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['districtId'].errors }"
                         tabindex="4"
                     >
-                    </ng-select>
-                    <span class="invalid-form" *ngIf="submitted && branchExtForm.controls['districtId'].errors">
-                        <small class="form-text text-danger" *ngIf="branchExtForm.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</small>
-                    </span>
+                        <option 
+                            *ngFor="let districtDto of districtDtos"
+                            [value]="districtDto.districtId"
+                        >
+                            {{districtDto.districtName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['districtId'].errors">
+                        <div *ngIf="branchExtForm.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</div>
+                        <div *ngIf="branchExtForm.controls['districtId'].errors['min']">Lütfen ilçe seçiniz.</div>
+                    </div>
                 </div>
                 <!-- /İlçe -->
     
@@ -97,7 +109,8 @@
                     <input
                         id="branch-form-address-title"
                         type="text"
-                        formControlName="addressTitle"
+                        name="addressTitle"
+                        [(ngModel)]="selectedBranchExtDto.addressTitle"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['addressTitle'].errors }"
                         tabindex="5"
@@ -114,13 +127,15 @@
                     <input
                         id="branch-form-postal-code"
                         type="number"
-                        formControlName="postalCode"
+                        name="postalCode"
+                        [(ngModel)]="selectedBranchExtDto.postalCode"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['postalCode'].errors }"
                         tabindex="6"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && branchExtForm.controls['postalCode'].errors">
                         <div *ngIf="branchExtForm.controls['postalCode'].errors['required']">Lütfen posta kodu giriniz.</div>
+                        <div *ngIf="branchExtForm.controls['postalCode'].errors['min']">Lütfen posta kodu giriniz.</div>
                     </div>
                 </div>
                 <!-- /Posta Kodu -->
@@ -131,10 +146,10 @@
                     <textarea
                         id="register-section-manager-address"
                         type="text"
-                        formControlName="addressText"
+                        name="addressText"
+                        [(ngModel)]="selectedBranchExtDto.addressText"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && branchExtForm.controls['addressText'].errors }"
-                        placeholder=""
                         tabindex="7"
                     ></textarea>
                     <span class="invalid-form" *ngIf="submitted && branchExtForm.controls['addressText'].errors">
@@ -160,6 +175,7 @@
                             <button 
                                 type="button" 
                                 class="btn btn-secondary w-100"
+                                (click)="cancelBranch()"
                             >İptal
                             </button>
                         </div>
