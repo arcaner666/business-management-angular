@@ -34,9 +34,6 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { NavbarComponent } from 'src/app/components/layout/navbar/navbar.component';
 import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
 import { RegisterComponent } from 'src/app/components/public/register/register.component';
-import { SectionComponent } from 'src/app/components/manager/section/section.component';
-import { SectionEditComponent } from 'src/app/components/manager/section/section-edit/section-edit.component';
-import { SectionListComponent } from 'src/app/components/manager/section/section-list/section-list.component';
 import { SidebarFloatingComponent } from 'src/app/components/layout/sidebar-floating/sidebar-floating.component';
 import { SidebarStaticComponent } from 'src/app/components/layout/sidebar-static/sidebar-static.component';
 import { ToastComponent } from 'src/app/components/toast/toast.component';
@@ -67,9 +64,6 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
     NavbarComponent,
     NotAuthorizedComponent,
     RegisterComponent,
-    SectionComponent,
-    SectionEditComponent,
-    SectionListComponent,
     SidebarFloatingComponent,
     SidebarStaticComponent,
     ToastComponent,
