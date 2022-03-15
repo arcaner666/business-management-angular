@@ -26,11 +26,11 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
 };
 
 @Component({
-  selector: 'app-branch2-detail',
-  templateUrl: './branch2-detail.component.html',
-  styleUrls: ['./branch2-detail.component.scss']
+  selector: 'app-branch-detail',
+  templateUrl: './branch-detail.component.html',
+  styleUrls: ['./branch-detail.component.scss']
 })
-export class Branch2DetailComponent {
+export class BranchDetailComponent {
 
   @Input() cardHeader: string = "";
   @Input() cityDtos: CityDto[] = [];
@@ -50,7 +50,7 @@ export class Branch2DetailComponent {
   constructor(
 
   ) {
-    console.log("Branch2DetailComponent constructor çalıştı.");
+    console.log("BranchDetailComponent constructor çalıştı.");
   }
 
   cancelBranch() {

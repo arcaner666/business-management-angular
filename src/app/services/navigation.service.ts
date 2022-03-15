@@ -111,7 +111,7 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
       {
         id: "branch",
         title: "Şubeler",
-        url: "manager/branch2",
+        url: "manager/branch",
         type: "item",
         role: ["Manager"],
         icon: "",

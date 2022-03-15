@@ -2,22 +2,24 @@
     <div class="card shadow-lg">
         <!-- Sayfa Başına Kayıt Menüsü -->
         <div class="row g-0 p-3">
-            <div class="col-6 d-flex justify-content-start">
-                <label class="form-label">
-                    <select class="form-select" [(ngModel)]="itemsPerPage">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </label>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
+            <ng-container *ngIf="branchDtos.length > 10">
+                <div class="col-6 d-flex">
+                    <label class="form-label">
+                        <select class="form-select" [(ngModel)]="itemsPerPage">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </label>
+                </div>
+            </ng-container>
+            <div class="col-6 d-flex ms-auto justify-content-end">
                 <button class="btn btn-outline-primary d-flex flex-row justify-content-center align-items-center" (click)="openAddBranchPage()">
                     <div class="icon me-2">
                         <i class="fas fa-plus fa-sm"></i>
                     </div>
-                    <span>Yeni Şube Ekle</span>
+                    <span>Şube Ekle</span>
                 </button>
             </div>
         </div>
@@ -75,45 +77,23 @@
         <!-- /Şube Tablosu -->
 
         <!-- Sayfalama Menüsü -->
-        <div class="row g-0 ps-3 pe-3 pt-0 pb-0">
-            <div class="col-12 d-flex">
-                <ngb-pagination class="ms-auto" [collectionSize]="branchDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
-                    <ng-template ngbPaginationPrevious>
-                        <i class="fas fa-angle-left fa-lg"></i>
-                    </ng-template>
-                    <ng-template ngbPaginationNext>
-                        <i class="fas fa-angle-right fa-lg"></i>
-                    </ng-template>
-                </ngb-pagination>
+        <ng-container *ngIf="branchDtos.length > 10">
+            <div class="row g-0 ps-3 pe-3 pt-0 pb-0">
+                <div class="col-12 d-flex">
+                    <ngb-pagination class="ms-auto" [collectionSize]="branchDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
+                        <ng-template ngbPaginationPrevious>
+                            <i class="fas fa-angle-left fa-lg"></i>
+                        </ng-template>
+                        <ng-template ngbPaginationNext>
+                            <i class="fas fa-angle-right fa-lg"></i>
+                        </ng-template>
+                    </ngb-pagination>
+                </div>
             </div>
-        </div>
+        </ng-container>
+        
         <!-- /Sayfalama Menüsü -->
 
     </div>
 </div>
-  
-<!-- Silme Onay Modal'ı -->
-<ng-template #deleteModal let-modal>
-    <div class="modal-header justify-content-between">
-        <img class="opacity-0" src="#" width="24" height="24">
-        <h4 class="modal-title" id="modal-basic-title">Şube Silme</h4>
-        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
-    </div>
-    <div class="modal-body">
-        <p class="text-center m-0">"{{selectedBranchDto.branchName}}" adlı şube silinecektir. Onaylıyor musunuz?</p>
-    </div>
-    <div class="modal-footer w-100">
-        <div class="container-fluid m-0">
-            <div class="row">
-                <div class="col-6">
-                    <button type="button" class="btn btn-danger w-100" (click)="modal.close('ok')">Sil</button>
-                </div>
-                <div class="col-6">
-                    <button type="button" class="btn btn-secondary w-100" (click)="modal.dismiss('cancel')">İptal</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</ng-template>
-<!-- /Silme Onay Modal'ı -->
     
