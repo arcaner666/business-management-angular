@@ -117,7 +117,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  addCompanyManager() {
+  addCompanyManager(): void {
     // "Kayıt Ol" butonuna basıldığını belirtir.
     this.submittedCompanyManagerForm = true;
 
@@ -156,7 +156,7 @@ export class RegisterComponent implements OnInit {
     });
   }
   
-  addSectionManager() {
+  addSectionManager(): void {
     // "Kayıt Ol" butonuna basıldığını belirtir.
     this.submittedSectionManagerForm = true;
 
@@ -199,7 +199,7 @@ export class RegisterComponent implements OnInit {
   }
 
   // Formdaki verileri modele doldurur.
-  fillManagerExtDto(selectedModule: number) {
+  fillManagerExtDto(selectedModule: number): void {
     switch (selectedModule) {
       case 1:
         this.managerExtDto.businessName = this.sectionManagerForm.controls['businessName'].value;
@@ -223,7 +223,7 @@ export class RegisterComponent implements OnInit {
   }
 
   // Sunucudan şehirleri getirir ve modellere doldurur.
-  getCities() {
+  getCities(): void {
     this.cityDtos$ = this.cityService.getAll();
   }
 
@@ -233,7 +233,7 @@ export class RegisterComponent implements OnInit {
   }
 
   // Formda herhangi bir şehir seçildiğinde çalışır.
-  selectCity(cityId: number){
+  selectCity(cityId: number): void {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
     this.managerExtDto.districtId = 0;
     this.sectionManagerForm.controls['districtId'].setValue(0);

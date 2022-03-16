@@ -20,15 +20,15 @@ export class ToastService {
 
   }
 
-  private show(toast: Toast) {
+  private show(toast: Toast): void {
     this.toasts.push(toast);
   }
 
-  public remove(toast: Toast) {
+  public remove(toast: Toast): void {
     this.toasts = this.toasts.filter(t => t != toast);
   }
 
-  public success(message: string, delay: number = 5000) {
+  public success(message: string, delay: number = 5000): void {
     let toast: Toast = cloneDeep(EMPTY_TOAST);
 
     toast.message = message;
@@ -38,7 +38,7 @@ export class ToastService {
     this.show(toast);
   }
 
-  public danger(message: string, delay: number = 5000) {
+  public danger(message: string, delay: number = 5000): void {
     let toast: Toast = cloneDeep(EMPTY_TOAST);
 
     toast.message = message;

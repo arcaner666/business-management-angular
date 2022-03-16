@@ -40,11 +40,11 @@ export class NavbarComponent implements OnInit {
     this.sidebarLinks$ = this.navigationService.sidebarLinks$;
   }
 
-  toggleSidebarFloating() {
+  toggleSidebarFloating(): void {
     this.layoutService.toggleSidebarFloating();
   }
 
-  logout() {
+  logout(): void {
     this.authorizationService.clearAuthorizationDto();
     this.navigationService.loadSidebarLinksByRole();
     this.router.navigate(["public/home"]);

@@ -53,15 +53,15 @@ export class BranchDetailComponent {
     console.log("BranchDetailComponent constructor çalıştı.");
   }
 
-  cancelBranch() {
+  cancelBranch(): void {
     this.branchCancelled.emit();
   }
 
-  generateBranchCode() {
+  generateBranchCode(): void {
     this.branchCodeGenerated.emit();
   }
 
-  saveBranch(selectedBranchExtDto: BranchExtDto){
+  saveBranch(selectedBranchExtDto: BranchExtDto): void {
     this.submitted = true;
 
     this.validateBranch(this.branchExtForm);
@@ -77,18 +77,18 @@ export class BranchDetailComponent {
     this.loading = true;
   }
 
-  selectCity(cityId: number){
+  selectCity(cityId: number): void {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
     this.selectedBranchExtDto.districtId = 0;
     
     this.citySelected.emit(cityId);
   }
 
-  selectDistrict(districtId: number){
+  selectDistrict(districtId: number): void {
     this.selectedBranchExtDto.districtId = districtId;
   }
 
-  validateBranch(form: NgForm) {
+  validateBranch(form: NgForm): void {
     form.controls['branchName'].setValidators(Validators.required);
     form.controls['branchName'].updateValueAndValidity();
     

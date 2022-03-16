@@ -72,7 +72,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.getBranchesByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  addBranch(selectedBranchExtDto: BranchExtDto) {
+  addBranch(selectedBranchExtDto: BranchExtDto): void {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     selectedBranchExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
@@ -97,12 +97,12 @@ export class BranchComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancelBranch() {
+  cancelBranch(): void {
     this.activePage = "list";
     window.scroll(0,0);
   }
 
-  deleteBranch(selectedBranchDto: BranchDto) {
+  deleteBranch(selectedBranchDto: BranchDto): void {
     this.modalService.open(this.deleteModal, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true
@@ -125,7 +125,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     }).catch(() => {});
   }
 
-  generateBranchCode(){
+  generateBranchCode(): void {
     this.sub3 = this.branchService.generateBranchCode(this.authorizationService.authorizationDto.businessId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -142,7 +142,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.cityDtos$ = this.cityService.getAll();
   }
 
-  getBranchesByBusinessId(businessId: number) {
+  getBranchesByBusinessId(businessId: number): void {
     this.branchDtos$ = this.branchService.getByBusinessId(businessId);
   }
 
@@ -163,7 +163,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
-  saveBranch(selectedBranchExtDto: BranchExtDto) {
+  saveBranch(selectedBranchExtDto: BranchExtDto): void {
     if (selectedBranchExtDto.branchId == 0) {
       this.addBranch(selectedBranchExtDto);
     } else {
@@ -171,7 +171,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectBranch(selectedBranchDto: BranchDto) {
+  selectBranch(selectedBranchDto: BranchDto): void {
     this.setHeader(selectedBranchDto.branchId);
 
     this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
@@ -200,11 +200,11 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.activePage = "detail";
   }
 
-  setHeader(branchId: number){
+  setHeader(branchId: number): void {
     branchId == 0 ? this.cardHeader = "Şube Ekle" : this.cardHeader = "Şubeyi Düzenle";
   }
 
-  updateBranch(selectedBranchExtDto: BranchExtDto) {
+  updateBranch(selectedBranchExtDto: BranchExtDto): void {
     this.sub6 = this.branchService.updateExt(selectedBranchExtDto).subscribe({
       next: (response) => {
         if(response.success) {

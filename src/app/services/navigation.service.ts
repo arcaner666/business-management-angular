@@ -299,7 +299,7 @@ export class NavigationService {
     this.sidebarLinksSubject.next(sidebarLinks);
   }
 
-  loadSidebarLinksByRole() {
+  loadSidebarLinksByRole(): void {
     if(this.authorizationService.authorizationDto?.role == "Admin"){
       this.sidebarLinks = this.adminSidebarLinks;
     } else if (this.authorizationService.authorizationDto?.role == "Manager") {
@@ -312,7 +312,7 @@ export class NavigationService {
   }
 
   // Role göre kullanıcıyı yönlendir.
-  navigateByRole(role: string) {
+  navigateByRole(role: string): void {
     if(role) {
       switch (role) {
         case "Admin": this.router.navigate(['admin/admin-dashboard']); break;

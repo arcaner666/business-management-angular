@@ -39,7 +39,7 @@ export class LayoutService {
     this.layoutConfigSubject.next(layoutConfig);
   }
 
-  toggleSidebarFloating() {
+  toggleSidebarFloating(): void {
     this.layoutConfig.showSidebarFloating = !this.layoutConfig.showSidebarFloating;
   }
 }

@@ -28,7 +28,7 @@ export class AuthorizationGuard implements CanActivate {
     this.canActivate$ = this.canActivateSubject.asObservable();
   }
 
-  subscribeAutorizationDtoChanges(){
+  subscribeAutorizationDtoChanges(): void {
     this.authorizationDto$.subscribe({
       next: (response) => {
         this.authorizationDto = response;

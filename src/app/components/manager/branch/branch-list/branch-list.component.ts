@@ -53,7 +53,7 @@ export class BranchListComponent {
     this.branchSelected.emit(cloneDeep(selectedBranchDto));
   }
 
-  openDeleteBranchModal(selectedBranchDto: BranchDto) {
+  openDeleteBranchModal(selectedBranchDto: BranchDto): void {
     this.branchDeleted.emit(cloneDeep(selectedBranchDto));
   }
 }

@@ -35,12 +35,12 @@ export class LayoutComponent implements OnInit {
     this.subscribeAuthorizationChanges();
   }
 
-  setScreenSize() {
+  setScreenSize(): void {
     this.breakpointService.screenSize.width = window.innerWidth;
     this.breakpointService.screenSize.height = window.innerHeight;
   }
 
-  selectLayout() {
+  selectLayout(): void {
     if (this.breakpointService.screenSize.width >= 992 && this.authorizationService.authorizationDto?.role) {
       this.layoutService.layoutConfig.layoutType = "sidebar-static";
     } else if (this.breakpointService.screenSize.width < 992) {
@@ -51,7 +51,7 @@ export class LayoutComponent implements OnInit {
       this.layoutService.layoutConfig.layoutType = "only-content";
     }
   }
-  subscribeAuthorizationChanges() {
+  subscribeAuthorizationChanges(): void {
     this.authorizationService.authorizationDto$.subscribe({
       next: () => {
         this.selectLayout();

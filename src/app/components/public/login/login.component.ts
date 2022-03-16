@@ -89,11 +89,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   // Şifre göstermeyi tetikler.
-  togglePasswordTextType(): void  {
+  togglePasswordTextType(): void {
     this.passwordTextType = !this.passwordTextType;
   }
 
-  loginWithEmail(): void  {
+  loginWithEmail(): void {
     // "Giriş Yap" butonuna basıldı.
     this.submittedEmail = true;
 
