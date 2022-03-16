@@ -5,7 +5,7 @@ export interface ManagerExtDto {
     nameSurname: string;
     email: string;
     phone: string;
-    dateOfBirth: Date;
+    dateOfBirth?: Date;
     gender: string;
     notes: string;
     avatarUrl: string;

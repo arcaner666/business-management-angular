@@ -8,8 +8,8 @@ export interface AccountExtDto {
     accountName: string;
     accountCode: string;
     taxOffice: string;
-    taxNumber: number;
-    identityNumber: number;
+    taxNumber?: number;
+    identityNumber?: number;
     debitBalance: number;
     creditBalance: number;
     balance: number;

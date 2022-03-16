@@ -6,13 +6,13 @@ export interface CustomerDto {
     nameSurname: string;
     email: string;
     phone: string;
-    dateOfBirth: Date;
+    dateOfBirth?: Date;
     gender: string;
     notes: string;
     avatarUrl: string;
     appointmentsMade: number;
     productsPurchased: number;
-    lastPurchaseDate: Date;
+    lastPurchaseDate?: Date;
     createdAt: Date;
     updatedAt: Date;
 }

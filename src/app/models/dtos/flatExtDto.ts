@@ -4,8 +4,8 @@ export interface FlatExtDto {
     apartmentId: number;
     businessId: number;
     branchId: number;
-    houseOwnerId: number;
-    tenantId: number;
+    houseOwnerId?: number;
+    tenantId?: number;
     flatCode: string;
     doorNumber: number;
     createdAt: Date;
