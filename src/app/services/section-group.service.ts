@@ -19,9 +19,7 @@ export class SectionGroupService {
   
   constructor(
     private _http: HttpClient, 
-  ) {
-
-  }
+  ) {}
 
   // API İstekleri
   add(sectionGroupDto: SectionGroupDto): Observable<Result> {

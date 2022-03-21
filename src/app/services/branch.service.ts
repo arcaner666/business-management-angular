@@ -21,9 +21,7 @@ export class BranchService {
 
   constructor(
     private _http: HttpClient,
-  ) {
-
-  }
+  ) {}
 
   // API İstekleri
   addExt(branchExtDto: BranchExtDto): Observable<Result> {
