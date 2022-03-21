@@ -32,6 +32,8 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
 })
 export class BranchDetailComponent {
 
+  @ViewChild('branchExtForm') branchExtForm!: NgForm;
+
   @Input() cardHeader: string = "";
   @Input() cityDtos: CityDto[] = [];
   @Input() districtDtos: DistrictDto[] = [];
@@ -42,8 +44,6 @@ export class BranchDetailComponent {
   @Output() branchCancelled = new EventEmitter();
   @Output() branchCodeGenerated = new EventEmitter();
   @Output() citySelected = new EventEmitter<number>();
-  
-  @ViewChild('branchExtForm') branchExtForm!: NgForm;
 
   public submitted: boolean = false;
   

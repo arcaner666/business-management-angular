@@ -1,5 +1,6 @@
-import { cloneDeep } from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+import { cloneDeep } from 'lodash';
 
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 
@@ -23,8 +24,8 @@ export class BranchListComponent {
 
   @Input() branchDtos: BranchDto[] = [];
 
-  @Output() branchSelected = new EventEmitter<BranchDto>();
   @Output() branchDeleted = new EventEmitter<BranchDto>();
+  @Output() branchSelected = new EventEmitter<BranchDto>();
 
   public currentPage: number = 1;
   public elementIndex: number = 0;
@@ -48,12 +49,12 @@ export class BranchListComponent {
   openAddBranchPage(): void {
     this.branchSelected.emit(cloneDeep(EMPTY_BRANCH_DTO));
   }
+  
+  openDeleteBranchModal(selectedBranchDto: BranchDto): void {
+    this.branchDeleted.emit(cloneDeep(selectedBranchDto));
+  }
 
   openEditBranchPage(selectedBranchDto: BranchDto): void {
     this.branchSelected.emit(cloneDeep(selectedBranchDto));
-  }
-
-  openDeleteBranchModal(selectedBranchDto: BranchDto): void {
-    this.branchDeleted.emit(cloneDeep(selectedBranchDto));
   }
 }

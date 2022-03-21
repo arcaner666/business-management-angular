@@ -2,8 +2,8 @@
 @import 'src/assets/scss/_mixins.scss';
 
 .hide-arrow {
-    &::before,
-    &::after {
-      display: none;
-    }
+  &::before,
+  &::after {
+    display: none;
+  }
 }

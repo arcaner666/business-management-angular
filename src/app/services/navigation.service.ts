@@ -131,9 +131,9 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
     hidden: false,
     navLinks: [
       {
-        id: "section-group-list",
+        id: "section-group",
         title: "Site Grupları",
-        url: "manager/section-group-list",
+        url: "manager/section-group",
         type: "item",
         role: ["Manager"],
         icon: "",
@@ -141,9 +141,9 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
         hidden: false,
       },
       {
-        id: "section-list",
+        id: "section",
         title: "Site",
-        url: "manager/section-list",
+        url: "manager/section",
         type: "item",
         role: ["Manager"],
         icon: "",
@@ -151,9 +151,9 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
         hidden: false,
       },
       {
-        id: "apartment-list",
+        id: "apartment",
         title: "Apartman",
-        url: "manager/apartment-list",
+        url: "manager/apartment",
         type: "item",
         role: ["Manager"],
         icon: "",
@@ -161,9 +161,9 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
         hidden: false,
       },
       {
-        id: "flat-list",
+        id: "flat",
         title: "Daire",
-        url: "manager/flat-list",
+        url: "manager/flat",
         type: "item",
         role: ["Manager"],
         icon: "",
@@ -185,7 +185,7 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
       {
         id: "account-group",
         title: "Hesap Grupları",
-        url: "manager/account-group-list",
+        url: "manager/account-group",
         type: "item",
         role: ["Manager"],
         icon: "",
@@ -195,7 +195,7 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
       {
         id: "account",
         title: "Cari Hesaplar",
-        url: "manager/account-list",
+        url: "manager/account",
         type: "item",
         role: ["Manager"],
         icon: "",
@@ -205,7 +205,7 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
       {
         id: "cash",
         title: "Kasa",
-        url: "manager/cash-list",
+        url: "manager/cash",
         type: "item",
         role: ["Manager"],
         icon: "",

@@ -27,3 +27,12 @@ html {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.code-link {
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $c-color-3;
+    }
+}

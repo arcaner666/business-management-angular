@@ -26,7 +26,7 @@ export class SectionGroupService {
     return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, sectionGroupDto);
   }
 
-  delete(id: bigint): Observable<Result> {
+  delete(id: number): Observable<Result> {
     return this._http.get<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
   
@@ -34,8 +34,8 @@ export class SectionGroupService {
     return this._http.get<ListDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
   }
 
-  getById(id: bigint): Observable<SectionGroupDto> {
-    return this._http.get<SectionGroupDto>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
+  getById(id: number): Observable<SingleDataResult<SectionGroupDto>> {
+    return this._http.get<SingleDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
   }
 
   update(sectionGroupDto: SectionGroupDto): Observable<SingleDataResult<SectionGroupDto>> {

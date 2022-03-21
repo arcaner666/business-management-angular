@@ -5,9 +5,9 @@ import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
+import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { CityDto } from 'src/app/models/dtos/city-dto';
 import { DistrictDto } from 'src/app/models/dtos/district-dto';
-import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
@@ -56,15 +56,15 @@ export class BranchComponent implements OnInit, OnDestroy {
   public sub4: Subscription = new Subscription();
   public sub5: Subscription = new Subscription();
   public sub6: Subscription = new Subscription();
+  public sub7: Subscription = new Subscription();
   
   constructor(
     private authorizationService: AuthorizationService,
+    private branchService: BranchService,
     private cityService: CityService,
     private districtService: DistrictService,
-    private toastService: ToastService,
     private modalService: NgbModal,
-
-    public branchService: BranchService,
+    private toastService: ToastService,
   ) { 
     console.log("BranchComponent constructor çalıştı.");
 
@@ -103,30 +103,51 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   deleteBranch(selectedBranchDto: BranchDto): void {
-    this.modalService.open(this.deleteModal, {
-      ariaLabelledBy: 'modal-basic-title',
-      centered: true
-    }).result.then((response) => {
-      // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-      if (response == "ok") {
-        this.sub2 = this.branchService.delete(selectedBranchDto.branchId).pipe(
-          tap((response) => {
-            console.log(response);
-            this.toastService.success(response.message);
-            this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
-          })
-        ).subscribe({
-          error: (error) => {
-            console.log(error);
-            this.toastService.danger(error.message);
-          }
-        });
+    this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
+
+    this.sub2 = this.branchService.getExtById(selectedBranchDto.branchId).subscribe({
+      next: (response) => {
+        if(response.success) {
+          this.selectedBranchExtDto = response.data;
+          this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
+
+          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+          this.modalService.open(this.deleteModal, {
+            ariaLabelledBy: 'modal-basic-title',
+            centered: true
+          }).result.then((response) => {
+            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
+            if (response == "ok") {
+              this.sub3 = this.branchService.delete(selectedBranchDto.branchId).pipe(
+                tap((response) => {
+                  console.log(response);
+                  this.toastService.success(response.message);
+                  this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+                })
+              ).subscribe({
+                error: (error) => {
+                  console.log(error);
+                  this.toastService.danger(error.message);
+                }
+              });
+            }
+          }).catch(() => {});
+        }
+
+        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
+        this.loading = false;
+      }, error: (error) => {
+        console.log(error);
+        this.toastService.danger(error.message);
+
+        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
+        this.loading = false;
       }
-    }).catch(() => {});
+    });
   }
 
   generateBranchCode(): void {
-    this.sub3 = this.branchService.generateBranchCode(this.authorizationService.authorizationDto.businessId).subscribe({
+    this.sub4 = this.branchService.generateBranchCode(this.authorizationService.authorizationDto.businessId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedBranchExtDto.branchOrder = response.data.branchOrder;
@@ -147,7 +168,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   getBranchExtById(id: number): void {
-    this.sub4 = this.branchService.getExtById(id).subscribe({
+    this.sub5 = this.branchService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedBranchExtDto = response.data;
@@ -177,7 +198,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
 
     if (selectedBranchDto.branchId != 0) {
-      this.sub5 = this.branchService.getExtById(selectedBranchDto.branchId).subscribe({
+      this.sub6 = this.branchService.getExtById(selectedBranchDto.branchId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedBranchExtDto = response.data;
@@ -205,7 +226,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   updateBranch(selectedBranchExtDto: BranchExtDto): void {
-    this.sub6 = this.branchService.updateExt(selectedBranchExtDto).subscribe({
+    this.sub7 = this.branchService.updateExt(selectedBranchExtDto).subscribe({
       next: (response) => {
         if(response.success) {
           this.toastService.success(response.message);
@@ -246,6 +267,9 @@ export class BranchComponent implements OnInit, OnDestroy {
     }
     if (this.sub6) {
       this.sub6.unsubscribe();
+    }
+    if (this.sub7) {
+      this.sub7.unsubscribe();
     }
   }
 }
