@@ -1,46 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { BehaviorSubject, Observable } from 'rxjs';
-import { cloneDeep } from 'lodash';
+import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { BranchCodeDto } from 'src/app/models/dtos/branchCodeDto';
-import { BranchDto } from 'src/app/models/dtos/branchDto';
-import { BranchExtDto } from 'src/app/models/dtos/branchExtDto';
+import { BranchCodeDto } from 'src/app/models/dtos/branch-code-dto';
+import { BranchDto } from 'src/app/models/dtos/branch-dto';
+import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/single-data-result';
-
-const EMPTY_BRANCH_DTO: BranchDto = {
-  branchId: 0,
-  businessId: 0,
-  fullAddressId: 0,
-  branchOrder: 0,
-  branchName: "",
-  branchCode: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
-  branchId: 0,
-  businessId: 0,
-  fullAddressId: 0,
-  branchOrder: 0,
-  branchName: "",
-  branchCode: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With FullAddress
-  cityId: 0,
-  districtId: 0,
-  addressTitle: "",
-  postalCode: 0,
-  addressText: "",
-};
 
 @Injectable({
   providedIn: 'root'
@@ -48,36 +18,11 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
 export class BranchService {
 
   private controllerUrl: string = "branches";
-  private selectedBranchIdSubject: BehaviorSubject<number>;
-  private selectedProcessTypeSubject: BehaviorSubject<number>;
-
-  public selectedBranchId$: Observable<number>;
-  public selectedProcessType$: Observable<number>;
 
   constructor(
     private _http: HttpClient,
   ) {
-    this.selectedBranchIdSubject = new BehaviorSubject<number>(0);
-    this.selectedProcessTypeSubject = new BehaviorSubject<number>(0);
 
-    this.selectedBranchId$ = this.selectedBranchIdSubject.asObservable();
-    this.selectedProcessType$ = this.selectedProcessTypeSubject.asObservable();
-  }
-
-  get selectedProcessType(): number {
-    return this.selectedProcessTypeSubject.value;
-  }
-
-  set selectedProcessType(selectedProcessType: number) {
-    this.selectedProcessTypeSubject.next(selectedProcessType);
-  }
-  
-  get selectedBranchId(): number {
-    return this.selectedBranchIdSubject.value;
-  }
-
-  set selectedBranchId(selectedBranchId: number) {
-    this.selectedBranchIdSubject.next(selectedBranchId);
   }
 
   // API İstekleri

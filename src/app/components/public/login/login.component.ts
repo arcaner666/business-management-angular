@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
 
-import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 import { Result } from 'src/app/models/results/result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';

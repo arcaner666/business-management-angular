@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 import { LayoutConfig } from 'src/app/models/various/layout-config';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';

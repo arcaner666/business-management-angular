@@ -3,7 +3,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { JwtHelperService } from '@auth0/angular-jwt';

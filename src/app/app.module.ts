@@ -34,6 +34,9 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { NavbarComponent } from 'src/app/components/layout/navbar/navbar.component';
 import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
 import { RegisterComponent } from 'src/app/components/public/register/register.component';
+import { SectionGroupComponent } from 'src/app/components/manager/section-group/section-group.component';
+import { SectionGroupDetailComponent } from 'src/app/components/manager/section-group/section-group-detail/section-group-detail.component';
+import { SectionGroupListComponent } from 'src/app/components/manager/section-group/section-group-list/section-group-list.component';
 import { SidebarFloatingComponent } from 'src/app/components/layout/sidebar-floating/sidebar-floating.component';
 import { SidebarStaticComponent } from 'src/app/components/layout/sidebar-static/sidebar-static.component';
 import { ToastComponent } from 'src/app/components/toast/toast.component';
@@ -42,7 +45,7 @@ import { ToastComponent } from 'src/app/components/toast/toast.component';
 import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 
 // Models
-import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 
 @NgModule({
   declarations: [
@@ -64,6 +67,9 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
     NavbarComponent,
     NotAuthorizedComponent,
     RegisterComponent,
+    SectionGroupComponent,
+    SectionGroupDetailComponent,
+    SectionGroupListComponent,
     SidebarFloatingComponent,
     SidebarStaticComponent,
     ToastComponent,

@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { BranchDto } from 'src/app/models/dtos/branchDto';
+import { BranchDto } from 'src/app/models/dtos/branch-dto';
 
 const EMPTY_BRANCH_DTO: BranchDto = {
   branchId: 0,

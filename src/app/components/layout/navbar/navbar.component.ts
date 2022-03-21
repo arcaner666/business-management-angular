@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 import { LayoutConfig } from 'src/app/models/various/layout-config';
 import { NavGroup } from 'src/app/models/various/nav-group';
 

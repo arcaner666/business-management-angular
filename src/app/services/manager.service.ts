@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash';
 import { environment } from 'src/environments/environment';
 
 import { ListDataResult } from 'src/app/models/results/list-data-result';
-import { ManagerExtDto } from 'src/app/models/dtos/managerExtDto';
+import { ManagerExtDto } from 'src/app/models/dtos/manager-ext-dto';
 import { Result } from 'src/app/models/results/result';
 
 const EMPTY_MANAGER_EXT_DTO: ManagerExtDto = {

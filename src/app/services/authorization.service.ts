@@ -6,7 +6,7 @@ import { cloneDeep } from 'lodash';
 
 import { environment } from 'src/environments/environment';
 
-import { AuthorizationDto } from 'src/app/models/dtos/authorizationDto';
+import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/single-data-result';
 

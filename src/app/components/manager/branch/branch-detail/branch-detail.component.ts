@@ -3,9 +3,9 @@ import { NgForm, Validators } from '@angular/forms';
 
 import { cloneDeep } from 'lodash';
 
-import { BranchExtDto } from 'src/app/models/dtos/branchExtDto';
-import { CityDto } from 'src/app/models/dtos/cityDto';
-import { DistrictDto } from 'src/app/models/dtos/districtDto';
+import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
+import { CityDto } from 'src/app/models/dtos/city-dto';
+import { DistrictDto } from 'src/app/models/dtos/district-dto';
 
 const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
   branchId: 0,

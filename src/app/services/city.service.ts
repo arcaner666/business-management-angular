@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { CityDto } from 'src/app/models/dtos/cityDto';
+import { CityDto } from 'src/app/models/dtos/city-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 @Injectable({

@@ -6,10 +6,10 @@ import { Observable, Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { CityDto } from 'src/app/models/dtos/cityDto';
-import { DistrictDto } from 'src/app/models/dtos/districtDto';
+import { CityDto } from 'src/app/models/dtos/city-dto';
+import { DistrictDto } from 'src/app/models/dtos/district-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
-import { ManagerExtDto } from 'src/app/models/dtos/managerExtDto';
+import { ManagerExtDto } from 'src/app/models/dtos/manager-ext-dto';
 import { ModuleOption } from 'src/app/models/various/module-option';
 import { Result } from 'src/app/models/results/result';
 

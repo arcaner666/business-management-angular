@@ -4,10 +4,10 @@ import { Subscription, Observable, concatMap, tap } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { BranchDto } from 'src/app/models/dtos/branchDto';
-import { CityDto } from 'src/app/models/dtos/cityDto';
-import { DistrictDto } from 'src/app/models/dtos/districtDto';
-import { BranchExtDto } from 'src/app/models/dtos/branchExtDto';
+import { BranchDto } from 'src/app/models/dtos/branch-dto';
+import { CityDto } from 'src/app/models/dtos/city-dto';
+import { DistrictDto } from 'src/app/models/dtos/district-dto';
+import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
@@ -41,13 +41,13 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
 })
 export class BranchComponent implements OnInit, OnDestroy {
 
-  @ViewChild('deleteModal') deleteModal: ElementRef | undefined;
+  @ViewChild('deleteModal') deleteModal!: ElementRef;
   
   public activePage: string = "list";
-  public branchDtos$: Observable<ListDataResult<BranchDto>> | undefined;
+  public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public cardHeader: string = "";
-  public cityDtos$: Observable<ListDataResult<CityDto>> | undefined;
-  public districtDtos$: Observable<ListDataResult<DistrictDto>> | undefined;
+  public cityDtos$!: Observable<ListDataResult<CityDto>>;
+  public districtDtos$!: Observable<ListDataResult<DistrictDto>>;
   public loading: boolean = false;
   public selectedBranchExtDto: BranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
   public sub1: Subscription = new Subscription();
