@@ -73,8 +73,6 @@ export class BranchDetailComponent {
     }
 
     this.branchSaved.emit(selectedBranchExtDto);
-    
-    this.loading = true;
   }
 
   selectCity(cityId: number): void {

@@ -7,7 +7,7 @@
             <!-- /Card Başlığı -->
 
             <!-- Site Grubu Ekleme/Düzenleme Formu -->
-            <form #sectionGroupForm="ngForm" (ngSubmit)="saveSectionGroup(selectedSectionGroupDto)">
+            <form #sectionGroupForm="ngForm" (ngSubmit)="save(selectedSectionGroupDto)">
                 <!-- Site Grubu Adı -->
                 <div class="mt-3 mb-3">
                     <label class="form-label" for="section-group-form-section-group-name">Site Grubu Adı</label>
@@ -43,7 +43,7 @@
                             <button 
                                 type="button" 
                                 class="btn btn-secondary w-100"
-                                (click)="cancelSectionGroup()"
+                                (click)="cancel()"
                             >İptal
                             </button>
                         </div>

@@ -19,8 +19,8 @@
         [cardHeader]="cardHeader"
         [loading]="loading"
         [selectedSectionGroupDto]="selectedSectionGroupDto"
-        (sectionGroupCancelled)="cancelSectionGroup()"
-        (sectionGroupSaved)="saveSectionGroup($event)"
+        (cancelled)="cancel()"
+        (saved)="save($event)"
     ></app-section-group-detail>
 </ng-template>
 

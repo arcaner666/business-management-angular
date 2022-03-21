@@ -27,8 +27,8 @@ export class SectionGroupDetailComponent {
   @Input() selectedSectionGroupDto: SectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
   @Input() loading: boolean = false;
 
-  @Output() sectionGroupSaved = new EventEmitter<SectionGroupDto>();
-  @Output() sectionGroupCancelled = new EventEmitter();
+  @Output() saved = new EventEmitter<SectionGroupDto>();
+  @Output() cancelled = new EventEmitter();
 
   public submitted: boolean = false;
   
@@ -38,14 +38,14 @@ export class SectionGroupDetailComponent {
     console.log("SectionGroupDetailComponent constructor çalıştı.");
   }
 
-  cancelSectionGroup(): void {
-    this.sectionGroupCancelled.emit();
+  cancel(): void {
+    this.cancelled.emit();
   }
 
-  saveSectionGroup(selectedSectionGroupDto: SectionGroupDto): void {
+  save(selectedSectionGroupDto: SectionGroupDto): void {
     this.submitted = true;
 
-    this.validateSectionGroup(this.sectionGroupForm);
+    this.validate(this.sectionGroupForm);
 
     if (this.sectionGroupForm.invalid) {
       console.log("Form geçersiz.");
@@ -53,12 +53,10 @@ export class SectionGroupDetailComponent {
       return;
     }
 
-    this.sectionGroupSaved.emit(selectedSectionGroupDto);
-    
-    this.loading = true;
+    this.saved.emit(selectedSectionGroupDto);
   }
 
-  validateSectionGroup(form: NgForm): void {
+  validate(form: NgForm): void {
     form.controls['sectionGroupName'].setValidators(Validators.required);
     form.controls['sectionGroupName'].updateValueAndValidity();
   }

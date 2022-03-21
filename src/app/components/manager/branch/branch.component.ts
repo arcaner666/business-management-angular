@@ -185,6 +185,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   saveBranch(selectedBranchExtDto: BranchExtDto): void {
+    this.loading = true;
     if (selectedBranchExtDto.branchId == 0) {
       this.addBranch(selectedBranchExtDto);
     } else {
@@ -205,15 +206,9 @@ export class BranchComponent implements OnInit, OnDestroy {
             this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
             this.toastService.success(response.message);
           }
-  
-          // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
-          this.loading = false;
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
-  
-          // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
-          this.loading = false;
         }
       });
     }
@@ -233,14 +228,10 @@ export class BranchComponent implements OnInit, OnDestroy {
           this.activePage = "list";
           window.scroll(0,0);
         }
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }, error: (error) => {
         console.log(error);
         this.toastService.danger(error.message);
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }
     });

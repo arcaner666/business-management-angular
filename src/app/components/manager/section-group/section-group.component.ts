@@ -71,14 +71,12 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.log(error);
         this.toastService.danger(error.message);
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }
     });
   }
 
-  cancelSectionGroup(): void {
+  cancel(): void {
     this.activePage = "list";
     window.scroll(0,0);
   }
@@ -113,14 +111,10 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
             }
           }).catch(() => {});
         }
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }, error: (error) => {
         console.log(error);
         this.toastService.danger(error.message);
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }
     });
@@ -142,7 +136,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  saveSectionGroup(selectedSectionGroupDto: SectionGroupDto): void {
+  save(selectedSectionGroupDto: SectionGroupDto): void {
+    this.loading = true;
     if (selectedSectionGroupDto.sectionGroupId == 0) {
       this.addSectionGroup(selectedSectionGroupDto);
     } else {
@@ -161,15 +156,9 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
           if(response.success) {
             this.selectedSectionGroupDto = response.data;
           }
-  
-          // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
-          this.loading = false;
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
-  
-          // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
-          this.loading = false;
         }
       });
     }
@@ -189,14 +178,10 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
           this.activePage = "list";
           window.scroll(0,0);
         }
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }, error: (error) => {
         console.log(error);
         this.toastService.danger(error.message);
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }
     });
