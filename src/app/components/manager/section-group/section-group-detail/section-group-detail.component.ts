@@ -21,7 +21,7 @@ const EMPTY_SECTION_GROUP_DTO: SectionGroupDto = {
 })
 export class SectionGroupDetailComponent {
 
-  @ViewChild('sectionGroupForm') sectionGroupForm!: NgForm;
+  @ViewChild('form') form!: NgForm;
   
   @Input() cardHeader: string = "";
   @Input() selectedSectionGroupDto: SectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
@@ -45,11 +45,11 @@ export class SectionGroupDetailComponent {
   save(selectedSectionGroupDto: SectionGroupDto): void {
     this.submitted = true;
 
-    this.validate(this.sectionGroupForm);
+    this.validate(this.form);
 
-    if (this.sectionGroupForm.invalid) {
+    if (this.form.invalid) {
       console.log("Form geçersiz.");
-      console.log(this.sectionGroupForm);
+      console.log(this.form);
       return;
     }
 

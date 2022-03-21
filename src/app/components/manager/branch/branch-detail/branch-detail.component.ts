@@ -32,7 +32,7 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
 })
 export class BranchDetailComponent {
 
-  @ViewChild('branchExtForm') branchExtForm!: NgForm;
+  @ViewChild('form') form!: NgForm;
 
   @Input() cardHeader: string = "";
   @Input() cityDtos: CityDto[] = [];
@@ -64,11 +64,11 @@ export class BranchDetailComponent {
   save(selectedBranchExtDto: BranchExtDto): void {
     this.submitted = true;
 
-    this.validate(this.branchExtForm);
+    this.validate(this.form);
 
-    if (this.branchExtForm.invalid) {
+    if (this.form.invalid) {
       console.log("Form geçersiz.");
-      console.log(this.branchExtForm);
+      console.log(this.form);
       return;
     }
 
