@@ -9,8 +9,8 @@
 <ng-template #sectionGroupList>
     <app-section-group-list
         [sectionGroupDtos]="(sectionGroupDtos$ | async)?.data || []"
-        (sectionGroupDeleted)="deleteSectionGroup($event)"
-        (sectionGroupSelected)="selectSectionGroup($event)"
+        (deleted)="delete($event)"
+        (selected)="select($event)"
     ></app-section-group-list>
 </ng-template>
 

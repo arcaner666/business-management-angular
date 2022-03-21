@@ -40,8 +40,8 @@ export class BranchDetailComponent {
   @Input() selectedBranchExtDto: BranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
   @Input() loading: boolean = false;
 
-  @Output() branchSaved = new EventEmitter<BranchExtDto>();
-  @Output() branchCancelled = new EventEmitter();
+  @Output() saved = new EventEmitter<BranchExtDto>();
+  @Output() cancelled = new EventEmitter();
   @Output() branchCodeGenerated = new EventEmitter();
   @Output() citySelected = new EventEmitter<number>();
 
@@ -53,18 +53,18 @@ export class BranchDetailComponent {
     console.log("BranchDetailComponent constructor çalıştı.");
   }
 
-  cancelBranch(): void {
-    this.branchCancelled.emit();
+  cancel(): void {
+    this.cancelled.emit();
   }
 
   generateBranchCode(): void {
     this.branchCodeGenerated.emit();
   }
 
-  saveBranch(selectedBranchExtDto: BranchExtDto): void {
+  save(selectedBranchExtDto: BranchExtDto): void {
     this.submitted = true;
 
-    this.validateBranch(this.branchExtForm);
+    this.validate(this.branchExtForm);
 
     if (this.branchExtForm.invalid) {
       console.log("Form geçersiz.");
@@ -72,7 +72,7 @@ export class BranchDetailComponent {
       return;
     }
 
-    this.branchSaved.emit(selectedBranchExtDto);
+    this.saved.emit(selectedBranchExtDto);
   }
 
   selectCity(cityId: number): void {
@@ -86,7 +86,7 @@ export class BranchDetailComponent {
     this.selectedBranchExtDto.districtId = districtId;
   }
 
-  validateBranch(form: NgForm): void {
+  validate(form: NgForm): void {
     form.controls['branchName'].setValidators(Validators.required);
     form.controls['branchName'].updateValueAndValidity();
     

@@ -7,7 +7,7 @@
             <!-- /Card Başlığı -->
 
             <!-- Şube Ekleme/Düzenleme Formu -->
-            <form #branchExtForm="ngForm" (ngSubmit)="saveBranch(selectedBranchExtDto)">
+            <form #branchExtForm="ngForm" (ngSubmit)="save(selectedBranchExtDto)">
                 <!-- Şube Adı -->
                 <div class="mt-3 mb-3">
                     <label class="form-label" for="branch-form-branch-name">Şube Adı</label>
@@ -175,7 +175,7 @@
                             <button 
                                 type="button" 
                                 class="btn btn-secondary w-100"
-                                (click)="cancelBranch()"
+                                (click)="cancel()"
                             >İptal
                             </button>
                         </div>

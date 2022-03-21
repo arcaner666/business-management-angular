@@ -24,8 +24,8 @@ export class BranchListComponent {
 
   @Input() branchDtos: BranchDto[] = [];
 
-  @Output() branchDeleted = new EventEmitter<BranchDto>();
-  @Output() branchSelected = new EventEmitter<BranchDto>();
+  @Output() deleted = new EventEmitter<BranchDto>();
+  @Output() selected = new EventEmitter<BranchDto>();
 
   public currentPage: number = 1;
   public elementIndex: number = 0;
@@ -46,15 +46,15 @@ export class BranchListComponent {
     }
   }
 
-  openAddBranchPage(): void {
-    this.branchSelected.emit(cloneDeep(EMPTY_BRANCH_DTO));
+  openAddPage(): void {
+    this.selected.emit(cloneDeep(EMPTY_BRANCH_DTO));
   }
   
-  openDeleteBranchModal(selectedBranchDto: BranchDto): void {
-    this.branchDeleted.emit(cloneDeep(selectedBranchDto));
+  openDeleteModal(selectedBranchDto: BranchDto): void {
+    this.deleted.emit(cloneDeep(selectedBranchDto));
   }
 
-  openEditBranchPage(selectedBranchDto: BranchDto): void {
-    this.branchSelected.emit(cloneDeep(selectedBranchDto));
+  openEditPage(selectedBranchDto: BranchDto): void {
+    this.selected.emit(cloneDeep(selectedBranchDto));
   }
 }

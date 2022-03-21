@@ -22,8 +22,8 @@ export class SectionGroupListComponent {
 
   @Input() sectionGroupDtos: SectionGroupDto[] = [];
 
-  @Output() sectionGroupDeleted = new EventEmitter<SectionGroupDto>();
-  @Output() sectionGroupSelected = new EventEmitter<SectionGroupDto>();
+  @Output() deleted = new EventEmitter<SectionGroupDto>();
+  @Output() selected = new EventEmitter<SectionGroupDto>();
 
   public currentPage: number = 1;
   public elementIndex: number = 0;
@@ -44,15 +44,15 @@ export class SectionGroupListComponent {
     }
   }
 
-  openAddSectionGroupPage(): void {
-    this.sectionGroupSelected.emit(cloneDeep(EMPTY_SECTION_GROUP_DTO));
+  openAddPage(): void {
+    this.selected.emit(cloneDeep(EMPTY_SECTION_GROUP_DTO));
   }
   
-  openDeleteSectionGroupModal(selectedSectionGroupDto: SectionGroupDto): void {
-    this.sectionGroupDeleted.emit(cloneDeep(selectedSectionGroupDto));
+  openDeleteModal(selectedSectionGroupDto: SectionGroupDto): void {
+    this.deleted.emit(cloneDeep(selectedSectionGroupDto));
   }
 
-  openEditSectionGroupPage(selectedSectionGroupDto: SectionGroupDto): void {
-    this.sectionGroupSelected.emit(cloneDeep(selectedSectionGroupDto));
+  openEditPage(selectedSectionGroupDto: SectionGroupDto): void {
+    this.selected.emit(cloneDeep(selectedSectionGroupDto));
   }
 }

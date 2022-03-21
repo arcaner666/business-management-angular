@@ -52,7 +52,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.getSectionGroupsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  addSectionGroup(selectedSectionGroupDto: SectionGroupDto): void {
+  add(selectedSectionGroupDto: SectionGroupDto): void {
     // Sunucuya gönderilecek modelin businessId ve branchId kısmını günceller.
     selectedSectionGroupDto.businessId = this.authorizationService.authorizationDto.businessId;
     selectedSectionGroupDto.branchId = this.authorizationService.authorizationDto.branchId;
@@ -81,7 +81,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     window.scroll(0,0);
   }
 
-  deleteSectionGroup(selectedSectionGroupDto: SectionGroupDto): void {
+  delete(selectedSectionGroupDto: SectionGroupDto): void {
     this.selectedSectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
 
     this.sub2 = this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId).subscribe({
@@ -139,13 +139,13 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   save(selectedSectionGroupDto: SectionGroupDto): void {
     this.loading = true;
     if (selectedSectionGroupDto.sectionGroupId == 0) {
-      this.addSectionGroup(selectedSectionGroupDto);
+      this.add(selectedSectionGroupDto);
     } else {
-      this.updateSectionGroup(selectedSectionGroupDto);
+      this.update(selectedSectionGroupDto);
     }
   }
 
-  selectSectionGroup(selectedSectionGroupDto: SectionGroupDto): void {
+  select(selectedSectionGroupDto: SectionGroupDto): void {
     this.setHeader(selectedSectionGroupDto.sectionGroupId);
 
     this.selectedSectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
@@ -170,7 +170,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     sectionGroupId == 0 ? this.cardHeader = "Site Grubu Ekle" : this.cardHeader = "Site Grubunu Düzenle";
   }
 
-  updateSectionGroup(selectedSectionGroupDto: SectionGroupDto): void {
+  update(selectedSectionGroupDto: SectionGroupDto): void {
     this.sub6 = this.sectionGroupService.update(selectedSectionGroupDto).subscribe({
       next: (response) => {
         if(response.success) {

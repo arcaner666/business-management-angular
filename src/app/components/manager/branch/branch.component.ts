@@ -72,7 +72,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.getBranchesByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  addBranch(selectedBranchExtDto: BranchExtDto): void {
+  add(selectedBranchExtDto: BranchExtDto): void {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     selectedBranchExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
@@ -90,19 +90,17 @@ export class BranchComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.log(error);
         this.toastService.danger(error.message);
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }
     });
   }
 
-  cancelBranch(): void {
+  cancel(): void {
     this.activePage = "list";
     window.scroll(0,0);
   }
 
-  deleteBranch(selectedBranchDto: BranchDto): void {
+  delete(selectedBranchDto: BranchDto): void {
     this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
 
     this.sub2 = this.branchService.getExtById(selectedBranchDto.branchId).subscribe({
@@ -184,16 +182,16 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
-  saveBranch(selectedBranchExtDto: BranchExtDto): void {
+  save(selectedBranchExtDto: BranchExtDto): void {
     this.loading = true;
     if (selectedBranchExtDto.branchId == 0) {
-      this.addBranch(selectedBranchExtDto);
+      this.add(selectedBranchExtDto);
     } else {
-      this.updateBranch(selectedBranchExtDto);
+      this.update(selectedBranchExtDto);
     }
   }
 
-  selectBranch(selectedBranchDto: BranchDto): void {
+  select(selectedBranchDto: BranchDto): void {
     this.setHeader(selectedBranchDto.branchId);
 
     this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
@@ -220,7 +218,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     branchId == 0 ? this.cardHeader = "Şube Ekle" : this.cardHeader = "Şubeyi Düzenle";
   }
 
-  updateBranch(selectedBranchExtDto: BranchExtDto): void {
+  update(selectedBranchExtDto: BranchExtDto): void {
     this.sub7 = this.branchService.updateExt(selectedBranchExtDto).subscribe({
       next: (response) => {
         if(response.success) {

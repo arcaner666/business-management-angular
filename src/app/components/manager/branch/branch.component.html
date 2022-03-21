@@ -9,8 +9,8 @@
 <ng-template #branchList>
     <app-branch-list
         [branchDtos]="(branchDtos$ | async)?.data || []"
-        (branchDeleted)="deleteBranch($event)"
-        (branchSelected)="selectBranch($event)"
+        (deleted)="delete($event)"
+        (selected)="select($event)"
     ></app-branch-list>
 </ng-template>
 
@@ -21,9 +21,9 @@
         [districtDtos]="(districtDtos$ | async)?.data || []"
         [loading]="loading"
         [selectedBranchExtDto]="selectedBranchExtDto"
-        (branchCancelled)="cancelBranch()"
+        (cancelled)="cancel()"
         (branchCodeGenerated)="generateBranchCode()"
-        (branchSaved)="saveBranch($event)"
+        (saved)="save($event)"
         (citySelected)="getDistrictsByCityId($event)"
     ></app-branch-detail>
 </ng-template>
