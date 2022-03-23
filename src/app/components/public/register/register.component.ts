@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { Observable, Subscription } from 'rxjs';
 import { cloneDeep } from 'lodash';
@@ -13,10 +12,10 @@ import { ManagerExtDto } from 'src/app/models/dtos/manager-ext-dto';
 import { ModuleOption } from 'src/app/models/various/module-option';
 import { Result } from 'src/app/models/results/result';
 
+import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
-import { ManagerService } from 'src/app/services/manager.service';
 
 const EMPTY_RESULT: Result = {
   success: false, 
@@ -76,10 +75,10 @@ export class RegisterComponent implements OnInit {
   public sub2: Subscription = new Subscription();
 
   constructor(
+    private authorizationService: AuthorizationService,
     private cityService: CityService,
     private districtService: DistrictService,
     private formBuilder: FormBuilder,
-    private managerService: ManagerService,
     private modalService: NgbModal,
 
     public breakpointService: BreakpointService
@@ -135,7 +134,7 @@ export class RegisterComponent implements OnInit {
     this.fillManagerExtDto(this.moduleForm.controls['module'].value);
 
     // Sunucuya kayıt isteği gönderilir.
-    this.sub1 = this.managerService.addSectionManager(this.managerExtDto).subscribe({
+    this.sub1 = this.authorizationService.registerCompanyManager(this.managerExtDto).subscribe({
       next: (response) => {
         if (response.success) {
           // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
@@ -177,7 +176,7 @@ export class RegisterComponent implements OnInit {
     this.fillManagerExtDto(this.moduleForm.controls['module'].value);
 
     // Sunucuya kayıt isteği gönderilir.
-    this.sub2 = this.managerService.addSectionManager(this.managerExtDto).subscribe({
+    this.sub2 = this.authorizationService.registerSectionManager(this.managerExtDto).subscribe({
       next: (response) => {
         if (response.success) {
           // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.

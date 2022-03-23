@@ -7,6 +7,7 @@ import { cloneDeep } from 'lodash';
 import { environment } from 'src/environments/environment';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
+import { ManagerExtDto } from 'src/app/models/dtos/manager-ext-dto';
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/single-data-result';
 
@@ -78,5 +79,13 @@ export class AuthorizationService {
 
   refreshAccessToken(authorizationDto: AuthorizationDto): Observable<SingleDataResult<AuthorizationDto>> {
     return this._http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/refreshaccesstoken`, authorizationDto);
+  }
+
+  registerCompanyManager(managerExtDto: ManagerExtDto): Observable<Result> {
+    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registercompanymanager`, managerExtDto);
+  }
+
+  registerSectionManager(managerExtDto: ManagerExtDto): Observable<Result> {
+    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registersectionmanager`, managerExtDto);
   }
 }

@@ -39,25 +39,10 @@ const EMPTY_MANAGER_EXT_DTO: ManagerExtDto = {
 export class ManagerService {
 
   private controllerUrl: string = "managers";
-  private selectedManagerExtDtoSubject: BehaviorSubject<ManagerExtDto>;
-
-  public selectedManagerExtDtoObservable: Observable<ManagerExtDto>;
 
   constructor(
     private _http: HttpClient,
-  ) {
-    this.selectedManagerExtDtoSubject = new BehaviorSubject<ManagerExtDto>(cloneDeep(EMPTY_MANAGER_EXT_DTO));
-
-    this.selectedManagerExtDtoObservable = this.selectedManagerExtDtoSubject.asObservable();
-  }
-  
-  get selectedManagerExtDto(): ManagerExtDto {
-    return this.selectedManagerExtDtoSubject.value;
-  }
-
-  set selectedManagerExtDto(selectedManagerExtDto: ManagerExtDto) {
-    this.selectedManagerExtDtoSubject.next(selectedManagerExtDto);
-  }
+  ) {}
 
   // API İstekleri
   addSectionManager(managerExtDto: ManagerExtDto): Observable<Result> {
