@@ -116,7 +116,7 @@ export class BranchComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.branchService.delete(selectedBranchDto.branchId).pipe(
+              this.sub3 = this.branchService.deleteExt(selectedBranchDto.branchId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);

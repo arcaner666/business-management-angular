@@ -28,8 +28,8 @@ export class BranchService {
     return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, branchExtDto);
   }
 
-  delete(id: number): Observable<Result> {
-    return this._http.get<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
+  deleteExt(id: number): Observable<Result> {
+    return this._http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
   generateBranchCode(businessId: number): Observable<SingleDataResult<BranchCodeDto>> {
