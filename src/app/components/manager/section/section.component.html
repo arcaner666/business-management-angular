@@ -24,6 +24,7 @@
         [sectionGroupDtos]="(sectionGroupDtos$ | async)?.data || []"
         [selectedSectionExtDto]="selectedSectionExtDto"
         (cancelled)="cancel()"
+        (citySelected)="getDistrictsByCityId($event)"
         (saved)="save($event)"
     ></app-section-detail>
 </ng-template>
