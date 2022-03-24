@@ -16,11 +16,11 @@ export class CityService {
   private controllerUrl: string = "cities";
 
   constructor(
-    private _http: HttpClient,
+    private http: HttpClient,
   ) {}
 
   // API İstekleri
   getAll(): Observable<ListDataResult<CityDto>> {
-    return this._http.get<ListDataResult<CityDto>>(`${environment.apiUrl}/${this.controllerUrl}/getall`);
+    return this.http.get<ListDataResult<CityDto>>(`${environment.apiUrl}/${this.controllerUrl}/getall`);
   }
 }

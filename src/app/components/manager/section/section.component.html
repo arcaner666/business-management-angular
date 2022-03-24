@@ -1,0 +1,54 @@
+<ng-container *ngIf="activePage == 'list'">
+    <ng-container *ngTemplateOutlet="sectionList"></ng-container>
+</ng-container>
+
+<ng-container *ngIf="activePage == 'detail'">
+    <ng-container *ngTemplateOutlet="sectionDetail"></ng-container>
+</ng-container>
+
+<ng-template #sectionList>
+    <app-section-list
+        [sectionExtDtos]="(sectionExtDtos$ | async)?.data || []"
+        (deleted)="delete($event)"
+        (selected)="select($event)"
+    ></app-section-list>
+</ng-template>
+
+<ng-template #sectionDetail>
+    <app-section-detail
+        [cardHeader]="cardHeader"
+        [cityDtos]="(cityDtos$ | async)?.data || []"
+        [districtDtos]="(districtDtos$ | async)?.data || []"
+        [loading]="loading"
+        [managerDtos]="(managerDtos$ | async)?.data || []"
+        [sectionGroupDtos]="(sectionGroupDtos$ | async)?.data || []"
+        [selectedSectionExtDto]="selectedSectionExtDto"
+        (cancelled)="cancel()"
+        (saved)="save($event)"
+    ></app-section-detail>
+</ng-template>
+
+<!-- Silme Onay Modal'ı -->
+<ng-template #deleteModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Site Silme</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center m-0">"{{selectedSectionExtDto.sectionName}}" adlı site silinecektir. Onaylıyor musunuz?</p>
+    </div>
+    <div class="modal-footer w-100">
+        <div class="container-fluid m-0">
+            <div class="row">
+                <div class="col-6">
+                    <button type="button" class="btn btn-danger w-100" (click)="modal.close('ok')">Sil</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-secondary w-100" (click)="modal.dismiss('cancel')">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- /Silme Onay Modal'ı -->

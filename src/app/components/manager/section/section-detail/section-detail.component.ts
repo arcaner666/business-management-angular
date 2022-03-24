@@ -3,19 +3,29 @@ import { NgForm, Validators } from '@angular/forms';
 
 import { cloneDeep } from 'lodash';
 
-import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { CityDto } from 'src/app/models/dtos/city-dto';
 import { DistrictDto } from 'src/app/models/dtos/district-dto';
+import { ManagerDto } from 'src/app/models/dtos/manager-dto';
+import { SectionExtDto } from 'src/app/models/dtos/section-ext-dto';
+import { SectionGroupDto } from 'src/app/models/dtos/section-group-dto';
 
-const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
-  branchId: 0,
+const EMPTY_SECTION_EXT_DTO: SectionExtDto = {
+  sectionId: 0,
+  sectionGroupId: 0,
   businessId: 0,
+  branchId: 0,
+  managerId: 0,
   fullAddressId: 0,
-  branchOrder: 0,
-  branchName: "",
-  branchCode: "",
+  sectionName: "",
+  sectionCode: "",
   createdAt: new Date(),
   updatedAt: new Date(),
+
+  // Extended With SectionGroup
+  sectionGroupName: "",
+
+  // Extended With Manager
+  managerNameSurname: "",
 
   // Extended With FullAddress
   cityId: 0,
@@ -23,45 +33,48 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
   addressTitle: "",
   postalCode: 0,
   addressText: "",
+
+  // Extended With FullAddress + City
+  cityName: "",
+
+  // Extended With FullAddress + District
+  districtName: "",
 };
 
 @Component({
-  selector: 'app-branch-detail',
-  templateUrl: './branch-detail.component.html',
-  styleUrls: ['./branch-detail.component.scss']
+  selector: 'app-section-detail',
+  templateUrl: './section-detail.component.html',
+  styleUrls: ['./section-detail.component.scss']
 })
-export class BranchDetailComponent {
+export class SectionDetailComponent {
 
   @ViewChild('form') form!: NgForm;
-
+  
   @Input() cardHeader: string = "";
   @Input() cityDtos: CityDto[] = [];
   @Input() districtDtos: DistrictDto[] = [];
-  @Input() selectedBranchExtDto: BranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
   @Input() loading: boolean = false;
+  @Input() managerDtos: ManagerDto[] = [];
+  @Input() sectionGroupDtos: SectionGroupDto[] = [];
+  @Input() selectedSectionExtDto: SectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
 
-  @Output() saved = new EventEmitter<BranchExtDto>();
-  @Output() branchCodeGenerated = new EventEmitter();
   @Output() cancelled = new EventEmitter();
   @Output() citySelected = new EventEmitter<number>();
+  @Output() saved = new EventEmitter<SectionExtDto>();
 
   public submitted: boolean = false;
   
   constructor(
 
   ) {
-    console.log("BranchDetailComponent constructor çalıştı.");
+    console.log("SectionDetailComponent constructor çalıştı.");
   }
 
   cancel(): void {
     this.cancelled.emit();
   }
 
-  generateBranchCode(): void {
-    this.branchCodeGenerated.emit();
-  }
-
-  save(selectedBranchExtDto: BranchExtDto): void {
+  save(selectedSectionExtDto: SectionExtDto): void {
     this.submitted = true;
 
     this.validate(this.form);
@@ -72,26 +85,43 @@ export class BranchDetailComponent {
       return;
     }
 
-    this.saved.emit(selectedBranchExtDto);
+    this.saved.emit(selectedSectionExtDto);
   }
 
   selectCity(cityId: number): void {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
-    this.selectedBranchExtDto.districtId = 0;
+    this.selectedSectionExtDto.districtId = 0;
     
     this.citySelected.emit(cityId);
   }
 
   selectDistrict(districtId: number): void {
-    this.selectedBranchExtDto.districtId = districtId;
+    this.selectedSectionExtDto.districtId = districtId;
+  }
+
+  selectManager(managerId: number): void {
+    this.selectedSectionExtDto.managerId = managerId;
+  }
+
+  selectSectionGroup(sectionGroupId: number): void {
+    this.selectedSectionExtDto.sectionGroupId = sectionGroupId;
   }
 
   validate(form: NgForm): void {
-    form.controls['branchName'].setValidators(Validators.required);
-    form.controls['branchName'].updateValueAndValidity();
+    form.controls['sectionName'].setValidators(Validators.required);
+    form.controls['sectionName'].updateValueAndValidity();
     
-    form.controls['branchCode'].setValidators(Validators.required);
-    form.controls['branchCode'].updateValueAndValidity();
+    form.controls['sectionGroupId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['sectionGroupId'].updateValueAndValidity();
+
+    form.controls['managerId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['managerId'].updateValueAndValidity();
 
     form.controls['cityId'].setValidators([
       Validators.required,
@@ -104,9 +134,6 @@ export class BranchDetailComponent {
       Validators.min(1)
     ]);
     form.controls['districtId'].updateValueAndValidity();
-
-    form.controls['addressTitle'].setValidators(Validators.required);
-    form.controls['addressTitle'].updateValueAndValidity();
 
     form.controls['postalCode'].setValidators([
       Validators.required,

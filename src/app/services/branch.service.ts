@@ -20,43 +20,31 @@ export class BranchService {
   private controllerUrl: string = "branches";
 
   constructor(
-    private _http: HttpClient,
+    private http: HttpClient,
   ) {}
 
   // API İstekleri
   addExt(branchExtDto: BranchExtDto): Observable<Result> {
-    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, branchExtDto);
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, branchExtDto);
   }
 
   deleteExt(id: number): Observable<Result> {
-    return this._http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
   generateBranchCode(businessId: number): Observable<SingleDataResult<BranchCodeDto>> {
-    return this._http.get<SingleDataResult<BranchCodeDto>>(`${environment.apiUrl}/${this.controllerUrl}/generatebranchcode/${businessId}`);
-  }
-
-  getByBranchCode(branchCode: string): Observable<SingleDataResult<BranchDto>> {
-    return this._http.get<SingleDataResult<BranchDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybranchcode/${branchCode}`);
+    return this.http.get<SingleDataResult<BranchCodeDto>>(`${environment.apiUrl}/${this.controllerUrl}/generatebranchcode/${businessId}`);
   }
 
   getByBusinessId(businessId: number): Observable<ListDataResult<BranchDto>> {
-    return this._http.get<ListDataResult<BranchDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
-  }
-
-  getById(id: number): Observable<SingleDataResult<BranchDto>> {
-    return this._http.get<SingleDataResult<BranchDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
+    return this.http.get<ListDataResult<BranchDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
   }
 
   getExtById(id: number): Observable<SingleDataResult<BranchExtDto>> {
-    return this._http.get<SingleDataResult<BranchExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
-  }
-
-  getExtsByBusinessId(businessId: number): Observable<ListDataResult<BranchExtDto>> {
-    return this._http.get<ListDataResult<BranchExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
+    return this.http.get<SingleDataResult<BranchExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
   }
 
   updateExt(branchExtDto: BranchExtDto): Observable<Result> {
-    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, branchExtDto);
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, branchExtDto);
   }
 }

@@ -1,0 +1,199 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <!-- Card Başlığı -->
+            <h2 class="card-title text-center fs-4">{{cardHeader}}</h2>
+            <!-- /Card Başlığı -->
+
+            <!-- Site Ekleme/Düzenleme Formu -->
+            <form #form="ngForm" (ngSubmit)="save(selectedSectionExtDto)">
+                <!-- Site Adı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="section-name">Site Adı</label>
+                    <input
+                        id="section-name"
+                        type="text"
+                        name="sectionName"
+                        [(ngModel)]="selectedSectionExtDto.sectionName"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionName'].errors }"
+                        tabindex="1"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionName'].errors">
+                        <div *ngIf="form.controls['sectionName'].errors['required']">Lütfen site adı giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Site Adı -->
+                
+                <!-- Site Grubu -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="section-group-id">Site Grubu</label>
+                    <select 
+                        id="section-group-id"
+                        name="sectionGroupId"
+                        class="form-select"
+                        [(ngModel)]="selectedSectionExtDto.sectionGroupId"
+                        (change)="selectSectionGroup(selectedSectionExtDto.sectionGroupId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionGroupId'].errors }"
+                        tabindex="2"
+                    >
+                        <option 
+                            *ngFor="let sectionGroupDto of sectionGroupDtos"
+                            [value]="sectionGroupDto.sectionGroupId"
+                        >
+                            {{sectionGroupDto.sectionGroupName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionGroupId'].errors">
+                        <div *ngIf="form.controls['sectionGroupId'].errors['required']">Lütfen site grubu seçiniz.</div>
+                        <div *ngIf="form.controls['sectionGroupId'].errors['min']">Lütfen site grubu seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Site Grubu -->
+
+                <!-- Yönetici -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="manager-id">Yönetici</label>
+                    <select 
+                        id="manager-id"
+                        name="managerId"
+                        class="form-select"
+                        [(ngModel)]="selectedSectionExtDto.managerId"
+                        (change)="selectManager(selectedSectionExtDto.managerId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['managerId'].errors }"
+                        tabindex="3"
+                    >
+                        <option 
+                            *ngFor="let managerDto of managerDtos"
+                            [value]="managerDto.managerId"
+                        >
+                            {{managerDto.nameSurname}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['managerId'].errors">
+                        <div *ngIf="form.controls['managerId'].errors['required']">Lütfen yönetici seçiniz.</div>
+                        <div *ngIf="form.controls['managerId'].errors['min']">Lütfen yönetici seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Yönetici -->
+
+                <!-- Şehir -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="city-id">Şehir</label>
+                    <select 
+                        id="city-id"
+                        name="cityId"
+                        class="form-select"
+                        [(ngModel)]="selectedSectionExtDto.cityId"
+                        (change)="selectCity(selectedSectionExtDto.cityId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['cityId'].errors }"
+                        tabindex="4"
+                    >
+                        <option 
+                            *ngFor="let cityDto of cityDtos"
+                            [value]="cityDto.cityId"
+                        >
+                            {{cityDto.cityName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['cityId'].errors">
+                        <div *ngIf="form.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</div>
+                        <div *ngIf="form.controls['cityId'].errors['min']">Lütfen şehir seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Şehir -->
+    
+                <!-- İlçe -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="district-id">İlçe</label>
+                    <select 
+                        id="district-id"
+                        name="districtId"
+                        class="form-select"
+                        [(ngModel)]="selectedSectionExtDto.districtId"
+                        (change)="selectDistrict(selectedSectionExtDto.districtId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['districtId'].errors }"
+                        tabindex="5"
+                    >
+                        <option 
+                            *ngFor="let districtDto of districtDtos"
+                            [value]="districtDto.districtId"
+                        >
+                            {{districtDto.districtName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['districtId'].errors">
+                        <div *ngIf="form.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</div>
+                        <div *ngIf="form.controls['districtId'].errors['min']">Lütfen ilçe seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /İlçe -->
+
+                <!-- Posta Kodu -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="postal-code">Posta Kodu</label>
+                    <input
+                        id="postal-code"
+                        type="number"
+                        name="postalCode"
+                        [(ngModel)]="selectedSectionExtDto.postalCode"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['postalCode'].errors }"
+                        tabindex="6"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['postalCode'].errors">
+                        <div *ngIf="form.controls['postalCode'].errors['required']">Lütfen posta kodu giriniz.</div>
+                        <div *ngIf="form.controls['postalCode'].errors['min']">Lütfen posta kodu giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Posta Kodu -->
+                
+                <!-- Adres -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="address-text">Adres</label>
+                    <textarea
+                        id="address-text"
+                        type="text"
+                        name="addressText"
+                        [(ngModel)]="selectedSectionExtDto.addressText"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['addressText'].errors }"
+                        tabindex="7"
+                    ></textarea>
+                    <span class="invalid-form" *ngIf="submitted && form.controls['addressText'].errors">
+                        <small class="form-text text-danger" *ngIf="form.controls['addressText'].errors['required']">Lütfen adres giriniz.</small>
+                    </span>
+                </div>
+                <!-- /Adres -->
+
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="8"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                                (click)="cancel()"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
+            </form>
+            <!-- /Site Ekleme/Düzenleme Formu -->
+        </div>
+    </div>
+</div>
+    

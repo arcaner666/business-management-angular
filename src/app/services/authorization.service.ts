@@ -41,7 +41,7 @@ export class AuthorizationService {
   public authorizationDto$: Observable<AuthorizationDto>;
 
   constructor(
-    private _http: HttpClient,
+    private http: HttpClient,
   ) {
     this.authorizationDtoSubject = new BehaviorSubject<AuthorizationDto>(JSON.parse(localStorage.getItem('authorizationDto')!));
     this.authorizationDto$ = this.authorizationDtoSubject.asObservable();
@@ -66,26 +66,26 @@ export class AuthorizationService {
 
   // API İstekleri
   loginWithEmail(authorizationDto: AuthorizationDto): Observable<SingleDataResult<AuthorizationDto>> {
-    return this._http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/loginwithemail`, authorizationDto);
+    return this.http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/loginwithemail`, authorizationDto);
   }
 
   loginWithPhone(authorizationDto: AuthorizationDto): Observable<SingleDataResult<AuthorizationDto>> {
-    return this._http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/loginwithphone`, authorizationDto);
+    return this.http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/loginwithphone`, authorizationDto);
   }
 
   logout(): Observable<Result> {
-    return this._http.get<Result>(`${environment.apiUrl}/${this.controllerUrl}/logout`);
+    return this.http.get<Result>(`${environment.apiUrl}/${this.controllerUrl}/logout`);
   }
 
   refreshAccessToken(authorizationDto: AuthorizationDto): Observable<SingleDataResult<AuthorizationDto>> {
-    return this._http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/refreshaccesstoken`, authorizationDto);
+    return this.http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/refreshaccesstoken`, authorizationDto);
   }
 
   registerCompanyManager(managerExtDto: ManagerExtDto): Observable<Result> {
-    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registercompanymanager`, managerExtDto);
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registercompanymanager`, managerExtDto);
   }
 
   registerSectionManager(managerExtDto: ManagerExtDto): Observable<Result> {
-    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registersectionmanager`, managerExtDto);
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registersectionmanager`, managerExtDto);
   }
 }

@@ -14,6 +14,9 @@ import { LoginComponent } from 'src/app/components/public/login/login.component'
 import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
 import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
 import { RegisterComponent } from 'src/app/components/public/register/register.component';
+import { SectionComponent } from './components/manager/section/section.component';
+import { SectionDetailComponent } from './components/manager/section/section-detail/section-detail.component';
+import { SectionListComponent } from './components/manager/section/section-list/section-list.component';
 import { SectionGroupComponent } from 'src/app/components/manager/section-group/section-group.component';
 import { SectionGroupDetailComponent } from 'src/app/components/manager/section-group/section-group-detail/section-group-detail.component';
 import { SectionGroupListComponent } from 'src/app/components/manager/section-group/section-group-list/section-group-list.component';
@@ -56,6 +59,18 @@ const routes: Routes = [
   },
   {
     path: 'manager/section-group-detail', component: SectionGroupDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section', component: SectionComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-list', component: SectionListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-detail', component: SectionDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 

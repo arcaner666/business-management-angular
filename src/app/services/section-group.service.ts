@@ -18,27 +18,27 @@ export class SectionGroupService {
   private controllerUrl: string = "sectiongroups";
   
   constructor(
-    private _http: HttpClient, 
+    private http: HttpClient, 
   ) {}
 
   // API İstekleri
   add(sectionGroupDto: SectionGroupDto): Observable<Result> {
-    return this._http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, sectionGroupDto);
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, sectionGroupDto);
   }
 
   delete(id: number): Observable<Result> {
-    return this._http.get<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
   
   getByBusinessId(businessId: number): Observable<ListDataResult<SectionGroupDto>> {
-    return this._http.get<ListDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
+    return this.http.get<ListDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
   }
 
   getById(id: number): Observable<SingleDataResult<SectionGroupDto>> {
-    return this._http.get<SingleDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
+    return this.http.get<SingleDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
   }
 
   update(sectionGroupDto: SectionGroupDto): Observable<SingleDataResult<SectionGroupDto>> {
-    return this._http.post<SingleDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/update`, sectionGroupDto);
+    return this.http.post<SingleDataResult<SectionGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/update`, sectionGroupDto);
   }
 }

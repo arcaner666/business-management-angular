@@ -16,15 +16,15 @@ export class DistrictService {
   private controllerUrl: string = "districts";
 
   constructor(
-    private _http: HttpClient,
+    private http: HttpClient,
   ) {}
 
   // API İstekleri
   getAll(): Observable<ListDataResult<DistrictDto>> {
-    return this._http.get<ListDataResult<DistrictDto>>(`${environment.apiUrl}/${this.controllerUrl}/getall`);
+    return this.http.get<ListDataResult<DistrictDto>>(`${environment.apiUrl}/${this.controllerUrl}/getall`);
   }
 
   getByCityId(cityId: number): Observable<ListDataResult<DistrictDto>> {
-    return this._http.get<ListDataResult<DistrictDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbycityid/${cityId}`);
+    return this.http.get<ListDataResult<DistrictDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbycityid/${cityId}`);
   }
 }
