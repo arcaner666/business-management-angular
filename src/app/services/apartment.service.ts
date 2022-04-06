@@ -31,15 +31,15 @@ export class ApartmentService {
     return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
-  getById(id: number): Observable<SingleDataResult<ApartmentDto>> {
-    return this.http.get<SingleDataResult<ApartmentDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbyid/${id}`);
+  getExtById(id: number): Observable<SingleDataResult<ApartmentExtDto>> {
+    return this.http.get<SingleDataResult<ApartmentExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
   }
 
   getExtsByBusinessId(businessId: number): Observable<ListDataResult<ApartmentExtDto>> {
     return this.http.get<ListDataResult<ApartmentExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
   }
 
-  update(apartmentDto: ApartmentDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/update`, apartmentDto);
+  updateExt(apartmentExtDto: ApartmentExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, apartmentExtDto);
   }
 }

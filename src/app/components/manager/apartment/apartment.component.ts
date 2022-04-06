@@ -4,37 +4,16 @@ import { Subscription, Observable, concatMap, tap } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { CityDto } from 'src/app/models/dtos/city-dto';
-import { DistrictDto } from 'src/app/models/dtos/district-dto';
+import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerDto } from 'src/app/models/dtos/manager-dto';
-import { SectionExtDto } from 'src/app/models/dtos/section-ext-dto';
-import { SectionGroupDto } from 'src/app/models/dtos/section-group-dto';
+import { SectionDto } from 'src/app/models/dtos/section-dto';
 
-import { ApartmentDto } from 'src/app/models/dtos/apartment-dto';
-import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
+import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
-import { CityService } from 'src/app/services/city.service';
-import { DistrictService } from 'src/app/services/district.service';
 import { ManagerService } from 'src/app/services/manager.service';
-import { SectionGroupService } from 'src/app/services/section-group.service';
 import { SectionService } from 'src/app/services/section.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { SectionDto } from 'src/app/models/dtos/section-dto';
-import { ApartmentService } from 'src/app/services/apartment.service';
-
-const EMPTY_APARTMENT_DTO: ApartmentDto = {
-  apartmentId: 0,
-  sectionId: 0,
-  businessId: 0,
-  branchId: 0,
-  managerId: 0,
-  apartmentName: "",
-  apartmentCode: "",
-  blockNumber: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
 
 const EMPTY_APARTMENT_EXT_DTO: ApartmentExtDto = {
   apartmentId: 0,
@@ -71,7 +50,6 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   public managerDtos$!: Observable<ListDataResult<ManagerDto>>;
   public sectionDtos$!: Observable<ListDataResult<SectionDto>>;
   public selectedApartmentExtDto: ApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
-  public selectedApartmentDto: ApartmentDto = cloneDeep(EMPTY_APARTMENT_DTO);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -123,10 +101,10 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     window.scroll(0,0);
   }
 
-  delete(selectedApartmentExtDto: SectionExtDto): void {
+  delete(selectedApartmentExtDto: ApartmentExtDto): void {
     this.selectedApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
 
-    this.sub2 = this.apartmentService.getById(selectedApartmentExtDto.sectionId).subscribe({
+    this.sub2 = this.apartmentService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedApartmentExtDto = response.data;
@@ -138,7 +116,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.apartmentService.deleteExt(selectedApartmentExtDto.sectionId).pipe(
+              this.sub3 = this.apartmentService.deleteExt(selectedApartmentExtDto.apartmentId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
@@ -162,23 +140,23 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     });
   }
 
+  getApartmentExtsByBusinessId(businessId: number): void {
+    this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(businessId);
+  }
+
   getManagersByBusinessId(businessId: number): void {
     this.managerDtos$ = this.managerService.getByBusinessId(businessId);
   }
 
-  getSectionExtsByBusinessId(businessId: number): void {
-    this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(businessId);
+  getSectionsByBusinessId(businessId: number): void {
+    this.sectionDtos$ = this.sectionService.getByBusinessId(businessId);
   }
 
-  getSectionGroupsByBusinessId(businessId: number): void {
-    this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(businessId);
-  }
-
-  getSectionExtById(id: number): void {
-    this.sub4 = this.sectionService.getExtById(id).subscribe({
+  getApartmentExtById(id: number): void {
+    this.sub4 = this.apartmentService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
-          this.selectedSectionExtDto = response.data;
+          this.selectedApartmentExtDto = response.data;
         }
       }, error: (error) => {
         console.log(error);
@@ -186,25 +164,25 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     });
   }
 
-  save(selectedSectionExtDto: SectionExtDto): void {
+  save(selectedApartmentExtDto: ApartmentExtDto): void {
     this.loading = true;
-    if (selectedSectionExtDto.sectionId == 0) {
-      this.addExt(selectedSectionExtDto);
+    if (selectedApartmentExtDto.apartmentId == 0) {
+      this.addExt(selectedApartmentExtDto);
     } else {
-      this.updateExt(selectedSectionExtDto);
+      this.updateExt(selectedApartmentExtDto);
     }
   }
 
-  select(selectedSectionExtDto: SectionExtDto): void {
-    this.setHeader(selectedSectionExtDto.sectionId);
+  select(selectedApartmentExtDto: ApartmentExtDto): void {
+    this.setHeader(selectedApartmentExtDto.apartmentId);
 
-    this.selectedSectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
+    this.selectedApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
 
-    if (selectedSectionExtDto.sectionId != 0) {
-      this.sub5 = this.sectionService.getExtById(selectedSectionExtDto.sectionId).subscribe({
+    if (selectedApartmentExtDto.apartmentId != 0) {
+      this.sub5 = this.apartmentService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
         next: (response) => {
           if(response.success) {
-            this.selectedSectionExtDto = response.data;
+            this.selectedApartmentExtDto = response.data;
           }
         }, error: (error) => {
           console.log(error);
@@ -216,12 +194,12 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.activePage = "detail";
   }
 
-  setHeader(sectionId: number): void {
-    sectionId == 0 ? this.cardHeader = "Site Ekle" : this.cardHeader = "Siteyi Düzenle";
+  setHeader(apartmentId: number): void {
+    apartmentId == 0 ? this.cardHeader = "Apartman Ekle" : this.cardHeader = "Apartmanı Düzenle";
   }
 
-  updateExt(selectedSectionExtDto: SectionExtDto): void {
-    this.sub6 = this.sectionService.updateExt(selectedSectionExtDto).subscribe({
+  updateExt(selectedApartmentExtDto: ApartmentExtDto): void {
+    this.sub6 = this.apartmentService.updateExt(selectedApartmentExtDto).subscribe({
       next: (response) => {
         if(response.success) {
           this.toastService.success(response.message);

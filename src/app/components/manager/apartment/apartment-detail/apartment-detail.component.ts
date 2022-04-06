@@ -3,11 +3,11 @@ import { NgForm, Validators } from '@angular/forms';
 
 import { cloneDeep } from 'lodash';
 
-import { ApartmentDto } from 'src/app/models/dtos/apartment-dto';
+import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
 import { ManagerDto } from 'src/app/models/dtos/manager-dto';
 import { SectionDto } from 'src/app/models/dtos/section-dto';
 
-const EMPTY_APARTMENT_DTO: ApartmentDto = {
+const EMPTY_APARTMENT_EXT_DTO: ApartmentExtDto = {
   apartmentId: 0,
   sectionId: 0,
   businessId: 0,
@@ -18,6 +18,12 @@ const EMPTY_APARTMENT_DTO: ApartmentDto = {
   blockNumber: 0,
   createdAt: new Date(),
   updatedAt: new Date(),
+  
+  // Extended With Section
+  sectionName: "",
+
+  // Extended With Manager
+  managerNameSurname: "",
 };
 
 @Component({
@@ -33,10 +39,10 @@ export class ApartmentDetailComponent {
   @Input() loading: boolean = false;
   @Input() managerDtos: ManagerDto[] = [];
   @Input() sectionDtos: SectionDto[] = [];
-  @Input() selectedApartmentDto: ApartmentDto = cloneDeep(EMPTY_APARTMENT_DTO);
+  @Input() selectedApartmentExtDto: ApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
 
   @Output() cancelled = new EventEmitter();
-  @Output() saved = new EventEmitter<ApartmentDto>();
+  @Output() saved = new EventEmitter<ApartmentExtDto>();
 
   public submitted: boolean = false;
   
@@ -50,7 +56,7 @@ export class ApartmentDetailComponent {
     this.cancelled.emit();
   }
 
-  save(selectedApartmentDto: ApartmentDto): void {
+  save(selectedApartmentExtDto: ApartmentExtDto): void {
     this.submitted = true;
 
     this.validate(this.form);
@@ -61,24 +67,18 @@ export class ApartmentDetailComponent {
       return;
     }
 
-    this.saved.emit(selectedApartmentDto);
+    this.saved.emit(selectedApartmentExtDto);
   }
 
   selectManager(managerId: number): void {
-    this.selectedApartmentDto.managerId = managerId;
+    this.selectedApartmentExtDto.managerId = managerId;
   }
 
   selectSection(sectionId: number): void {
-    this.selectedApartmentDto.sectionId = sectionId;
+    this.selectedApartmentExtDto.sectionId = sectionId;
   }
 
   validate(form: NgForm): void {
-    form.controls['sectionId'].setValidators([
-      Validators.required,
-      Validators.min(1)
-    ]);
-    form.controls['sectionId'].updateValueAndValidity();
-
     form.controls['managerId'].setValidators([
       Validators.required,
       Validators.min(1)

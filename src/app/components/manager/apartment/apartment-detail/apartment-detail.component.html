@@ -7,7 +7,7 @@
             <!-- /Card Başlığı -->
 
             <!-- Apartman Ekleme/Düzenleme Formu -->
-            <form #form="ngForm" (ngSubmit)="save(selectedApartmentDto)">
+            <form #form="ngForm" (ngSubmit)="save(selectedApartmentExtDto)">
                 <!-- Apartman Adı -->
                 <div class="mt-3 mb-3">
                     <label class="form-label" for="apartment-name">Apartman Adı</label>
@@ -15,7 +15,7 @@
                         id="apartment-name"
                         type="text"
                         name="apartmentName"
-                        [(ngModel)]="selectedApartmentDto.apartmentName"
+                        [(ngModel)]="selectedApartmentExtDto.apartmentName"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['apartmentName'].errors }"
                         tabindex="1"
@@ -33,9 +33,10 @@
                         id="section-id"
                         name="sectionId"
                         class="form-select"
-                        [(ngModel)]="selectedApartmentDto.sectionId"
-                        (change)="selectSection(selectedApartmentDto.sectionId)"
+                        [(ngModel)]="selectedApartmentExtDto.sectionId"
+                        (change)="selectSection(selectedApartmentExtDto.sectionId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['sectionId'].errors }"
+                        [disabled]="selectedApartmentExtDto.apartmentId != 0"
                         tabindex="2"
                     >
                         <option 
@@ -59,8 +60,8 @@
                         id="manager-id"
                         name="managerId"
                         class="form-select"
-                        [(ngModel)]="selectedApartmentDto.managerId"
-                        (change)="selectManager(selectedApartmentDto.managerId)"
+                        [(ngModel)]="selectedApartmentExtDto.managerId"
+                        (change)="selectManager(selectedApartmentExtDto.managerId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['managerId'].errors }"
                         tabindex="3"
                     >
@@ -85,7 +86,7 @@
                         id="block-number"
                         type="number"
                         name="blockNumber"
-                        [(ngModel)]="selectedApartmentDto.blockNumber"
+                        [(ngModel)]="selectedApartmentExtDto.blockNumber"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['blockNumber'].errors }"
                         tabindex="4"

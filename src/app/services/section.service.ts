@@ -5,10 +5,11 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { ListDataResult } from '../models/results/list-data-result';
+import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { Result } from 'src/app/models/results/result';
+import { SectionDto } from 'src/app/models/dtos/section-dto';
 import { SectionExtDto } from 'src/app/models/dtos/section-ext-dto';
-import { SingleDataResult } from '../models/results/single-data-result';
+import { SingleDataResult } from 'src/app/models/results/single-data-result';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,10 @@ export class SectionService {
 
   deleteExt(id: number): Observable<Result> {
     return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+  }
+
+  getByBusinessId(businessId: number): Observable<ListDataResult<SectionDto>> {
+    return this.http.get<ListDataResult<SectionDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
   }
 
   getExtById(id: number): Observable<SingleDataResult<SectionExtDto>> {

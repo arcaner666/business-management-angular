@@ -18,6 +18,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
 import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
+import { ApartmentComponent } from 'src/app/components/manager/apartment/apartment.component';
+import { ApartmentDetailComponent } from 'src/app/components/manager/apartment/apartment-detail/apartment-detail.component';
+import { ApartmentListComponent } from 'src/app/components/manager/apartment/apartment-list/apartment-list.component';
 import { AppComponent } from 'src/app/app.component';
 import { BranchComponent } from 'src/app/components/manager/branch/branch.component';
 import { BranchDetailComponent } from 'src/app/components/manager/branch/branch-detail/branch-detail.component';
@@ -34,9 +37,9 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { NavbarComponent } from 'src/app/components/layout/navbar/navbar.component';
 import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
 import { RegisterComponent } from 'src/app/components/public/register/register.component';
-import { SectionComponent } from './components/manager/section/section.component';
-import { SectionDetailComponent } from './components/manager/section/section-detail/section-detail.component';
-import { SectionListComponent } from './components/manager/section/section-list/section-list.component';
+import { SectionComponent } from 'src/app/components/manager/section/section.component';
+import { SectionDetailComponent } from 'src/app/components/manager/section/section-detail/section-detail.component';
+import { SectionListComponent } from 'src/app/components/manager/section/section-list/section-list.component';
 import { SectionGroupComponent } from 'src/app/components/manager/section-group/section-group.component';
 import { SectionGroupDetailComponent } from 'src/app/components/manager/section-group/section-group-detail/section-group-detail.component';
 import { SectionGroupListComponent } from 'src/app/components/manager/section-group/section-group-list/section-group-list.component';
@@ -49,14 +52,14 @@ import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
-import { ApartmentComponent } from './components/manager/apartment/apartment.component';
-import { ApartmentListComponent } from './components/manager/apartment/apartment-list/apartment-list.component';
-import { ApartmentDetailComponent } from './components/manager/apartment/apartment-detail/apartment-detail.component';
 
 @NgModule({
   declarations: [
     // Components
     AdminDashboardComponent,
+    ApartmentComponent,
+    ApartmentDetailComponent,
+    ApartmentListComponent,
     AppComponent,
     BranchComponent,
     BranchDetailComponent,

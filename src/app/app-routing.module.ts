@@ -4,6 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 // Components
 import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
+import { ApartmentComponent } from 'src/app/components/manager/apartment/apartment.component';
+import { ApartmentDetailComponent } from 'src/app/components/manager/apartment/apartment-detail/apartment-detail.component';
+import { ApartmentListComponent } from 'src/app/components/manager/apartment/apartment-list/apartment-list.component';
 import { CustomerDashboardComponent } from 'src/app/components/customer/customer-dashboard/customer-dashboard.component';
 import { BranchComponent } from 'src/app/components/manager/branch/branch.component';
 import { BranchDetailComponent } from 'src/app/components/manager/branch/branch-detail/branch-detail.component';
@@ -71,6 +74,18 @@ const routes: Routes = [
   },
   {
     path: 'manager/section-detail', component: SectionDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/apartment', component: ApartmentComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/apartment-list', component: ApartmentListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/apartment-detail', component: ApartmentDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 
