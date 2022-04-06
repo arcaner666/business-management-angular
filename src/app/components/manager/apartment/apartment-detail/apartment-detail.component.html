@@ -1,0 +1,129 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <!-- Card Başlığı -->
+            <h2 class="card-title text-center fs-4">{{cardHeader}}</h2>
+            <!-- /Card Başlığı -->
+
+            <!-- Apartman Ekleme/Düzenleme Formu -->
+            <form #form="ngForm" (ngSubmit)="save(selectedApartmentDto)">
+                <!-- Apartman Adı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="apartment-name">Apartman Adı</label>
+                    <input
+                        id="apartment-name"
+                        type="text"
+                        name="apartmentName"
+                        [(ngModel)]="selectedApartmentDto.apartmentName"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['apartmentName'].errors }"
+                        tabindex="1"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['apartmentName'].errors">
+                        <div *ngIf="form.controls['apartmentName'].errors['required']">Lütfen apartman adı giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Apartman Adı -->
+                
+                <!-- Site -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="section-id">Site</label>
+                    <select 
+                        id="section-id"
+                        name="sectionId"
+                        class="form-select"
+                        [(ngModel)]="selectedApartmentDto.sectionId"
+                        (change)="selectSection(selectedApartmentDto.sectionId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionId'].errors }"
+                        tabindex="2"
+                    >
+                        <option 
+                            *ngFor="let sectionDto of sectionDtos"
+                            [value]="sectionDto.sectionId"
+                        >
+                            {{sectionDto.sectionName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionId'].errors">
+                        <div *ngIf="form.controls['sectionId'].errors['required']">Lütfen site seçiniz.</div>
+                        <div *ngIf="form.controls['sectionId'].errors['min']">Lütfen site seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Site -->
+
+                <!-- Yönetici -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="manager-id">Yönetici</label>
+                    <select 
+                        id="manager-id"
+                        name="managerId"
+                        class="form-select"
+                        [(ngModel)]="selectedApartmentDto.managerId"
+                        (change)="selectManager(selectedApartmentDto.managerId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['managerId'].errors }"
+                        tabindex="3"
+                    >
+                        <option 
+                            *ngFor="let managerDto of managerDtos"
+                            [value]="managerDto.managerId"
+                        >
+                            {{managerDto.nameSurname}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['managerId'].errors">
+                        <div *ngIf="form.controls['managerId'].errors['required']">Lütfen yönetici seçiniz.</div>
+                        <div *ngIf="form.controls['managerId'].errors['min']">Lütfen yönetici seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Yönetici -->
+
+                <!-- Blok Numarası -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="block-number">Blok Numarası</label>
+                    <input
+                        id="block-number"
+                        type="number"
+                        name="blockNumber"
+                        [(ngModel)]="selectedApartmentDto.blockNumber"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['blockNumber'].errors }"
+                        tabindex="4"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['blockNumber'].errors">
+                        <div *ngIf="form.controls['blockNumber'].errors['required']">Lütfen blok numarası giriniz.</div>
+                        <div *ngIf="form.controls['blockNumber'].errors['min']">Lütfen blok numarası giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Blok Numarası -->
+
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="5"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                                (click)="cancel()"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
+            </form>
+            <!-- /Apartman Ekleme/Düzenleme Formu -->
+        </div>
+    </div>
+</div>
+    

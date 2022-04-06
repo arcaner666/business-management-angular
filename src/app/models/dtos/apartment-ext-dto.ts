@@ -15,7 +15,4 @@ export interface ApartmentExtDto {
 
     // Extended With Manager
     managerNameSurname: string;
-
-    // Extended With Section + FullAddress
-    addressText: string;
 }

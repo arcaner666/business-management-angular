@@ -49,6 +49,9 @@ import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
+import { ApartmentComponent } from './components/manager/apartment/apartment.component';
+import { ApartmentListComponent } from './components/manager/apartment/apartment-list/apartment-list.component';
+import { ApartmentDetailComponent } from './components/manager/apartment/apartment-detail/apartment-detail.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +82,9 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
     SidebarFloatingComponent,
     SidebarStaticComponent,
     ToastComponent,
+    ApartmentComponent,
+    ApartmentListComponent,
+    ApartmentDetailComponent,
   ],
   imports: [
     // Angular Modules
