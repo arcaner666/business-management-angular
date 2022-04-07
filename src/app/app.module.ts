@@ -28,6 +28,9 @@ import { BranchListComponent } from 'src/app/components/manager/branch/branch-li
 import { ContentComponent } from 'src/app/components/layout/content/content.component';
 import { CustomerDashboardComponent } from 'src/app/components/customer/customer-dashboard/customer-dashboard.component';
 import { ErrorComponent } from 'src/app/components/public/error/error.component';
+import { FlatComponent } from 'src/app/components/manager/flat/flat.component';
+import { FlatListComponent } from 'src/app/components/manager/flat/flat-list/flat-list.component';
+import { FlatDetailComponent } from 'src/app/components/manager/flat/flat-detail/flat-detail.component';
 import { FooterComponent } from 'src/app/components/layout/footer/footer.component';
 import { HomeComponent } from 'src/app/components/public/home/home.component';
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
@@ -58,8 +61,8 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
     // Components
     AdminDashboardComponent,
     ApartmentComponent,
-    ApartmentDetailComponent,
     ApartmentListComponent,
+    ApartmentDetailComponent,
     AppComponent,
     BranchComponent,
     BranchDetailComponent,
@@ -67,6 +70,9 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
     ContentComponent,
     CustomerDashboardComponent,
     ErrorComponent,
+    FlatComponent,
+    FlatListComponent,
+    FlatDetailComponent,
     FooterComponent,
     HomeComponent,
     LayoutComponent,
@@ -85,9 +91,6 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
     SidebarFloatingComponent,
     SidebarStaticComponent,
     ToastComponent,
-    ApartmentComponent,
-    ApartmentListComponent,
-    ApartmentDetailComponent,
   ],
   imports: [
     // Angular Modules

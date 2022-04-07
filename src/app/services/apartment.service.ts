@@ -31,6 +31,14 @@ export class ApartmentService {
     return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
+  getByBusinessId(businessId: number): Observable<ListDataResult<ApartmentDto>> {
+    return this.http.get<ListDataResult<ApartmentDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
+  }
+
+  getBySectionId(sectionId: number): Observable<ListDataResult<ApartmentDto>> {
+    return this.http.get<ListDataResult<ApartmentDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbysectionid/${sectionId}`);
+  }
+
   getExtById(id: number): Observable<SingleDataResult<ApartmentExtDto>> {
     return this.http.get<SingleDataResult<ApartmentExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
   }

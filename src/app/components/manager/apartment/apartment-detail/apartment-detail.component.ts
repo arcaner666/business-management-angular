@@ -59,7 +59,10 @@ export class ApartmentDetailComponent {
   save(selectedApartmentExtDto: ApartmentExtDto): void {
     this.submitted = true;
 
-    this.validate(this.form);
+    if (selectedApartmentExtDto.apartmentId == 0) 
+      this.validateForAdd(this.form);
+    else
+      this.validateForUpdate(this.form);
 
     if (this.form.invalid) {
       console.log("Form geçersiz.");
@@ -70,15 +73,30 @@ export class ApartmentDetailComponent {
     this.saved.emit(selectedApartmentExtDto);
   }
 
-  selectManager(managerId: number): void {
-    this.selectedApartmentExtDto.managerId = managerId;
+  validateForAdd(form: NgForm): void {
+    form.controls['sectionId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['sectionId'].updateValueAndValidity();
+
+    form.controls['managerId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['managerId'].updateValueAndValidity();
+
+    form.controls['apartmentName'].setValidators(Validators.required);
+    form.controls['apartmentName'].updateValueAndValidity();
+    
+    form.controls['blockNumber'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['blockNumber'].updateValueAndValidity();
   }
 
-  selectSection(sectionId: number): void {
-    this.selectedApartmentExtDto.sectionId = sectionId;
-  }
-
-  validate(form: NgForm): void {
+  validateForUpdate(form: NgForm): void {
     form.controls['managerId'].setValidators([
       Validators.required,
       Validators.min(1)

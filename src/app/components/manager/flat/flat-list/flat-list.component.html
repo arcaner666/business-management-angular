@@ -1,0 +1,105 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <!-- Sayfa Başına Kayıt Menüsü -->
+        <div class="row g-0 p-3">
+            <ng-container *ngIf="flatExtDtos.length > 10">
+                <div class="col-6 d-flex">
+                    <label class="form-label">
+                        <select class="form-select" [(ngModel)]="itemsPerPage">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </label>
+                </div>
+            </ng-container>
+            <div class="col-6 d-flex ms-auto justify-content-end">
+                <button class="btn btn-outline-primary d-flex flex-row justify-content-center align-items-center" (click)="openAddPage()">
+                    <div class="icon me-2">
+                        <i class="fas fa-plus fa-sm"></i>
+                    </div>
+                    <span>Daire Ekle</span>
+                </button>
+            </div>
+        </div>
+        <!-- /Sayfa Başına Kayıt Menüsü -->
+
+        <!-- Daire Tablosu -->
+        <div class="row g-0 p-3" id="basic-table">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Site</th>
+                                <th>Apartman</th>
+                                <th>Kapı Numarası</th>
+                                <th>Ev Sahibi</th>
+                                <th>Kiracı</th>
+                                <th>Daire Kodu</th>
+                                <th>Oluşturulma Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let flatExtDto of flatExtDtos | slice: pageSize | slice: 0 : itemsPerPage; let i = index">
+                                <td>{{ elementIndex + i + 1 }}</td>
+                                <td>{{ flatExtDto.sectionName }}</td>
+                                <td>{{ flatExtDto.apartmentName }}</td>
+                                <td>{{ flatExtDto.doorNumber }}</td>
+                                <td>{{ flatExtDto.houseOwnerNameSurname }}</td>
+                                <td>{{ flatExtDto.tenantNameSurname }}</td>
+                                <td>{{ flatExtDto.flatCode }}</td>
+                                <td>{{ flatExtDto.createdAt | date: "dd/MM/yyyy HH:mm:ss" }}</td>
+                                <td class="overflow-hidden">
+                                    <div ngbDropdown container="body">
+                                        <button type="button" class="btn btn-sm hide-arrow" ngbDropdownToggle data-toggle="dropdown">
+                                            <div class="icon">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </div>
+                                        </button>
+                                        <div ngbDropdownMenu>
+                                            <a ngbDropdownItem class="cursor-pointer" (click)="openEditPage(flatExtDto)">
+                                                <div class="icon me-2">
+                                                    <i class="fas fa-edit fa-lg"></i>
+                                                </div>
+                                                <span>Düzenle</span>
+                                            </a>
+                                            <a ngbDropdownItem class="cursor-pointer" (click)="openDeleteModal(flatExtDto)">
+                                                <div class="icon me-2">
+                                                    <i class="fas fa-trash fa-lg"></i>
+                                                </div>
+                                                <span>Sil</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /Daire Tablosu -->
+
+        <!-- Sayfalama Menüsü -->
+        <ng-container *ngIf="flatExtDtos.length > 10">
+            <div class="row g-0 ps-3 pe-3 pt-0 pb-0">
+                <div class="col-12 d-flex">
+                    <ngb-pagination class="ms-auto" [collectionSize]="flatExtDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
+                        <ng-template ngbPaginationPrevious>
+                            <i class="fas fa-angle-left fa-lg"></i>
+                        </ng-template>
+                        <ng-template ngbPaginationNext>
+                            <i class="fas fa-angle-right fa-lg"></i>
+                        </ng-template>
+                    </ngb-pagination>
+                </div>
+            </div>
+        </ng-container>
+        <!-- /Sayfalama Menüsü -->
+    </div>
+</div>
+    

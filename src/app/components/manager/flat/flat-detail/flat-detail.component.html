@@ -1,0 +1,162 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <!-- Card Başlığı -->
+            <h2 class="card-title text-center fs-4">{{cardHeader}}</h2>
+            <!-- /Card Başlığı -->
+
+            <!-- Daire Ekleme/Düzenleme Formu -->
+            <form #form="ngForm" (ngSubmit)="save(selectedFlatExtDto)">
+                <!-- Site -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="section-id">Site</label>
+                    <select 
+                        id="section-id"
+                        name="sectionId"
+                        class="form-select"
+                        [(ngModel)]="selectedFlatExtDto.sectionId"
+                        (change)="selectSection(selectedFlatExtDto.sectionId)"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionId'].errors }"
+                        [disabled]="selectedFlatExtDto.flatId != 0"
+                        tabindex="1"
+                    >
+                        <option 
+                            *ngFor="let sectionDto of sectionDtos"
+                            [value]="sectionDto.sectionId"
+                        >
+                            {{sectionDto.sectionName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionId'].errors">
+                        <div *ngIf="form.controls['sectionId'].errors['required']">Lütfen site seçiniz.</div>
+                        <div *ngIf="form.controls['sectionId'].errors['min']">Lütfen site seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Site -->
+
+                <!-- Apartman -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="apartment-id">Apartman</label>
+                    <select 
+                        id="apartment-id"
+                        name="apartmentId"
+                        class="form-select"
+                        [(ngModel)]="selectedFlatExtDto.apartmentId"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['apartmentId'].errors }"
+                        [disabled]="selectedFlatExtDto.flatId != 0"
+                        tabindex="2"
+                    >
+                        <option 
+                            *ngFor="let apartmentDto of apartmentDtos"
+                            [value]="apartmentDto.apartmentId"
+                        >
+                            {{apartmentDto.apartmentName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['apartmentId'].errors">
+                        <div *ngIf="form.controls['apartmentId'].errors['required']">Lütfen apartman seçiniz.</div>
+                        <div *ngIf="form.controls['apartmentId'].errors['min']">Lütfen apartman seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Apartman -->
+
+                <!-- Mülk Sahibi -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="house-owner-id">Mülk Sahibi</label>
+                    <select 
+                        id="house-owner-id"
+                        name="houseOwnerId"
+                        class="form-select"
+                        [(ngModel)]="selectedFlatExtDto.houseOwnerId"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['houseOwnerId'].errors }"
+                        tabindex="3"
+                    >
+                        <option 
+                            *ngFor="let houseOwnerDto of houseOwnerDtos"
+                            [value]="houseOwnerDto.houseOwnerId"
+                        >
+                            {{houseOwnerDto.nameSurname}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['houseOwnerId'].errors">
+                        <div *ngIf="form.controls['houseOwnerId'].errors['required']">Lütfen mülk sahibi seçiniz.</div>
+                        <div *ngIf="form.controls['houseOwnerId'].errors['min']">Lütfen mülk sahibi seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Mülk Sahibi -->
+
+                <!-- Kiracı -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="tenant-id">Kiracı</label>
+                    <select 
+                        id="tenant-id"
+                        name="tenantId"
+                        class="form-select"
+                        [(ngModel)]="selectedFlatExtDto.tenantId"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['tenantId'].errors }"
+                        tabindex="4"
+                    >
+                        <option 
+                            *ngFor="let tenantDto of tenantDtos"
+                            [value]="tenantDto.tenantId"
+                        >
+                            {{tenantDto.nameSurname}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['tenantId'].errors">
+                        <div *ngIf="form.controls['tenantId'].errors['required']">Lütfen kiracı seçiniz.</div>
+                        <div *ngIf="form.controls['tenantId'].errors['min']">Lütfen kiracı seçiniz.</div>
+                    </div>
+                </div>
+                <!-- /Kiracı -->
+                
+                <!-- Kapı Numarası -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="door-number">Kapı Numarası</label>
+                    <input
+                        id="door-number"
+                        type="number"
+                        name="doorNumber"
+                        [(ngModel)]="selectedFlatExtDto.doorNumber"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && form.controls['doorNumber'].errors }"
+                        tabindex="5"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && form.controls['doorNumber'].errors">
+                        <div *ngIf="form.controls['doorNumber'].errors['required']">Lütfen kapı numarası giriniz.</div>
+                        <div *ngIf="form.controls['doorNumber'].errors['min']">Lütfen kapı numarası giriniz.</div>
+                    </div>
+                </div>
+                <!-- /Kapı Numarası -->
+
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="6"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                                (click)="cancel()"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
+            </form>
+            <!-- /Daire Ekleme/Düzenleme Formu -->
+        </div>
+    </div>
+</div>
+    

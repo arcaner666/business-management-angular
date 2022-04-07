@@ -64,7 +64,11 @@ export class BranchDetailComponent {
   save(selectedBranchExtDto: BranchExtDto): void {
     this.submitted = true;
 
-    this.validate(this.form);
+    if (selectedBranchExtDto.branchId == 0) {
+      this.validateForAdd(this.form);
+    } else {
+      this.validateForUpdate(this.form);
+    }
 
     if (this.form.invalid) {
       console.log("Form geçersiz.");
@@ -82,16 +86,41 @@ export class BranchDetailComponent {
     this.citySelected.emit(cityId);
   }
 
-  selectDistrict(districtId: number): void {
-    this.selectedBranchExtDto.districtId = districtId;
-  }
-
-  validate(form: NgForm): void {
+  validateForAdd(form: NgForm): void {
     form.controls['branchName'].setValidators(Validators.required);
     form.controls['branchName'].updateValueAndValidity();
     
     form.controls['branchCode'].setValidators(Validators.required);
     form.controls['branchCode'].updateValueAndValidity();
+
+    form.controls['cityId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['cityId'].updateValueAndValidity();
+
+    form.controls['districtId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['districtId'].updateValueAndValidity();
+
+    form.controls['addressTitle'].setValidators(Validators.required);
+    form.controls['addressTitle'].updateValueAndValidity();
+
+    form.controls['postalCode'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['postalCode'].updateValueAndValidity();
+
+    form.controls['addressText'].setValidators(Validators.required);
+    form.controls['addressText'].updateValueAndValidity();
+  }
+
+  validateForUpdate(form: NgForm): void {
+    form.controls['branchName'].setValidators(Validators.required);
+    form.controls['branchName'].updateValueAndValidity();
 
     form.controls['cityId'].setValidators([
       Validators.required,

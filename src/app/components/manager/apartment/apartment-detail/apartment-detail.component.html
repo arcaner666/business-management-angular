@@ -34,7 +34,6 @@
                         name="sectionId"
                         class="form-select"
                         [(ngModel)]="selectedApartmentExtDto.sectionId"
-                        (change)="selectSection(selectedApartmentExtDto.sectionId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['sectionId'].errors }"
                         [disabled]="selectedApartmentExtDto.apartmentId != 0"
                         tabindex="2"
@@ -61,7 +60,6 @@
                         name="managerId"
                         class="form-select"
                         [(ngModel)]="selectedApartmentExtDto.managerId"
-                        (change)="selectManager(selectedApartmentExtDto.managerId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['managerId'].errors }"
                         tabindex="3"
                     >

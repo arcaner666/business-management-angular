@@ -34,7 +34,6 @@
                         name="sectionGroupId"
                         class="form-select"
                         [(ngModel)]="selectedSectionExtDto.sectionGroupId"
-                        (change)="selectSectionGroup(selectedSectionExtDto.sectionGroupId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['sectionGroupId'].errors }"
                         tabindex="2"
                     >
@@ -60,7 +59,6 @@
                         name="managerId"
                         class="form-select"
                         [(ngModel)]="selectedSectionExtDto.managerId"
-                        (change)="selectManager(selectedSectionExtDto.managerId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['managerId'].errors }"
                         tabindex="3"
                     >
@@ -112,7 +110,6 @@
                         name="districtId"
                         class="form-select"
                         [(ngModel)]="selectedSectionExtDto.districtId"
-                        (change)="selectDistrict(selectedSectionExtDto.districtId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['districtId'].errors }"
                         tabindex="5"
                     >

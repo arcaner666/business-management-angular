@@ -85,7 +85,6 @@
                         name="districtId"
                         class="form-select"
                         [(ngModel)]="selectedBranchExtDto.districtId"
-                        (change)="selectDistrict(selectedBranchExtDto.districtId)"
                         [ngClass]="{ 'is-invalid': submitted && form.controls['districtId'].errors }"
                         tabindex="4"
                     >

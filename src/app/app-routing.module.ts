@@ -12,6 +12,9 @@ import { BranchComponent } from 'src/app/components/manager/branch/branch.compon
 import { BranchDetailComponent } from 'src/app/components/manager/branch/branch-detail/branch-detail.component';
 import { BranchListComponent } from 'src/app/components/manager/branch/branch-list/branch-list.component';
 import { ErrorComponent } from 'src/app/components/public/error/error.component';
+import { FlatComponent } from 'src/app/components/manager/flat/flat.component';
+import { FlatListComponent } from 'src/app/components/manager/flat/flat-list/flat-list.component';
+import { FlatDetailComponent } from 'src/app/components/manager/flat/flat-detail/flat-detail.component';
 import { HomeComponent } from 'src/app/components/public/home/home.component';
 import { LoginComponent } from 'src/app/components/public/login/login.component';
 import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
@@ -86,6 +89,18 @@ const routes: Routes = [
   },
   {
     path: 'manager/apartment-detail', component: ApartmentDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/flat', component: FlatComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/flat-list', component: FlatListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/flat-detail', component: FlatDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 

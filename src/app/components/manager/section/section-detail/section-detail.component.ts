@@ -77,7 +77,11 @@ export class SectionDetailComponent {
   save(selectedSectionExtDto: SectionExtDto): void {
     this.submitted = true;
 
-    this.validate(this.form);
+    if (selectedSectionExtDto.sectionId == 0) {
+      this.validateForAdd(this.form);
+    } else {
+      this.validateForUpdate(this.form);
+    }
 
     if (this.form.invalid) {
       console.log("Form geçersiz.");
@@ -95,19 +99,45 @@ export class SectionDetailComponent {
     this.citySelected.emit(cityId);
   }
 
-  selectDistrict(districtId: number): void {
-    this.selectedSectionExtDto.districtId = districtId;
+  validateForAdd(form: NgForm): void {
+    form.controls['sectionName'].setValidators(Validators.required);
+    form.controls['sectionName'].updateValueAndValidity();
+    
+    form.controls['sectionGroupId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['sectionGroupId'].updateValueAndValidity();
+
+    form.controls['managerId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['managerId'].updateValueAndValidity();
+
+    form.controls['cityId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['cityId'].updateValueAndValidity();
+
+    form.controls['districtId'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['districtId'].updateValueAndValidity();
+
+    form.controls['postalCode'].setValidators([
+      Validators.required,
+      Validators.min(1)
+    ]);
+    form.controls['postalCode'].updateValueAndValidity();
+
+    form.controls['addressText'].setValidators(Validators.required);
+    form.controls['addressText'].updateValueAndValidity();
   }
 
-  selectManager(managerId: number): void {
-    this.selectedSectionExtDto.managerId = managerId;
-  }
-
-  selectSectionGroup(sectionGroupId: number): void {
-    this.selectedSectionExtDto.sectionGroupId = sectionGroupId;
-  }
-
-  validate(form: NgForm): void {
+  validateForUpdate(form: NgForm): void {
     form.controls['sectionName'].setValidators(Validators.required);
     form.controls['sectionName'].updateValueAndValidity();
     

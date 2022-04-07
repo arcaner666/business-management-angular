@@ -213,6 +213,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         next: (response) => {
           if(response.success) {
             this.selectedSectionExtDto = response.data;
+            this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
           }
         }, error: (error) => {
           console.log(error);
