@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // Components
+import { AccountGroupComponent } from 'src/app/components/manager/account-group/account-group.component';
+import { AccountGroupListComponent } from 'src/app/components/manager/account-group/account-group-list/account-group-list.component';
 import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
 import { ApartmentComponent } from 'src/app/components/manager/apartment/apartment.component';
 import { ApartmentDetailComponent } from 'src/app/components/manager/apartment/apartment-detail/apartment-detail.component';
@@ -101,6 +103,14 @@ const routes: Routes = [
   },
   {
     path: 'manager/flat-detail', component: FlatDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/account-group', component: AccountGroupComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/account-group-list', component: AccountGroupListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 

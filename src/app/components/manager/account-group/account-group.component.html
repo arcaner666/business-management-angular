@@ -1,0 +1,9 @@
+<ng-container *ngIf="activePage == 'list'">
+    <ng-container *ngTemplateOutlet="accountGroupList"></ng-container>
+</ng-container>
+
+<ng-template #accountGroupList>
+    <app-account-group-list
+        [accountGroupDtos]="(accountGroupDtos$ | async)?.data || []"
+    ></app-account-group-list>
+</ng-template>

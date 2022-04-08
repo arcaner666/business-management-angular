@@ -17,6 +17,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
+import { AccountGroupComponent } from 'src/app/components/manager/account-group/account-group.component';
+import { AccountGroupListComponent } from 'src/app/components/manager/account-group/account-group-list/account-group-list.component';
 import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
 import { ApartmentComponent } from 'src/app/components/manager/apartment/apartment.component';
 import { ApartmentDetailComponent } from 'src/app/components/manager/apartment/apartment-detail/apartment-detail.component';
@@ -59,6 +61,8 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 @NgModule({
   declarations: [
     // Components
+    AccountGroupComponent,
+    AccountGroupListComponent,
     AdminDashboardComponent,
     ApartmentComponent,
     ApartmentListComponent,
@@ -108,7 +112,8 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
           return authorizationDto?.accessToken;
         },
         allowedDomains: [
-          "localhost:44324",
+          "localhost:5001",
+          "localhost:5000",
         ]
       },
     }),

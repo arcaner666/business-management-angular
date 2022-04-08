@@ -1,0 +1,65 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <!-- Sayfa Başına Kayıt Menüsü -->
+        <div class="row g-0 p-3">
+            <ng-container *ngIf="accountGroupDtos.length > 10">
+                <div class="col-6 d-flex">
+                    <label class="form-label">
+                        <select class="form-select" [(ngModel)]="itemsPerPage">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </label>
+                </div>
+            </ng-container>
+        </div>
+        <!-- /Sayfa Başına Kayıt Menüsü -->
+
+        <!-- Hesap Grupları Tablosu -->
+        <div class="row g-0 p-3" id="basic-table">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th></th>
+                                <th>Grup Kodu</th>
+                                <th>Grup Adı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let accountGroupDto of accountGroupDtos | slice: pageSize | slice: 0 : itemsPerPage; let i = index">
+                                <td>{{ elementIndex + i + 1 }}</td>
+                                <td></td>
+                                <td>{{ accountGroupDto.accountGroupCode }}</td>
+                                <td>{{ accountGroupDto.accountGroupName }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /Hesap Grupları Tablosu -->
+
+        <!-- Sayfalama Menüsü -->
+        <ng-container *ngIf="accountGroupDtos.length > 10">
+            <div class="row g-0 ps-3 pe-3 pt-0 pb-0">
+                <div class="col-12 d-flex">
+                    <ngb-pagination class="ms-auto" [collectionSize]="accountGroupDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
+                        <ng-template ngbPaginationPrevious>
+                            <i class="fas fa-angle-left fa-lg"></i>
+                        </ng-template>
+                        <ng-template ngbPaginationNext>
+                            <i class="fas fa-angle-right fa-lg"></i>
+                        </ng-template>
+                    </ngb-pagination>
+                </div>
+            </div>
+        </ng-container>
+        <!-- /Sayfalama Menüsü -->
+    </div>
+</div>
+    
