@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
+import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AccountGroupService } from 'src/app/services/account-group.service';
 
