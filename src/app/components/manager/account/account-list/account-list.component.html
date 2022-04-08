@@ -1,0 +1,101 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <!-- Sayfa Başına Kayıt Menüsü -->
+        <div class="row g-0 p-3">
+            <ng-container *ngIf="accountExtDtos.length > 10">
+                <div class="col-6 d-flex">
+                    <label class="form-label">
+                        <select class="form-select" [(ngModel)]="itemsPerPage">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </label>
+                </div>
+            </ng-container>
+            <div class="col-6 d-flex ms-auto justify-content-end">
+                <button class="btn btn-outline-primary d-flex flex-row justify-content-center align-items-center" (click)="openAddPage()">
+                    <div class="icon me-2">
+                        <i class="fas fa-plus fa-sm"></i>
+                    </div>
+                    <span>Cari Hesap Ekle</span>
+                </button>
+            </div>
+        </div>
+        <!-- /Sayfa Başına Kayıt Menüsü -->
+
+        <!-- Cari Hesap Tablosu -->
+        <div class="row g-0 p-3" id="basic-table">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Kod</th>
+                                <th>Ünvan</th>
+                                <th>Hesap Grubu</th>
+                                <th>Şube</th>
+                                <th>Oluşturulma Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let accountExtDto of accountExtDtos | slice: pageSize | slice: 0 : itemsPerPage; let i = index">
+                                <td>{{ elementIndex + i + 1 }}</td>
+                                <td>{{ accountExtDto.accountCode }}</td>
+                                <td>{{ accountExtDto.accountName }}</td>
+                                <td>{{ accountExtDto.accountGroupName }}</td>
+                                <td>{{ accountExtDto.branchName }}</td>
+                                <td>{{ accountExtDto.createdAt | date: "dd/MM/yyyy HH:mm:ss" }}</td>
+                                <td class="overflow-hidden">
+                                    <div ngbDropdown container="body">
+                                        <button type="button" class="btn btn-sm hide-arrow" ngbDropdownToggle data-toggle="dropdown">
+                                            <div class="icon">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </div>
+                                        </button>
+                                        <div ngbDropdownMenu>
+                                            <a ngbDropdownItem class="cursor-pointer" (click)="openEditPage(accountExtDto)">
+                                                <div class="icon me-2">
+                                                    <i class="fas fa-edit fa-lg"></i>
+                                                </div>
+                                                <span>Düzenle</span>
+                                            </a>
+                                            <a ngbDropdownItem class="cursor-pointer" (click)="openDeleteModal(accountExtDto)">
+                                                <div class="icon me-2">
+                                                    <i class="fas fa-trash fa-lg"></i>
+                                                </div>
+                                                <span>Sil</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /Cari Hesap Tablosu -->
+
+        <!-- Sayfalama Menüsü -->
+        <ng-container *ngIf="accountExtDtos.length > 10">
+            <div class="row g-0 ps-3 pe-3 pt-0 pb-0">
+                <div class="col-12 d-flex">
+                    <ngb-pagination class="ms-auto" [collectionSize]="accountExtDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
+                        <ng-template ngbPaginationPrevious>
+                            <i class="fas fa-angle-left fa-lg"></i>
+                        </ng-template>
+                        <ng-template ngbPaginationNext>
+                            <i class="fas fa-angle-right fa-lg"></i>
+                        </ng-template>
+                    </ngb-pagination>
+                </div>
+            </div>
+        </ng-container>
+        <!-- /Sayfalama Menüsü -->
+    </div>
+</div>
+    

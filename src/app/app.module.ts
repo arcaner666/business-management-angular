@@ -17,8 +17,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
+import { AccountComponent } from 'src/app/components/manager/account/account.component';
+import { AccountDetailComponent } from 'src/app/components/manager/account/account-detail/account-detail.component';
 import { AccountGroupComponent } from 'src/app/components/manager/account-group/account-group.component';
 import { AccountGroupListComponent } from 'src/app/components/manager/account-group/account-group-list/account-group-list.component';
+import { AccountListComponent } from 'src/app/components/manager/account/account-list/account-list.component';
 import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
 import { ApartmentComponent } from 'src/app/components/manager/apartment/apartment.component';
 import { ApartmentDetailComponent } from 'src/app/components/manager/apartment/apartment-detail/apartment-detail.component';
@@ -61,8 +64,11 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 @NgModule({
   declarations: [
     // Components
+    AccountComponent,
+    AccountDetailComponent,
     AccountGroupComponent,
     AccountGroupListComponent,
+    AccountListComponent,
     AdminDashboardComponent,
     ApartmentComponent,
     ApartmentListComponent,
