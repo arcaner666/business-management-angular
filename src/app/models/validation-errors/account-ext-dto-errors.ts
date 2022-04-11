@@ -1,22 +1,22 @@
-export interface AccountExtDto {
-    accountId: number;
-    businessId: number;
-    branchId: number;
-    accountGroupId: number;
-    currencyId: number;
-    accountOrder: number;
+export interface AccountExtDtoErrors {
+    accountId: string;
+    businessId: string;
+    branchId: string;
+    accountGroupId: string;
+    currencyId: string;
+    accountOrder: string;
     accountName: string;
     accountCode: string;
     taxOffice: string;
-    taxNumber?: number;
-    identityNumber?: number;
-    debitBalance: number;
-    creditBalance: number;
-    balance: number;
-    limit: number;
-    standartMaturity: number;
-    createdAt: Date;
-    updatedAt: Date;
+    taxNumber: string;
+    identityNumber: string;
+    debitBalance: string;
+    creditBalance: string;
+    balance: string;
+    limit: string;
+    standartMaturity: string;
+    createdAt: string;
+    updatedAt: string;
 
     // Extended With Branch
     branchName: string;
@@ -33,7 +33,7 @@ export interface AccountExtDto {
     nameSurname: string;
     email: string;
     phone: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     gender: string;
     notes: string;
     avatarUrl: string;

@@ -35,6 +35,7 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   currencyName: "",
 
   // Added Custom Fields
+  accountTypeName: "",
   nameSurname: "",
   email: "",
   phone: "",

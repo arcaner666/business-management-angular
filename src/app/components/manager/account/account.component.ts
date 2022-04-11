@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
+import { AccountExtDtoErrors } from 'src/app/models/validation-errors/account-ext-dto-errors';
 import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
@@ -16,6 +17,47 @@ import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { ToastService } from 'src/app/services/toast.service';
+
+const ACCOUNT_EXT_DTO_ERRORS: AccountExtDtoErrors = {
+  accountId: "",
+  businessId: "",
+  branchId: "",
+  accountGroupId: "",
+  currencyId: "",
+  accountOrder: "",
+  accountName: "",
+  accountCode: "",
+  taxOffice: "",
+  taxNumber: "",
+  identityNumber: "",
+  debitBalance: "",
+  creditBalance: "",
+  balance: "",
+  limit: "",
+  standartMaturity: "",
+  createdAt: "",
+  updatedAt: "",
+
+  // Extended With Branch
+  branchName: "",
+
+  // Extended With AccountGroup
+  accountGroupName: "",
+  accountGroupCode: "",
+
+  // Extended With Currency
+  currencyName: "",
+
+  // Added Custom Fields
+  accountTypeName: "",
+  nameSurname: "",
+  email: "",
+  phone: "",
+  dateOfBirth: "",
+  gender: "",
+  notes: "",
+  avatarUrl: "",
+};
 
 const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   accountId: 0,
@@ -48,6 +90,7 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   currencyName: "",
 
   // Added Custom Fields
+  accountTypeName: "",
   nameSurname: "",
   email: "",
   phone: "",
@@ -84,6 +127,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   public cardHeader: string = "";
   public loading: boolean = false;
   public selectedAccountExtDto: AccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
+  public selectedAccountExtDtoErrors: AccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -117,26 +161,34 @@ export class AccountComponent implements OnInit, OnDestroy {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     selectedAccountExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
-    this.sub1 = this.accountService.addExt(selectedAccountExtDto).pipe(
-      concatMap((response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
-        }
-        this.loading = false;
+    let isModelValid = this.validateForAdd(selectedAccountExtDto);
 
-        this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
-        this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-        return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
-      }
-    )).subscribe({
-      error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+    if (isModelValid) {
+      this.loading = true;
+
+      this.sub1 = this.accountService.addExt(selectedAccountExtDto).pipe(
+        concatMap((response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+  
+          this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
+          this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
+          return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+        }
+      )).subscribe({
+        error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
+        }
+      });
+    } else {
+      console.log("Form Geçersiz.");
+    }
   }
 
   cancel(): void {
@@ -242,7 +294,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   save(selectedAccountExtDto: AccountExtDto): void {
-    this.loading = true;
     if (selectedAccountExtDto.accountId == 0) {
       this.addExt(selectedAccountExtDto);
     } else {
@@ -290,6 +341,85 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     });
+  }
+
+  validateForAdd(selectedAccountExtDto: AccountExtDto): boolean {
+    if (selectedAccountExtDto.accountTypeName == "") {
+      this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
+      return false;
+    } else if (selectedAccountExtDto.accountGroupId == 0) {
+      this.selectedAccountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
+      return false;
+    } else if (selectedAccountExtDto.nameSurname == "") {
+      this.selectedAccountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
+      return false;
+    } else if (selectedAccountExtDto.phone == "") {
+      this.selectedAccountExtDtoErrors.phone = "Lütfen hesap sahibinin telefon numarasını giriniz.";
+      return false;
+    } else if (selectedAccountExtDto.phone.length != 10) {
+      this.selectedAccountExtDtoErrors.phone = "Telefon numarasını başında sıfır olmadan 10 haneden olarak giriniz. Örneğin; 555 444 33 22";
+      return false;
+    } else if (selectedAccountExtDto.branchId == 0) {
+      this.selectedAccountExtDtoErrors.branchId = "Lütfen şube seçiniz.";
+      return false;
+    } else if (selectedAccountExtDto.accountName == "") {
+      this.selectedAccountExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
+      return false;
+    } else if (selectedAccountExtDto.accountCode == "") {
+      this.selectedAccountExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
+      return false;
+    } else if (selectedAccountExtDto.taxOffice == "") {
+      this.selectedAccountExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
+      return false;
+    } else if (selectedAccountExtDto.taxNumber <= 0 || selectedAccountExtDto.taxNumber == undefined) {
+      this.selectedAccountExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
+      return false;
+    } else if (selectedAccountExtDto.identityNumber <= 0 || selectedAccountExtDto.identityNumber == undefined) {
+      this.selectedAccountExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
+      return false;
+    } else if (selectedAccountExtDto.identityNumber < 10000000000 && selectedAccountExtDto.identityNumber > 99999999999) {
+      this.selectedAccountExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
+      return false;
+    } else if (selectedAccountExtDto.limit <= 0) {
+      this.selectedAccountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else if (selectedAccountExtDto. == ) {
+      this.selectedAccountExtDtoErrors. = "";
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  validateForUpdate(): boolean {
+    return false;
   }
 
   ngOnInit(): void {
