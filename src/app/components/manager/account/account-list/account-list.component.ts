@@ -29,6 +29,7 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
 
   // Extended With AccountGroup
   accountGroupName: "",
+  accountGroupCode: "",
 
   // Extended With Currency
   currencyName: "",

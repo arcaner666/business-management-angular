@@ -5,16 +5,17 @@ import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
+import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AccountService } from 'src/app/services/account.service';
+import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-get-by-account-group-codes-dto';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-get-by-account-group-codes-dto';
 
 const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   accountId: 0,
@@ -41,6 +42,7 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
 
   // Extended With AccountGroup
   accountGroupName: "",
+  accountGroupCode: "",
 
   // Extended With Currency
   currencyName: "",
@@ -60,6 +62,10 @@ const EMPTY_ACCOUNT_GET_BY_ACCOUNT_GROUP_CODES_DTO: AccountGetByAccountGroupCode
   accountGroupCodes: [],
 };
 
+const EMPTY_ACCOUNT_GROUP_CODES_DTO: AccountGroupCodesDto = {
+  accountGroupCodes: [],
+};
+
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
@@ -72,6 +78,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   public accountExtDtos$!: Observable<ListDataResult<AccountExtDto>>;
   public accountGroupDtos: AccountGroupDto[] = [];
   public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto = cloneDeep(EMPTY_ACCOUNT_GET_BY_ACCOUNT_GROUP_CODES_DTO);
+  public accountGroupCodesDto: AccountGroupCodesDto = cloneDeep(EMPTY_ACCOUNT_GROUP_CODES_DTO);
   public activePage: string = "list";
   public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public cardHeader: string = "";
@@ -101,7 +108,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     // Sunucudan bazı cari hesapları getirir ve modellere doldurur.
     this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
     this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-    this.getAccountExtsByBusinessIdAndAccountGroupCode(this.accountGetByAccountGroupCodesDto);
+    this.getAccountExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
 
     this.getBranchsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
@@ -121,7 +128,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
         this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
         this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-        return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCode(this.accountGetByAccountGroupCodesDto);
+        return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
       }
     )).subscribe({
       error: (error) => {
@@ -159,7 +166,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
                   this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
                   this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-                  return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCode(this.accountGetByAccountGroupCodesDto);
+                  return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
                 })
               ).subscribe({
                 error: (error) => {
@@ -183,19 +190,23 @@ export class AccountComponent implements OnInit, OnDestroy {
     // Seçili hesap grubunun id'sinden hesap grubu kodu bulunur.
     const selectedAccountGroupDtos: AccountGroupDto[] = this.accountGroupDtos.filter(a => 
       a.accountGroupId == accountGroupId);
-    this.sub4 = this.accountService.generateAccountCode(
-      this.authorizationService.authorizationDto.businessId, 
-      this.authorizationService.authorizationDto.branchId, 
-      selectedAccountGroupDtos[0].accountGroupCode).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedAccountExtDto.accountOrder = response.data.accountOrder;
-          this.selectedAccountExtDto.accountCode = response.data.accountCode;
+    if (selectedAccountGroupDtos.length > 0) {      
+      this.sub4 = this.accountService.generateAccountCode(
+        this.authorizationService.authorizationDto.businessId, 
+        this.authorizationService.authorizationDto.branchId, 
+        selectedAccountGroupDtos[0].accountGroupCode).subscribe({
+        next: (response) => {
+          if(response.success) {
+            this.selectedAccountExtDto.accountOrder = response.data.accountOrder;
+            this.selectedAccountExtDto.accountCode = response.data.accountCode;
+          }
+        }, error: (error) => {
+          console.log(error);
         }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
+      });
+    } else {
+      console.log("accountGroupId is null!");
+    }
   }
 
   getAccountExtById(id: number): void {
@@ -210,14 +221,16 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  getAccountExtsByBusinessIdAndAccountGroupCode(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): void {
-    this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCode(accountGetByAccountGroupCodesDto);
+  getAccountExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): void {
+    this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto);
   }
 
   getAllAccountGroups(): void {
     this.sub6 = this.accountGroupService.getAll().subscribe({
       next: (response) => {
-        this.accountGroupDtos = response.data;
+        if (response.success) {
+          this.accountGroupDtos = response.data;
+        }
       }, error: (error) => {
         console.log(error);
       }

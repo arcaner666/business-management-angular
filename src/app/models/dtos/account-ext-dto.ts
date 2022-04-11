@@ -23,6 +23,7 @@ export interface AccountExtDto {
 
     // Extended With AccountGroup
     accountGroupName: string;
+    accountGroupCode: string;
 
     // Extended With Currency
     currencyName: string;

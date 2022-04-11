@@ -44,8 +44,8 @@ export class AccountService {
     return this.http.get<ListDataResult<AccountExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
   }
 
-  getExtsByBusinessIdAndAccountGroupCode(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): Observable<ListDataResult<AccountExtDto>> {
-    return this.http.post<ListDataResult<AccountExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessidandaccountgroupcode`, accountGetByAccountGroupCodesDto);
+  getExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): Observable<ListDataResult<AccountExtDto>> {
+    return this.http.post<ListDataResult<AccountExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessidandaccountgroupcodes`, accountGetByAccountGroupCodesDto);
   }
 
   updateExt(accountExtDto: AccountExtDto): Observable<Result> {

@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
+import { AccountType } from 'src/app/models/various/account-type';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 
 const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
@@ -32,6 +33,7 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
 
   // Extended With AccountGroup
   accountGroupName: "",
+  accountGroupCode: "",
 
   // Extended With Currency
   currencyName: "",
@@ -45,6 +47,21 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   notes: "",
   avatarUrl: "",
 };
+
+const SECTION_MANAGER_ACCOUNT_TYPES: AccountType[] = [
+  {
+    accountTypeName: "Diğer",
+  },
+  {
+    accountTypeName: "Personel",
+  },
+  {
+    accountTypeName: "Ev Sahibi",
+  },
+  {
+    accountTypeName: "Kiracı",
+  },
+];
 
 @Component({
   selector: 'app-account-detail',
@@ -60,11 +77,13 @@ export class AccountDetailComponent {
   @Input() cardHeader: string = "";
   @Input() loading: boolean = false;
   @Input() selectedAccountExtDto: AccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
-
+  
   @Output() accountCodeGenerated = new EventEmitter<number>();
   @Output() cancelled = new EventEmitter();
   @Output() saved = new EventEmitter<AccountExtDto>();
-
+  
+  public sectionManagerAccountTypes: AccountType[] = cloneDeep(SECTION_MANAGER_ACCOUNT_TYPES);
+  public selectedAccountTypeName: string = "Diğer";
   public submitted: boolean = false;
   
   constructor(
@@ -92,9 +111,47 @@ export class AccountDetailComponent {
     ]);
     this.form.controls['accountGroupId'].updateValueAndValidity();
 
-    if (this.form.valid) {
-      this.accountCodeGenerated.emit(this.form.controls['accountGroupId'].value);
+    if (this.form.controls['branchId'].value > 0 
+    && this.form.controls['accountGroupId'].value > 0) {
+      this.accountCodeGenerated.emit(this.selectedAccountExtDto.accountGroupId);
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.form);
     }
+  }
+
+  reset() {
+    this.submitted = false;
+    this.selectedAccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
+    // this.selectedAccountExtDto.accountId = 0;
+    // this.selectedAccountExtDto.businessId = 0;
+    // this.selectedAccountExtDto.branchId = 0;
+    // this.selectedAccountExtDto.accountGroupId = 0;
+    // this.selectedAccountExtDto.currencyId = 0;
+    // this.selectedAccountExtDto.accountOrder = 0;
+    // this.selectedAccountExtDto.accountName = "";
+    // this.selectedAccountExtDto.accountCode = "";
+    // this.selectedAccountExtDto.taxOffice = "";
+    // this.selectedAccountExtDto.taxNumber = undefined;
+    // this.selectedAccountExtDto.identityNumber = undefined;
+    // this.selectedAccountExtDto.debitBalance = 0;
+    // this.selectedAccountExtDto.creditBalance = 0;
+    // this.selectedAccountExtDto.balance = 0;
+    // this.selectedAccountExtDto.limit = 0;
+    // this.selectedAccountExtDto.standartMaturity = 0;
+    // this.selectedAccountExtDto.createdAt = new Date();
+    // this.selectedAccountExtDto.updatedAt = new Date();
+    // this.selectedAccountExtDto.branchName = "";
+    // this.selectedAccountExtDto.accountGroupName = "";
+    // this.selectedAccountExtDto.accountGroupCode = "";
+    // this.selectedAccountExtDto.currencyName = "";
+    // this.selectedAccountExtDto.nameSurname = "";
+    // this.selectedAccountExtDto.email = "";
+    // this.selectedAccountExtDto.phone = "";
+    // this.selectedAccountExtDto.dateOfBirth = new Date();
+    // this.selectedAccountExtDto.gender = "";
+    // this.selectedAccountExtDto.notes = "";
+    // this.selectedAccountExtDto.avatarUrl = "";
   }
 
   save(selectedAccountExtDto: AccountExtDto): void {
@@ -115,15 +172,46 @@ export class AccountDetailComponent {
     this.saved.emit(selectedAccountExtDto);
   }
 
-  validateForAdd(form: NgForm): void {
-    form.controls['nameSurname'].setValidators(Validators.required);
-    form.controls['nameSurname'].updateValueAndValidity();
+  selectAccountGroup() {
+    this.selectedAccountExtDto.accountCode = "";
+    this.selectedAccountExtDto.accountOrder = 0;
+  }
 
-    form.controls['phone'].setValidators([
+  selectAccountType(selectedAccountTypeName: string) {
+    this.reset();
+    let selectedAccountTypeInArray = [];
+    if (selectedAccountTypeName == "Ev Sahibi") {
+      selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
+      this.selectedAccountExtDto.accountGroupId = selectedAccountTypeInArray[0].accountGroupId;
+    } else if (selectedAccountTypeName == "Kiracı") {
+      selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
+      this.selectedAccountExtDto.accountGroupId = selectedAccountTypeInArray[0].accountGroupId;
+    } else if (selectedAccountTypeName == "Personel") {
+      selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "335");
+      this.selectedAccountExtDto.accountGroupId = selectedAccountTypeInArray[0].accountGroupId;
+    } else if (selectedAccountTypeName == "Diğer") {
+      this.selectedAccountExtDto.accountGroupId = 0;
+    }
+  }
+
+  validateForAdd(form: NgForm): void {
+    form.controls['accountTypeId'].setValidators([
       Validators.required,
       Validators.min(1)
     ]);
-    form.controls['phone'].updateValueAndValidity();
+    form.controls['accountTypeId'].updateValueAndValidity();
+
+    if (this.selectedAccountTypeName && this.selectedAccountTypeName != 'Diğer') {
+      form.controls['nameSurname'].setValidators(Validators.required);
+      form.controls['nameSurname'].updateValueAndValidity();
+  
+      form.controls['phone'].setValidators([
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(10),
+      ]);
+      form.controls['phone'].updateValueAndValidity();
+    }
 
     form.controls['branchId'].setValidators([
       Validators.required,
@@ -143,24 +231,12 @@ export class AccountDetailComponent {
     form.controls['accountCode'].setValidators(Validators.required);
     form.controls['accountCode'].updateValueAndValidity();
 
-    if (!form.controls['taxNumber'].value && !form.controls['identityNumber'].value) {
-      form.controls['taxNumber'].setValidators([
-        Validators.required,
-        Validators.min(1)
-      ]);
-      form.controls['taxNumber'].updateValueAndValidity();
-
-      form.controls['identityNumber'].setValidators([
-        Validators.required,
-        Validators.min(1)
-      ]);
-      form.controls['identityNumber'].updateValueAndValidity();
-    }
-
-    if (form.controls['taxNumber'].value && !form.controls['taxOffice'].value) {
-      form.controls['taxOffice'].setValidators(Validators.required);
-      form.controls['taxOffice'].updateValueAndValidity();
-    }
+    form.controls['identityNumber'].setValidators([
+      Validators.required,
+      Validators.min(10000000000),
+      Validators.max(99999999999),
+    ]);
+    form.controls['identityNumber'].updateValueAndValidity();
 
     form.controls['limit'].setValidators([
       Validators.required,
@@ -179,24 +255,12 @@ export class AccountDetailComponent {
     form.controls['accountName'].setValidators(Validators.required);
     form.controls['accountName'].updateValueAndValidity();
     
-    if (!form.controls['taxNumber'].value && !form.controls['identityNumber'].value) {
-      form.controls['taxNumber'].setValidators([
-        Validators.required,
-        Validators.min(1)
-      ]);
-      form.controls['taxNumber'].updateValueAndValidity();
-
-      form.controls['identityNumber'].setValidators([
-        Validators.required,
-        Validators.min(1)
-      ]);
-      form.controls['identityNumber'].updateValueAndValidity();
-    }
-
-    if (form.controls['taxNumber'].value && !form.controls['taxOffice'].value) {
-      form.controls['taxOffice'].setValidators(Validators.required);
-      form.controls['taxOffice'].updateValueAndValidity();
-    }
+    form.controls['identityNumber'].setValidators([
+      Validators.required,
+      Validators.min(10000000000),
+      Validators.max(99999999999),
+    ]);
+    form.controls['identityNumber'].updateValueAndValidity();
 
     form.controls['limit'].setValidators([
       Validators.required,
