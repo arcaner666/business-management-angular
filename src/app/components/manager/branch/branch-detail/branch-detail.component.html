@@ -17,11 +17,12 @@
                         name="branchName"
                         [(ngModel)]="selectedBranchExtDto.branchName"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['branchName'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.branchName }"
+                        (change)="selectedBranchExtDtoErrors.branchName = ''"
                         tabindex="1"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['branchName'].errors">
-                        <div *ngIf="form.controls['branchName'].errors['required']">Lütfen şube adı giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.branchName">
+                        <div>{{selectedBranchExtDtoErrors.branchName}}</div>
                     </div>
                 </div>
                 <!-- /Şube Adı -->
@@ -41,12 +42,13 @@
                         name="branchCode"
                         [(ngModel)]="selectedBranchExtDto.branchCode"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['branchCode'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.branchCode }"
                         [readOnly]="selectedBranchExtDto.branchId != 0"
+                        (change)="selectedBranchExtDtoErrors.branchCode = ''"
                         tabindex="2"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['branchCode'].errors">
-                        <div *ngIf="form.controls['branchCode'].errors['required']">Lütfen şube kodu giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.branchCode">
+                        <div>{{selectedBranchExtDtoErrors.branchCode}}</div>
                     </div>
                 </div>
                 <!-- /Şube Kodu -->
@@ -60,7 +62,8 @@
                         class="form-select"
                         [(ngModel)]="selectedBranchExtDto.cityId"
                         (change)="selectCity(selectedBranchExtDto.cityId)"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['cityId'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.cityId }"
+                        (change)="selectedBranchExtDtoErrors.cityId = ''"
                         tabindex="3"
                     >
                         <option 
@@ -70,9 +73,8 @@
                             {{cityDto.cityName}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['cityId'].errors">
-                        <div *ngIf="form.controls['cityId'].errors['required']">Lütfen şehir seçiniz.</div>
-                        <div *ngIf="form.controls['cityId'].errors['min']">Lütfen şehir seçiniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.cityId">
+                        <div>{{selectedBranchExtDtoErrors.cityId}}</div>
                     </div>
                 </div>
                 <!-- /Şehir -->
@@ -85,7 +87,8 @@
                         name="districtId"
                         class="form-select"
                         [(ngModel)]="selectedBranchExtDto.districtId"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['districtId'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.districtId }"
+                        (change)="selectedBranchExtDtoErrors.districtId = ''"
                         tabindex="4"
                     >
                         <option 
@@ -95,9 +98,8 @@
                             {{districtDto.districtName}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['districtId'].errors">
-                        <div *ngIf="form.controls['districtId'].errors['required']">Lütfen ilçe seçiniz.</div>
-                        <div *ngIf="form.controls['districtId'].errors['min']">Lütfen ilçe seçiniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.districtId">
+                        <div>{{selectedBranchExtDtoErrors.districtId}}</div>
                     </div>
                 </div>
                 <!-- /İlçe -->
@@ -111,11 +113,12 @@
                         name="addressTitle"
                         [(ngModel)]="selectedBranchExtDto.addressTitle"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['addressTitle'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.addressTitle }"
+                        (change)="selectedBranchExtDtoErrors.addressTitle = ''"
                         tabindex="5"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['addressTitle'].errors">
-                        <div *ngIf="form.controls['addressTitle'].errors['required']">Lütfen adres başlığı giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.addressTitle">
+                        <div>{{selectedBranchExtDtoErrors.addressTitle}}</div>
                     </div>
                 </div>
                 <!-- /Adres Başlığı -->
@@ -129,12 +132,12 @@
                         name="postalCode"
                         [(ngModel)]="selectedBranchExtDto.postalCode"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['postalCode'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.postalCode }"
+                        (change)="selectedBranchExtDtoErrors.postalCode = ''"
                         tabindex="6"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['postalCode'].errors">
-                        <div *ngIf="form.controls['postalCode'].errors['required']">Lütfen posta kodu giriniz.</div>
-                        <div *ngIf="form.controls['postalCode'].errors['min']">Lütfen posta kodu giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.postalCode">
+                        <div>{{selectedBranchExtDtoErrors.postalCode}}</div>
                     </div>
                 </div>
                 <!-- /Posta Kodu -->
@@ -148,12 +151,13 @@
                         name="addressText"
                         [(ngModel)]="selectedBranchExtDto.addressText"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['addressText'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedBranchExtDtoErrors.addressText }"
+                        (change)="selectedBranchExtDtoErrors.addressText = ''"
                         tabindex="7"
                     ></textarea>
-                    <span class="invalid-form" *ngIf="submitted && form.controls['addressText'].errors">
-                        <small class="form-text text-danger" *ngIf="form.controls['addressText'].errors['required']">Lütfen adres giriniz.</small>
-                    </span>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedBranchExtDtoErrors.addressText">
+                        <div>{{selectedBranchExtDtoErrors.addressText}}</div>
+                    </div>
                 </div>
                 <!-- /Adres -->
                 

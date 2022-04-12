@@ -7,11 +7,21 @@ export class ValidationService {
 
   constructor() { }
 
-  isNumberZero(value: number): boolean {
-    return (value == 0 ? true : false);
+  // Validasyon başarılıysa true, başarısız olursa false dönmeli.
+
+  number(value: number | undefined | null): boolean {
+    return (value == undefined || value == null || value <= 0 ? false : true);
   }
 
-  isStringEmpty(value: string): boolean {
-    return (value == "" ? true : false);
+  numberPreciseLength(value: number | undefined | null, length: number): boolean {
+    return (value == undefined || value == null || value.toString().length != length ? false : true);
+  }
+
+  string(value: string | undefined | null): boolean {
+    return (value == undefined || value == null || value == "" ? false : true);
+  }
+
+  stringPreciseLength(value: string | undefined | null, length: number): boolean {
+    return (value == undefined || value == null || value.length != length ? false : true);
   }
 }

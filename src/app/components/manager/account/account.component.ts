@@ -18,6 +18,7 @@ import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   accountId: 0,
@@ -151,6 +152,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     private branchService: BranchService,
     private modalService: NgbModal,
     private toastService: ToastService,
+    private validationService: ValidationService,
   ) { 
     console.log("AccountComponent constructor çalıştı.");
 
@@ -435,119 +437,128 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   validateForAdd(selectedAccountExtDto: AccountExtDto): boolean {
     this.resetErrors();
+
     let isValid: boolean = true;
-    if (selectedAccountExtDto.accountTypeName == undefined || selectedAccountExtDto.accountTypeName == "") {
+
+    if (!this.validationService.string(selectedAccountExtDto.accountTypeName)) {
       this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.accountGroupId == undefined || selectedAccountExtDto.accountGroupId == 0) {
+    if (!this.validationService.number(selectedAccountExtDto.accountGroupId)) {
       this.selectedAccountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.nameSurname == undefined || selectedAccountExtDto.nameSurname == "") {
+    if (!this.validationService.string(selectedAccountExtDto.nameSurname)) {
       this.selectedAccountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.phone == undefined || selectedAccountExtDto.phone == "") {
+    if (!this.validationService.string(selectedAccountExtDto.phone)) {
       this.selectedAccountExtDtoErrors.phone = "Lütfen hesap sahibinin telefon numarasını giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.phone == undefined || selectedAccountExtDto.phone.length != 10) {
-      this.selectedAccountExtDtoErrors.phone = "Telefon numarasını başında sıfır olmadan 10 haneden olarak giriniz. Örneğin; 555 444 33 22";
+    if (!this.validationService.stringPreciseLength(selectedAccountExtDto.phone, 10)) {
+      this.selectedAccountExtDtoErrors.phone = "Telefon numarasını başında sıfır olmadan 10 hane olarak giriniz. Örneğin; 555 444 33 22";
       isValid = false;
     }
-    if (selectedAccountExtDto.branchId == undefined || selectedAccountExtDto.branchId == 0) {
+    if (!this.validationService.number(selectedAccountExtDto.branchId)) {
       this.selectedAccountExtDtoErrors.branchId = "Lütfen şube seçiniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.accountName == undefined || selectedAccountExtDto.accountName == "") {
+    if (!this.validationService.string(selectedAccountExtDto.accountName)) {
       this.selectedAccountExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.accountCode == undefined || selectedAccountExtDto.accountCode == "") {
+    if (!this.validationService.string(selectedAccountExtDto.accountCode)) {
       this.selectedAccountExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.taxOffice == undefined || selectedAccountExtDto.taxOffice == "") {
+    if (!this.validationService.string(selectedAccountExtDto.taxOffice)) {
       this.selectedAccountExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.taxNumber == undefined || selectedAccountExtDto.taxNumber <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.taxNumber)) {
       this.selectedAccountExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.identityNumber == undefined || selectedAccountExtDto.identityNumber <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.identityNumber)) {
       this.selectedAccountExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.identityNumber == undefined || selectedAccountExtDto.identityNumber < 10000000000 || selectedAccountExtDto.identityNumber > 99999999999) {
+    if (!this.validationService.numberPreciseLength(selectedAccountExtDto.identityNumber, 11)) {
       this.selectedAccountExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
       isValid = false;
     }
-    if (selectedAccountExtDto.limit == undefined || selectedAccountExtDto.limit <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.limit)) {
       this.selectedAccountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.standartMaturity == undefined || selectedAccountExtDto.standartMaturity <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.standartMaturity)) {
       this.selectedAccountExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
       isValid = false;
     }
+
     return isValid;
   }
 
   validateForGeneratingAccountCode(selectedAccountExtDto: AccountExtDto): boolean {
     this.resetErrors();
+
     let isValid: boolean = true;
-    if (selectedAccountExtDto.accountTypeName == undefined || selectedAccountExtDto.accountTypeName == "") {
+
+    if (!this.validationService.string(selectedAccountExtDto.accountTypeName)) {
       this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.accountGroupId == undefined || selectedAccountExtDto.accountGroupId == 0) {
+    if (!this.validationService.number(selectedAccountExtDto.accountGroupId)) {
       this.selectedAccountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.branchId == undefined || selectedAccountExtDto.branchId == 0) {
+    if (!this.validationService.number(selectedAccountExtDto.branchId)) {
       this.selectedAccountExtDtoErrors.branchId = "Lütfen şube seçiniz.";
       isValid = false;
     }
+
     return isValid;
   }
 
   validateForUpdate(selectedAccountExtDto: AccountExtDto): boolean {
     this.resetErrors();
+
     let isValid: boolean = true;
-    if (selectedAccountExtDto.nameSurname == undefined || selectedAccountExtDto.nameSurname == "") {
+
+    if (!this.validationService.string(selectedAccountExtDto.nameSurname)) {
       this.selectedAccountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.accountName == undefined || selectedAccountExtDto.accountName == "") {
+    if (!this.validationService.string(selectedAccountExtDto.accountName)) {
       this.selectedAccountExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.taxOffice == undefined || selectedAccountExtDto.taxOffice == "") {
+    if (!this.validationService.string(selectedAccountExtDto.taxOffice)) {
       this.selectedAccountExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.taxNumber == undefined || selectedAccountExtDto.taxNumber <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.taxNumber)) {
       this.selectedAccountExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.identityNumber == undefined || selectedAccountExtDto.identityNumber <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.identityNumber)) {
       this.selectedAccountExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.identityNumber == undefined || selectedAccountExtDto.identityNumber < 10000000000 || selectedAccountExtDto.identityNumber > 99999999999) {
+    if (!this.validationService.numberPreciseLength(selectedAccountExtDto.identityNumber, 11)) {
       this.selectedAccountExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
       isValid = false;
     }
-    if (selectedAccountExtDto.limit == undefined || selectedAccountExtDto.limit <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.limit)) {
       this.selectedAccountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.standartMaturity == undefined || selectedAccountExtDto.standartMaturity <= 0) {
+    if (!this.validationService.number(selectedAccountExtDto.standartMaturity)) {
       this.selectedAccountExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
       isValid = false;
     }
+
     return isValid;
   }
 

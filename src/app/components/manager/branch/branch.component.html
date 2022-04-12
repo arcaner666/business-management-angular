@@ -21,10 +21,11 @@
         [districtDtos]="(districtDtos$ | async)?.data || []"
         [loading]="loading"
         [selectedBranchExtDto]="selectedBranchExtDto"
+        [selectedBranchExtDtoErrors]="selectedBranchExtDtoErrors"
         (cancelled)="cancel()"
         (branchCodeGenerated)="generateBranchCode()"
         (saved)="save($event)"
-        (citySelected)="getDistrictsByCityId($event)"
+        (citySelected)="selectCity($event)"
     ></app-branch-detail>
 </ng-template>
 

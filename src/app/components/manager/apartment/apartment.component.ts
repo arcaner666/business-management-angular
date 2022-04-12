@@ -15,6 +15,7 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { ManagerService } from 'src/app/services/manager.service';
 import { SectionService } from 'src/app/services/section.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 const EMPTY_APARTMENT_EXT_DTO: ApartmentExtDto = {
   apartmentId: 0,
@@ -85,6 +86,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private sectionService: SectionService,
     private toastService: ToastService,
+    private validationService: ValidationService,
   ) { 
     console.log("ApartmentComponent constructor çalıştı.");
 
@@ -277,19 +279,19 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   validateForAdd(selectedApartmentExtDto: ApartmentExtDto): boolean {
     this.resetErrors();
     let isValid: boolean = true;
-    if (selectedApartmentExtDto.sectionId == undefined || selectedApartmentExtDto.sectionId <= 0) {
+    if (!this.validationService.number(selectedApartmentExtDto.sectionId)) {
       this.selectedApartmentExtDtoErrors.sectionId = "Lütfen site seçiniz.";
       isValid = false;
     } 
-    if (selectedApartmentExtDto.managerId == undefined || selectedApartmentExtDto.managerId <= 0) {
+    if (!this.validationService.number(selectedApartmentExtDto.managerId)) {
       this.selectedApartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
       isValid = false;
     } 
-    if (selectedApartmentExtDto.apartmentName == undefined || selectedApartmentExtDto.apartmentName == "") {
+    if (!this.validationService.string(selectedApartmentExtDto.apartmentName)) {
       this.selectedApartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
       isValid = false;
     }
-    if (selectedApartmentExtDto.blockNumber == undefined || selectedApartmentExtDto.blockNumber <= 0) {
+    if (!this.validationService.number(selectedApartmentExtDto.blockNumber)) {
       this.selectedApartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
       isValid = false;
     }
@@ -298,19 +300,22 @@ export class ApartmentComponent implements OnInit, OnDestroy {
 
   validateForUpdate(selectedApartmentExtDto: ApartmentExtDto): boolean {
     this.resetErrors();
+
     let isValid: boolean = true;
-    if (selectedApartmentExtDto.managerId == undefined || selectedApartmentExtDto.managerId <= 0) {
+
+    if (!this.validationService.number(selectedApartmentExtDto.managerId)) {
       this.selectedApartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
       isValid = false;
     } 
-    if (selectedApartmentExtDto.apartmentName == undefined || selectedApartmentExtDto.apartmentName == "") {
+    if (!this.validationService.string(selectedApartmentExtDto.apartmentName)) {
       this.selectedApartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
       isValid = false;
     }
-    if (selectedApartmentExtDto.blockNumber == undefined || selectedApartmentExtDto.blockNumber <= 0) {
+    if (!this.validationService.number(selectedApartmentExtDto.blockNumber)) {
       this.selectedApartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
       isValid = false;
     }
+
     return isValid;
   }
 

@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
+import { BranchExtDtoErrors } from 'src/app/models/validation-errors/branch-ext-dto-errors';
 import { CityDto } from 'src/app/models/dtos/city-dto';
 import { DistrictDto } from 'src/app/models/dtos/district-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
@@ -15,6 +16,7 @@ import { BranchService } from 'src/app/services/branch.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
   branchId: 0,
@@ -34,6 +36,24 @@ const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
   addressText: "",
 };
 
+const EMPTY_BRANCH_EXT_DTO_ERRORS: BranchExtDtoErrors = {
+  branchId: "",
+  businessId: "",
+  fullAddressId: "",
+  branchOrder: "",
+  branchName: "",
+  branchCode: "",
+  createdAt: "",
+  updatedAt: "",
+
+  // Extended With FullAddress
+  cityId: "",
+  districtId: "",
+  addressTitle: "",
+  postalCode: "",
+  addressText: "",
+};
+
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -50,6 +70,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   public districtDtos$!: Observable<ListDataResult<DistrictDto>>;
   public loading: boolean = false;
   public selectedBranchExtDto: BranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
+  public selectedBranchExtDtoErrors: BranchExtDtoErrors = cloneDeep(EMPTY_BRANCH_EXT_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -65,6 +86,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     private districtService: DistrictService,
     private modalService: NgbModal,
     private toastService: ToastService,
+    private validationService: ValidationService,
   ) { 
     console.log("BranchComponent constructor çalıştı.");
 
@@ -72,27 +94,36 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.getBranchesByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  add(selectedBranchExtDto: BranchExtDto): void {
+  add(): void {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
-    selectedBranchExtDto.businessId = this.authorizationService.authorizationDto.businessId;
+    this.selectedBranchExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
-    this.sub1 = this.branchService.addExt(selectedBranchExtDto).pipe(
-      concatMap((response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+    let isModelValid = this.validateForAdd();
+
+    if (isModelValid) {
+      this.loading = true;
+
+      this.sub1 = this.branchService.addExt(this.selectedBranchExtDto).pipe(
+        concatMap((response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+          return this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
-        this.loading = false;
-        return this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
-      }
-    )).subscribe({
-      error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      )).subscribe({
+        error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
+        }
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedBranchExtDtoErrors);
+    }
   }
 
   cancel(): void {
@@ -182,12 +213,33 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
+  resetErrors() {
+    this.selectedBranchExtDtoErrors = cloneDeep(EMPTY_BRANCH_EXT_DTO_ERRORS);
+  }
+
+  resetModel() {
+    this.selectedBranchExtDto.branchId = 0;
+    this.selectedBranchExtDto.businessId = 0;
+    this.selectedBranchExtDto.fullAddressId = 0;
+    this.selectedBranchExtDto.branchOrder = 0;
+    this.selectedBranchExtDto.branchName = "";
+    this.selectedBranchExtDto.branchCode = "";
+    this.selectedBranchExtDto.createdAt = new Date();
+    this.selectedBranchExtDto.updatedAt = new Date();
+  
+    // Extended With FullAddress
+    this.selectedBranchExtDto.cityId = 0;
+    this.selectedBranchExtDto.districtId = 0;
+    this.selectedBranchExtDto.addressTitle = "";
+    this.selectedBranchExtDto.postalCode = 0;
+    this.selectedBranchExtDto.addressText = "";
+  }
+
   save(selectedBranchExtDto: BranchExtDto): void {
-    this.loading = true;
     if (selectedBranchExtDto.branchId == 0) {
-      this.add(selectedBranchExtDto);
+      this.add();
     } else {
-      this.update(selectedBranchExtDto);
+      this.update();
     }
   }
 
@@ -214,25 +266,111 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.activePage = "detail";
   }
 
+  selectCity(cityId: number): void {
+    // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
+    this.selectedBranchExtDto.districtId = 0;
+    
+    this.getDistrictsByCityId(cityId);
+  }
+
   setHeader(branchId: number): void {
     branchId == 0 ? this.cardHeader = "Şube Ekle" : this.cardHeader = "Şubeyi Düzenle";
   }
 
-  update(selectedBranchExtDto: BranchExtDto): void {
-    this.sub7 = this.branchService.updateExt(selectedBranchExtDto).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+  update(): void {
+    console.log(this.selectedBranchExtDto);
+
+    let isModelValid = this.validateForUpdate();
+
+    if (isModelValid) {
+      this.sub7 = this.branchService.updateExt(this.selectedBranchExtDto).subscribe({
+        next: (response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+        }, error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
         }
-        this.loading = false;
-      }, error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedBranchExtDtoErrors);
+    }
+  }
+
+  validateForAdd(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.string(this.selectedBranchExtDto.branchName)) {
+      this.selectedBranchExtDtoErrors.branchName = "Lütfen şube adı giriniz.";
+      isValid = false;
+    } 
+    if (!this.validationService.string(this.selectedBranchExtDto.branchCode)) {
+      this.selectedBranchExtDtoErrors.branchCode = "Lütfen şube kodu oluşturunuz.";
+      isValid = false;
+    } 
+    if (!this.validationService.number(this.selectedBranchExtDto.cityId)) {
+      this.selectedBranchExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedBranchExtDto.districtId)) {
+      this.selectedBranchExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedBranchExtDto.addressTitle)) {
+      this.selectedBranchExtDtoErrors.addressTitle = "Lütfen adres başlığı giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedBranchExtDto.postalCode)) {
+      this.selectedBranchExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedBranchExtDto.addressText)) {
+      this.selectedBranchExtDtoErrors.addressText = "Lütfen adres giriniz.";
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  validateForUpdate(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.string(this.selectedBranchExtDto.branchName)) {
+      this.selectedBranchExtDtoErrors.branchName = "Lütfen şube adı giriniz.";
+      isValid = false;
+    } 
+    if (!this.validationService.number(this.selectedBranchExtDto.cityId)) {
+      this.selectedBranchExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedBranchExtDto.districtId)) {
+      this.selectedBranchExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedBranchExtDto.addressTitle)) {
+      this.selectedBranchExtDtoErrors.addressTitle = "Lütfen adres başlığı giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedBranchExtDto.postalCode)) {
+      this.selectedBranchExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedBranchExtDto.addressText)) {
+      this.selectedBranchExtDtoErrors.addressText = "Lütfen adres giriniz.";
+      isValid = false;
+    }
+
+    return isValid;
   }
 
   ngOnInit(): void {
