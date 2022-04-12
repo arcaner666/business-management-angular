@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
 import { AccountExtDtoErrors } from 'src/app/models/validation-errors/account-ext-dto-errors';
+import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-get-by-account-group-codes-dto';
 import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { AccountType } from 'src/app/models/various/account-type';
@@ -13,7 +14,6 @@ import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AccountService } from 'src/app/services/account.service';
-import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-get-by-account-group-codes-dto';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
@@ -328,10 +328,19 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDto.standartMaturity = 0;
     this.selectedAccountExtDto.createdAt = new Date();
     this.selectedAccountExtDto.updatedAt = new Date();
+      
+    // Extended With Branch
     this.selectedAccountExtDto.branchName = "";
+
+    // Extended With AccountGroup
     this.selectedAccountExtDto.accountGroupName = "";
     this.selectedAccountExtDto.accountGroupCode = "";
+
+    // Extended With Currency
     this.selectedAccountExtDto.currencyName = "";
+
+    // Added Custom Fields
+    this.selectedAccountExtDto.accountTypeName = "";
     this.selectedAccountExtDto.nameSurname = "";
     this.selectedAccountExtDto.email = "";
     this.selectedAccountExtDto.phone = "";

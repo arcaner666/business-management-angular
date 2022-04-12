@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
+import { ApartmentExtDtoErrors } from 'src/app/models/validation-errors/apartment-ext-dto-errors';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerDto } from 'src/app/models/dtos/manager-dto';
 import { SectionDto } from 'src/app/models/dtos/section-dto';
@@ -34,6 +35,25 @@ const EMPTY_APARTMENT_EXT_DTO: ApartmentExtDto = {
   managerNameSurname: "",
 };
 
+const EMPTY_APARTMENT_EXT_DTO_ERRORS: ApartmentExtDtoErrors = {
+  apartmentId: "",
+  sectionId: "",
+  businessId: "",
+  branchId: "",
+  managerId: "",
+  apartmentName: "",
+  apartmentCode: "",
+  blockNumber: "",
+  createdAt: "",
+  updatedAt: "",
+  
+  // Extended With Section
+  sectionName: "",
+
+  // Extended With Manager
+  managerNameSurname: "",
+};
+
 @Component({
   selector: 'app-apartment',
   templateUrl: './apartment.component.html',
@@ -50,6 +70,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   public managerDtos$!: Observable<ListDataResult<ManagerDto>>;
   public sectionDtos$!: Observable<ListDataResult<SectionDto>>;
   public selectedApartmentExtDto: ApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
+  public selectedApartmentExtDtoErrors: ApartmentExtDtoErrors = cloneDeep(EMPTY_APARTMENT_EXT_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -77,23 +98,32 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     selectedApartmentExtDto.businessId = this.authorizationService.authorizationDto.businessId;
     selectedApartmentExtDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    this.sub1 = this.apartmentService.addExt(selectedApartmentExtDto).pipe(
-      concatMap((response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+    let isModelValid = this.validateForAdd(selectedApartmentExtDto);
+
+    if (isModelValid) {
+      this.loading = true;
+
+      this.sub1 = this.apartmentService.addExt(selectedApartmentExtDto).pipe(
+        concatMap((response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+          return this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
-        this.loading = false;
-        return this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-      }
-    )).subscribe({
-      error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      )).subscribe({
+        error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
+        }
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedApartmentExtDtoErrors);
+    }
   }
 
   cancel(): void {
@@ -164,8 +194,30 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     });
   }
 
+  resetErrors() {
+    this.selectedApartmentExtDtoErrors = cloneDeep(EMPTY_APARTMENT_EXT_DTO_ERRORS);
+  }
+
+  resetModel() {
+    this.selectedApartmentExtDto.apartmentId = 0;
+    this.selectedApartmentExtDto.sectionId = 0;
+    this.selectedApartmentExtDto.businessId = 0;
+    this.selectedApartmentExtDto.branchId = 0;
+    this.selectedApartmentExtDto.managerId = 0;
+    this.selectedApartmentExtDto.apartmentName = "";
+    this.selectedApartmentExtDto.apartmentCode = "";
+    this.selectedApartmentExtDto.blockNumber = 0;
+    this.selectedApartmentExtDto.createdAt = new Date(),
+    this.selectedApartmentExtDto.updatedAt = new Date(),
+
+    // Extended With Section
+    this.selectedApartmentExtDto.sectionName = "";
+
+    // Extended With Manager
+    this.selectedApartmentExtDto.managerNameSurname = "";
+  }
+
   save(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.loading = true;
     if (selectedApartmentExtDto.apartmentId == 0) {
       this.addExt(selectedApartmentExtDto);
     } else {
@@ -199,20 +251,67 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   updateExt(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.sub6 = this.apartmentService.updateExt(selectedApartmentExtDto).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+    let isModelValid = this.validateForUpdate(selectedApartmentExtDto);
+
+    if (isModelValid) {
+      this.sub6 = this.apartmentService.updateExt(selectedApartmentExtDto).subscribe({
+        next: (response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+        }, error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
         }
-        this.loading = false;
-      }, error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedApartmentExtDtoErrors);
+    }
+  }
+
+  validateForAdd(selectedApartmentExtDto: ApartmentExtDto): boolean {
+    this.resetErrors();
+    let isValid: boolean = true;
+    if (selectedApartmentExtDto.sectionId == undefined || selectedApartmentExtDto.sectionId <= 0) {
+      this.selectedApartmentExtDtoErrors.sectionId = "Lütfen site seçiniz.";
+      isValid = false;
+    } 
+    if (selectedApartmentExtDto.managerId == undefined || selectedApartmentExtDto.managerId <= 0) {
+      this.selectedApartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
+      isValid = false;
+    } 
+    if (selectedApartmentExtDto.apartmentName == undefined || selectedApartmentExtDto.apartmentName == "") {
+      this.selectedApartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
+      isValid = false;
+    }
+    if (selectedApartmentExtDto.blockNumber == undefined || selectedApartmentExtDto.blockNumber <= 0) {
+      this.selectedApartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  validateForUpdate(selectedApartmentExtDto: ApartmentExtDto): boolean {
+    this.resetErrors();
+    let isValid: boolean = true;
+    if (selectedApartmentExtDto.managerId == undefined || selectedApartmentExtDto.managerId <= 0) {
+      this.selectedApartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
+      isValid = false;
+    } 
+    if (selectedApartmentExtDto.apartmentName == undefined || selectedApartmentExtDto.apartmentName == "") {
+      this.selectedApartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
+      isValid = false;
+    }
+    if (selectedApartmentExtDto.blockNumber == undefined || selectedApartmentExtDto.blockNumber <= 0) {
+      this.selectedApartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
+      isValid = false;
+    }
+    return isValid;
   }
 
   ngOnInit(): void {

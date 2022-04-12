@@ -17,11 +17,12 @@
                         name="apartmentName"
                         [(ngModel)]="selectedApartmentExtDto.apartmentName"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['apartmentName'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedApartmentExtDtoErrors.apartmentName }"
+                        (change)="selectedApartmentExtDtoErrors.apartmentName = ''"
                         tabindex="1"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['apartmentName'].errors">
-                        <div *ngIf="form.controls['apartmentName'].errors['required']">Lütfen apartman adı giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedApartmentExtDtoErrors.apartmentName">
+                        <div>{{selectedApartmentExtDtoErrors.apartmentName}}</div>
                     </div>
                 </div>
                 <!-- /Apartman Adı -->
@@ -34,8 +35,9 @@
                         name="sectionId"
                         class="form-select"
                         [(ngModel)]="selectedApartmentExtDto.sectionId"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionId'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedApartmentExtDtoErrors.sectionId }"
                         [disabled]="selectedApartmentExtDto.apartmentId != 0"
+                        (change)="selectedApartmentExtDtoErrors.sectionId = ''"
                         tabindex="2"
                     >
                         <option 
@@ -45,9 +47,8 @@
                             {{sectionDto.sectionName}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionId'].errors">
-                        <div *ngIf="form.controls['sectionId'].errors['required']">Lütfen site seçiniz.</div>
-                        <div *ngIf="form.controls['sectionId'].errors['min']">Lütfen site seçiniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedApartmentExtDtoErrors.sectionId">
+                        <div>{{selectedApartmentExtDtoErrors.sectionId}}</div>
                     </div>
                 </div>
                 <!-- /Site -->
@@ -60,7 +61,8 @@
                         name="managerId"
                         class="form-select"
                         [(ngModel)]="selectedApartmentExtDto.managerId"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['managerId'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedApartmentExtDtoErrors.managerId }"
+                        (change)="selectedApartmentExtDtoErrors.managerId = ''"
                         tabindex="3"
                     >
                         <option 
@@ -70,9 +72,8 @@
                             {{managerDto.nameSurname}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['managerId'].errors">
-                        <div *ngIf="form.controls['managerId'].errors['required']">Lütfen yönetici seçiniz.</div>
-                        <div *ngIf="form.controls['managerId'].errors['min']">Lütfen yönetici seçiniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedApartmentExtDtoErrors.managerId">
+                        <div>{{selectedApartmentExtDtoErrors.managerId}}</div>
                     </div>
                 </div>
                 <!-- /Yönetici -->
@@ -86,12 +87,12 @@
                         name="blockNumber"
                         [(ngModel)]="selectedApartmentExtDto.blockNumber"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['blockNumber'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedApartmentExtDtoErrors.blockNumber }"
+                        (change)="selectedApartmentExtDtoErrors.blockNumber = ''"
                         tabindex="4"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['blockNumber'].errors">
-                        <div *ngIf="form.controls['blockNumber'].errors['required']">Lütfen blok numarası giriniz.</div>
-                        <div *ngIf="form.controls['blockNumber'].errors['min']">Lütfen blok numarası giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedApartmentExtDtoErrors.blockNumber">
+                        <div>{{selectedApartmentExtDtoErrors.blockNumber}}</div>
                     </div>
                 </div>
                 <!-- /Blok Numarası -->
