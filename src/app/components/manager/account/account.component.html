@@ -16,6 +16,7 @@
 
 <ng-template #accountDetail>
     <app-account-detail
+        [accountTypes]="sectionManagerAccountTypes"
         [accountGroupDtos]="accountGroupDtos"
         [branchDtos]="(branchDtos$ | async)?.data || []"
         [cardHeader]="cardHeader"
@@ -23,7 +24,10 @@
         [selectedAccountExtDto]="selectedAccountExtDto"
         [selectedAccountExtDtoErrors]="selectedAccountExtDtoErrors"
         (accountCodeGenerated)="generateAccountCode($event)"
+        (accountGroupSelected)="selectAccountGroup()"
+        (accountTypeSelected)="selectAccountType($event)"
         (cancelled)="cancel()"
+        (formReset)="reset()"
         (saved)="save($event)"
     ></app-account-detail>
 </ng-template>

@@ -8,6 +8,7 @@ import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
 import { AccountExtDtoErrors } from 'src/app/models/validation-errors/account-ext-dto-errors';
 import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
+import { AccountType } from 'src/app/models/various/account-type';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
@@ -126,6 +127,12 @@ export class AccountComponent implements OnInit, OnDestroy {
   public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public cardHeader: string = "";
   public loading: boolean = false;
+  public sectionManagerAccountTypes: AccountType[] = [
+    { accountTypeName: "Diğer" },
+    { accountTypeName: "Personel" },
+    { accountTypeName: "Ev Sahibi" },
+    { accountTypeName: "Kiracı" },
+  ];
   public selectedAccountExtDto: AccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
   public selectedAccountExtDtoErrors: AccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
@@ -298,6 +305,38 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.branchDtos$ = this.branchService.getByBusinessId(businessId);
   }
 
+  reset() {
+    this.selectedAccountExtDto.accountId = 0;
+    this.selectedAccountExtDto.businessId = 0;
+    this.selectedAccountExtDto.branchId = 0;
+    this.selectedAccountExtDto.accountGroupId = 0;
+    this.selectedAccountExtDto.currencyId = 0;
+    this.selectedAccountExtDto.accountOrder = 0;
+    this.selectedAccountExtDto.accountName = "";
+    this.selectedAccountExtDto.accountCode = "";
+    this.selectedAccountExtDto.taxOffice = "";
+    this.selectedAccountExtDto.taxNumber = undefined;
+    this.selectedAccountExtDto.identityNumber = undefined;
+    this.selectedAccountExtDto.debitBalance = 0;
+    this.selectedAccountExtDto.creditBalance = 0;
+    this.selectedAccountExtDto.balance = 0;
+    this.selectedAccountExtDto.limit = 0;
+    this.selectedAccountExtDto.standartMaturity = 0;
+    this.selectedAccountExtDto.createdAt = new Date();
+    this.selectedAccountExtDto.updatedAt = new Date();
+    this.selectedAccountExtDto.branchName = "";
+    this.selectedAccountExtDto.accountGroupName = "";
+    this.selectedAccountExtDto.accountGroupCode = "";
+    this.selectedAccountExtDto.currencyName = "";
+    this.selectedAccountExtDto.nameSurname = "";
+    this.selectedAccountExtDto.email = "";
+    this.selectedAccountExtDto.phone = "";
+    this.selectedAccountExtDto.dateOfBirth = new Date();
+    this.selectedAccountExtDto.gender = "";
+    this.selectedAccountExtDto.notes = "";
+    this.selectedAccountExtDto.avatarUrl = "";
+  }
+
   save(selectedAccountExtDto: AccountExtDto): void {
     if (selectedAccountExtDto.accountId == 0) {
       this.addExt(selectedAccountExtDto);
@@ -327,12 +366,38 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.activePage = "detail";
   }
 
+  selectAccountGroup() {
+    this.selectedAccountExtDto.accountCode = "";
+    this.selectedAccountExtDto.accountOrder = 0;
+  }
+
+  selectAccountType(accountTypeName: string) {
+    this.reset();
+    let selectedAccountTypeInArray = [];
+    if (accountTypeName == "Ev Sahibi") {
+      selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
+      this.selectedAccountExtDto.accountGroupId = selectedAccountTypeInArray[0].accountGroupId;
+      this.selectedAccountExtDto.accountTypeName = "Ev Sahibi";
+    } else if (accountTypeName == "Kiracı") {
+      selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
+      this.selectedAccountExtDto.accountGroupId = selectedAccountTypeInArray[0].accountGroupId;
+      this.selectedAccountExtDto.accountTypeName = "Kiracı";
+    } else if (accountTypeName == "Personel") {
+      selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "335");
+      this.selectedAccountExtDto.accountGroupId = selectedAccountTypeInArray[0].accountGroupId;
+      this.selectedAccountExtDto.accountTypeName = "Personel";
+    } else if (accountTypeName == "Diğer") {
+      this.selectedAccountExtDto.accountGroupId = 0;
+      this.selectedAccountExtDto.accountTypeName = "Diğer";
+    }
+  }
+
   setHeader(accountId: number): void {
     accountId == 0 ? this.cardHeader = "Cari Hesap Ekle" : this.cardHeader = "Cari Hesabı Düzenle";
   }
 
   updateExt(selectedAccountExtDto: AccountExtDto): void {
-    let isModelValid = this.validateForAdd(selectedAccountExtDto);
+    let isModelValid = this.validateForUpdate(selectedAccountExtDto);
 
     if (isModelValid) {
       this.sub8 = this.accountService.updateExt(selectedAccountExtDto).subscribe({
