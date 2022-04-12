@@ -19,47 +19,6 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { ToastService } from 'src/app/services/toast.service';
 
-const ACCOUNT_EXT_DTO_ERRORS: AccountExtDtoErrors = {
-  accountId: "",
-  businessId: "",
-  branchId: "",
-  accountGroupId: "",
-  currencyId: "",
-  accountOrder: "",
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: "",
-  identityNumber: "",
-  debitBalance: "",
-  creditBalance: "",
-  balance: "",
-  limit: "",
-  standartMaturity: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With Branch
-  branchName: "",
-
-  // Extended With AccountGroup
-  accountGroupName: "",
-  accountGroupCode: "",
-
-  // Extended With Currency
-  currencyName: "",
-
-  // Added Custom Fields
-  accountTypeName: "",
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: "",
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-};
-
 const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   accountId: 0,
   businessId: 0,
@@ -101,6 +60,47 @@ const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
   avatarUrl: "",
 };
 
+const EMPTY_ACCOUNT_EXT_DTO_ERRORS: AccountExtDtoErrors = {
+  accountId: "",
+  businessId: "",
+  branchId: "",
+  accountGroupId: "",
+  currencyId: "",
+  accountOrder: "",
+  accountName: "",
+  accountCode: "",
+  taxOffice: "",
+  taxNumber: "",
+  identityNumber: "",
+  debitBalance: "",
+  creditBalance: "",
+  balance: "",
+  limit: "",
+  standartMaturity: "",
+  createdAt: "",
+  updatedAt: "",
+
+  // Extended With Branch
+  branchName: "",
+
+  // Extended With AccountGroup
+  accountGroupName: "",
+  accountGroupCode: "",
+
+  // Extended With Currency
+  currencyName: "",
+
+  // Added Custom Fields
+  accountTypeName: "",
+  nameSurname: "",
+  email: "",
+  phone: "",
+  dateOfBirth: "",
+  gender: "",
+  notes: "",
+  avatarUrl: "",
+};
+
 const EMPTY_ACCOUNT_GET_BY_ACCOUNT_GROUP_CODES_DTO: AccountGetByAccountGroupCodesDto = {
   businessId: 0,
   accountGroupCodes: [],
@@ -134,7 +134,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     { accountTypeName: "Kiracı" },
   ];
   public selectedAccountExtDto: AccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
-  public selectedAccountExtDtoErrors: AccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
+  public selectedAccountExtDtoErrors: AccountExtDtoErrors = cloneDeep(EMPTY_ACCOUNT_EXT_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -305,7 +305,11 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.branchDtos$ = this.branchService.getByBusinessId(businessId);
   }
 
-  reset() {
+  resetErrors() {
+    this.selectedAccountExtDtoErrors = cloneDeep(EMPTY_ACCOUNT_EXT_DTO_ERRORS);
+  }
+
+  resetModel() {
     this.selectedAccountExtDto.accountId = 0;
     this.selectedAccountExtDto.businessId = 0;
     this.selectedAccountExtDto.branchId = 0;
@@ -372,7 +376,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   selectAccountType(accountTypeName: string) {
-    this.reset();
+    this.resetModel();
     let selectedAccountTypeInArray = [];
     if (accountTypeName == "Ev Sahibi") {
       selectedAccountTypeInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
@@ -421,7 +425,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   validateForAdd(selectedAccountExtDto: AccountExtDto): boolean {
-    this.selectedAccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
+    this.resetErrors();
     let isValid: boolean = true;
     if (selectedAccountExtDto.accountTypeName == undefined || selectedAccountExtDto.accountTypeName == "") {
       this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
@@ -483,7 +487,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   validateForGeneratingAccountCode(selectedAccountExtDto: AccountExtDto): boolean {
-    this.selectedAccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
+    this.resetErrors();
     let isValid: boolean = true;
     if (selectedAccountExtDto.accountTypeName == undefined || selectedAccountExtDto.accountTypeName == "") {
       this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
@@ -501,7 +505,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   validateForUpdate(selectedAccountExtDto: AccountExtDto): boolean {
-    this.selectedAccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
+    this.resetErrors();
     let isValid: boolean = true;
     if (selectedAccountExtDto.nameSurname == undefined || selectedAccountExtDto.nameSurname == "") {
       this.selectedAccountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";

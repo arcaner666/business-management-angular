@@ -28,7 +28,7 @@ export class AccountDetailComponent {
   @Output() accountGroupSelected = new EventEmitter();
   @Output() accountTypeSelected = new EventEmitter<string>();
   @Output() cancelled = new EventEmitter();
-  @Output() formReset = new EventEmitter();
+  @Output() modelReset = new EventEmitter();
   @Output() saved = new EventEmitter<AccountExtDto>();
   
   public submitted: boolean = false;
@@ -48,9 +48,9 @@ export class AccountDetailComponent {
     this.accountCodeGenerated.emit(selectedAccountExtDto);
   }
 
-  reset() {
+  resetModel() {
     this.submitted = false;
-    this.formReset.emit();
+    this.modelReset.emit();
   }
 
   save(selectedAccountExtDto: AccountExtDto): void {
