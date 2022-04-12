@@ -12,16 +12,17 @@
                 <!-- Formun öğeleri seçili hesap türüne göre şekillenecek. -->
                 <div 
                     class="mt-3 mb-3"
-                    *ngIf="selectedAccountExtDto.accountId == 0"
+                    [hidden]="selectedAccountExtDto.accountId != 0"
                 >
-                    <label class="mb-2" for="account-type-id">Hesap Tipi</label>
+                    <label class="mb-2" for="account-type-name">Hesap Tipi</label>
                     <select 
-                        id="account-type-id"
-                        name="accountTypeId"
+                        id="account-type-name"
+                        name="accountTypeName"
                         class="form-select"
-                        [(ngModel)]="selectedAccountTypeName"
-                        (change)="selectAccountType(selectedAccountTypeName)"
+                        [(ngModel)]="selectedAccountExtDto.accountTypeName"
+                        (change)="selectAccountType(selectedAccountExtDto.accountTypeName)"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountTypeName }"
+                        (change)="selectedAccountExtDtoErrors.accountTypeName = ''"
                         tabindex="1"
                     >
                         <option 
@@ -47,7 +48,8 @@
                         [(ngModel)]="selectedAccountExtDto.accountGroupId"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountGroupId }"
                         (change)="selectAccountGroup()"
-                        [disabled]="selectedAccountTypeName != 'Diğer'"
+                        [disabled]="selectedAccountExtDto.accountTypeName != 'Diğer' || selectedAccountExtDto.accountId != 0"
+                        (change)="selectedAccountExtDtoErrors.accountGroupId = ''"
                         tabindex="2"
                     >
                         <option 
@@ -66,7 +68,7 @@
                 <!-- Ad Soyad -->
                 <div 
                     class="mt-3 mb-3"
-                    [hidden]="selectedAccountTypeName == 'Diğer'"
+                    [hidden]="selectedAccountExtDto.accountTypeName == 'Diğer'"
                 >
                     <label class="form-label" for="name-surname">Ad Soyad</label>
                     <input
@@ -76,6 +78,7 @@
                         [(ngModel)]="selectedAccountExtDto.nameSurname"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.nameSurname }"
+                        (change)="selectedAccountExtDtoErrors.nameSurname = ''"
                         tabindex="3"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.nameSurname">
@@ -87,7 +90,7 @@
                 <!-- Telefon Numarası -->
                 <div 
                     class="mt-3 mb-3"
-                    [hidden]="selectedAccountTypeName == 'Diğer'"
+                    [hidden]="selectedAccountExtDto.accountTypeName == 'Diğer'"
                 >
                     <label class="form-label" for="phone">Telefon Numarası</label>
                     <input
@@ -97,16 +100,12 @@
                         [(ngModel)]="selectedAccountExtDto.phone"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.phone }"
+                        (change)="selectedAccountExtDtoErrors.phone = ''"
                         tabindex="4"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.phone">
                         <div>{{selectedAccountExtDtoErrors.phone}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['phone'].errors">
-                        <div *ngIf="form.controls['phone'].errors['required']">Lütfen hesap sahibinin telefon numarasını giriniz.</div>
-                        <div *ngIf="form.controls['phone'].errors['minlength']">Telefon numarası 10 haneden oluşmalıdır. Örneğin; 555 444 33 22</div>
-                        <div *ngIf="form.controls['phone'].errors['maxlength']">Telefon numarası 10 haneden oluşmalıdır. Örneğin; 555 444 33 22</div>
-                    </div> -->
                 </div>
                 <!-- /Telefon Numarası -->
 
@@ -120,6 +119,7 @@
                         [(ngModel)]="selectedAccountExtDto.branchId"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.branchId }"
                         [disabled]="selectedAccountExtDto.accountId != 0"
+                        (change)="selectedAccountExtDtoErrors.branchId = ''"
                         tabindex="5"
                     >
                         <option 
@@ -132,10 +132,6 @@
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.branchId">
                         <div>{{selectedAccountExtDtoErrors.branchId}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['branchId'].errors">
-                        <div *ngIf="form.controls['branchId'].errors['required']">Lütfen şube seçiniz.</div>
-                        <div *ngIf="form.controls['branchId'].errors['min']">Lütfen şube seçiniz.</div>
-                    </div> -->
                 </div>
                 <!-- /Şube -->
     
@@ -149,14 +145,12 @@
                         [(ngModel)]="selectedAccountExtDto.accountName"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountName }"
+                        (change)="selectedAccountExtDtoErrors.accountName = ''"
                         tabindex="6"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountName">
                         <div>{{selectedAccountExtDtoErrors.accountName}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['accountName'].errors">
-                        <div *ngIf="form.controls['accountName'].errors['required']">Lütfen hesap adı giriniz.</div>
-                    </div> -->
                 </div>
                 <!-- /Hesap Adı -->
 
@@ -166,7 +160,7 @@
                         <label class="form-label" for="account-code">Hesap Kodu</label>
 
                         <!-- Hesap Kodu Üretme Butonu -->
-                        <a class="code-link cursor-pointer" (click)="generateAccountCode()" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
+                        <a class="code-link cursor-pointer" (click)="generateAccountCode(selectedAccountExtDto)" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
                         <!-- /Hesap Kodu Üretme Butonu -->
                     </div>
                     <input
@@ -177,14 +171,13 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountCode }"
                         [readOnly]="selectedAccountExtDto.accountId != 0"
+                        (change)="selectedAccountExtDtoErrors.accountCode = ''"
                         tabindex="7"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountCode">
                         <div>{{selectedAccountExtDtoErrors.accountCode}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['accountCode'].errors">
-                        <div *ngIf="form.controls['accountCode'].errors['required']">Lütfen hesap kodu giriniz.</div>
-                    </div> -->
+
                 </div>
                 <!-- /Hesap Kodu -->
                 
@@ -198,14 +191,12 @@
                         [(ngModel)]="selectedAccountExtDto.taxOffice"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.taxOffice }"
+                        (change)="selectedAccountExtDtoErrors.taxOffice = ''"
                         tabindex="8"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.taxOffice">
                         <div>{{selectedAccountExtDtoErrors.taxOffice}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['taxOffice'].errors">
-                        <div *ngIf="form.controls['taxOffice'].errors['required']">Lütfen vergi dairesi giriniz.</div>
-                    </div> -->
                 </div>
                 <!-- /Vergi Dairesi -->
 
@@ -219,14 +210,12 @@
                         [(ngModel)]="selectedAccountExtDto.taxNumber"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.taxNumber }"
+                        (change)="selectedAccountExtDtoErrors.taxNumber = ''"
                         tabindex="9"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.taxNumber">
                         <div>{{selectedAccountExtDtoErrors.taxNumber}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['taxNumber'].errors">
-                        <div *ngIf="form.controls['taxNumber'].errors['required']">Lütfen vergi numarası giriniz.</div>
-                    </div> -->
                 </div>
                 <!-- /Vergi Numarası -->
 
@@ -240,16 +229,12 @@
                         [(ngModel)]="selectedAccountExtDto.identityNumber"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.identityNumber }"
+                        (change)="selectedAccountExtDtoErrors.identityNumber = ''"
                         tabindex="10"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.identityNumber">
                         <div>{{selectedAccountExtDtoErrors.identityNumber}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['identityNumber'].errors">
-                        <div *ngIf="form.controls['identityNumber'].errors['required']">Lütfen kimlik numarası giriniz.</div>
-                        <div *ngIf="form.controls['identityNumber'].errors['min']">Kimlik numarası 11 haneden oluşmalıdır.</div>
-                        <div *ngIf="form.controls['identityNumber'].errors['max']">Kimlik numarası 11 haneden oluşmalıdır.</div>
-                    </div> -->
                 </div>
                 <!-- /Kimlik Numarası -->
 
@@ -263,15 +248,12 @@
                         [(ngModel)]="selectedAccountExtDto.limit"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.limit }"
+                        (change)="selectedAccountExtDtoErrors.limit = ''"
                         tabindex="11"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.limit">
                         <div>{{selectedAccountExtDtoErrors.limit}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['limit'].errors">
-                        <div *ngIf="form.controls['limit'].errors['required']">Lütfen hesap limiti giriniz.</div>
-                        <div *ngIf="form.controls['limit'].errors['min']">Hesap limiti 0'dan büyük olmalıdır.</div>
-                    </div> -->
                 </div>
                 <!-- /Limit -->
 
@@ -285,15 +267,12 @@
                         [(ngModel)]="selectedAccountExtDto.standartMaturity"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.standartMaturity }"
+                        (change)="selectedAccountExtDtoErrors.standartMaturity = ''"
                         tabindex="12"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.standartMaturity">
                         <div>{{selectedAccountExtDtoErrors.standartMaturity}}</div>
                     </div>
-                    <!-- <div class="invalid-feedback" *ngIf="submitted && form.controls['standartMaturity'].errors">
-                        <div *ngIf="form.controls['standartMaturity'].errors['required']">Lütfen standart vade giriniz.</div>
-                        <div *ngIf="form.controls['standartMaturity'].errors['min']">Standart vade 0'dan büyük olmalıdır.</div>
-                    </div> -->
                 </div>
                 <!-- /Standart Vade -->
 
