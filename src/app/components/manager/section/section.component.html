@@ -23,8 +23,9 @@
         [managerDtos]="(managerDtos$ | async)?.data || []"
         [sectionGroupDtos]="(sectionGroupDtos$ | async)?.data || []"
         [selectedSectionExtDto]="selectedSectionExtDto"
+        [selectedSectionExtDtoErrors]="selectedSectionExtDtoErrors"
         (cancelled)="cancel()"
-        (citySelected)="getDistrictsByCityId($event)"
+        (citySelected)="selectCity($event)"
         (saved)="save($event)"
     ></app-section-detail>
 </ng-template>

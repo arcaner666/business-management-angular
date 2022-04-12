@@ -9,6 +9,7 @@ import { DistrictDto } from 'src/app/models/dtos/district-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerDto } from 'src/app/models/dtos/manager-dto';
 import { SectionExtDto } from 'src/app/models/dtos/section-ext-dto';
+import { SectionExtDtoErrors } from 'src/app/models/validation-errors/section-ext-dto-errors';
 import { SectionGroupDto } from 'src/app/models/dtos/section-group-dto';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
@@ -18,6 +19,7 @@ import { ManagerService } from 'src/app/services/manager.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
 import { SectionService } from 'src/app/services/section.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 const EMPTY_SECTION_EXT_DTO: SectionExtDto = {
   sectionId: 0,
@@ -51,6 +53,38 @@ const EMPTY_SECTION_EXT_DTO: SectionExtDto = {
   districtName: "",
 };
 
+const EMPTY_SECTION_EXT_DTO_ERRORS: SectionExtDtoErrors = {
+  sectionId: "",
+  sectionGroupId: "",
+  businessId: "",
+  branchId: "",
+  managerId: "",
+  fullAddressId: "",
+  sectionName: "",
+  sectionCode: "",
+  createdAt: "",
+  updatedAt: "",
+
+  // Extended With SectionGroup
+  sectionGroupName: "",
+
+  // Extended With Manager
+  managerNameSurname: "",
+
+  // Extended With FullAddress
+  cityId: "",
+  districtId: "",
+  addressTitle: "",
+  postalCode: "",
+  addressText: "",
+
+  // Extended With FullAddress + City
+  cityName: "",
+
+  // Extended With FullAddress + District
+  districtName: "",
+};
+
 @Component({
   selector: 'app-section',
   templateUrl: './section.component.html',
@@ -69,6 +103,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   public sectionExtDtos$!: Observable<ListDataResult<SectionExtDto>>;
   public sectionGroupDtos$!: Observable<ListDataResult<SectionGroupDto>>;
   public selectedSectionExtDto: SectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
+  public selectedSectionExtDtoErrors: SectionExtDtoErrors = cloneDeep(EMPTY_SECTION_EXT_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -85,6 +120,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     private sectionGroupService: SectionGroupService,
     private sectionService: SectionService,
     private toastService: ToastService,
+    private validationService: ValidationService,
   ) { 
     console.log("SectionComponent constructor çalıştı.");
 
@@ -94,28 +130,37 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.getSectionGroupsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  addExt(selectedSectionExtDto: SectionExtDto): void {
+  addExt(): void {
     // Sunucuya gönderilecek modelin businessId ve branchId kısmını günceller.
-    selectedSectionExtDto.businessId = this.authorizationService.authorizationDto.businessId;
-    selectedSectionExtDto.branchId = this.authorizationService.authorizationDto.branchId;
+    this.selectedSectionExtDto.businessId = this.authorizationService.authorizationDto.businessId;
+    this.selectedSectionExtDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    this.sub1 = this.sectionService.addExt(selectedSectionExtDto).pipe(
-      concatMap((response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+    let isModelValid = this.validateForAdd();
+
+    if (isModelValid) {
+      this.loading = true;
+
+      this.sub1 = this.sectionService.addExt(this.selectedSectionExtDto).pipe(
+        concatMap((response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+          return this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
-        this.loading = false;
-        return this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-      }
-    )).subscribe({
-      error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      )).subscribe({
+        error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
+        }
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedSectionExtDtoErrors);
+    }
   }
 
   cancel(): void {
@@ -194,12 +239,47 @@ export class SectionComponent implements OnInit, OnDestroy {
     });
   }
 
+  resetErrors() {
+    this.selectedSectionExtDtoErrors = cloneDeep(EMPTY_SECTION_EXT_DTO_ERRORS);
+  }
+
+  resetModel() {
+    this.selectedSectionExtDto.sectionId = 0;
+    this.selectedSectionExtDto.sectionGroupId = 0;
+    this.selectedSectionExtDto.businessId = 0;
+    this.selectedSectionExtDto.branchId = 0;
+    this.selectedSectionExtDto.managerId = 0;
+    this.selectedSectionExtDto.fullAddressId = 0;
+    this.selectedSectionExtDto.sectionName = "";
+    this.selectedSectionExtDto.sectionCode = "";
+    this.selectedSectionExtDto.createdAt = new Date();
+    this.selectedSectionExtDto.updatedAt = new Date();
+  
+    // Extended With SectionGroup
+    this.selectedSectionExtDto.sectionGroupName = "";
+  
+    // Extended With Manager
+    this.selectedSectionExtDto.managerNameSurname = "";
+  
+    // Extended With FullAddress
+    this.selectedSectionExtDto.cityId = 0;
+    this.selectedSectionExtDto.districtId = 0;
+    this.selectedSectionExtDto.addressTitle = "";
+    this.selectedSectionExtDto.postalCode = 0;
+    this.selectedSectionExtDto.addressText = "";
+  
+    // Extended With FullAddress + City
+    this.selectedSectionExtDto.cityName = "";
+  
+    // Extended With FullAddress + District
+    this.selectedSectionExtDto.districtName = "";
+  }
+
   save(selectedSectionExtDto: SectionExtDto): void {
-    this.loading = true;
     if (selectedSectionExtDto.sectionId == 0) {
-      this.addExt(selectedSectionExtDto);
+      this.addExt();
     } else {
-      this.updateExt(selectedSectionExtDto);
+      this.updateExt();
     }
   }
 
@@ -225,25 +305,113 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.activePage = "detail";
   }
 
+  selectCity(cityId: number): void {
+    // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
+    this.selectedSectionExtDto.districtId = 0;
+
+    this.getDistrictsByCityId(cityId);
+  }
+
   setHeader(sectionId: number): void {
     sectionId == 0 ? this.cardHeader = "Site Ekle" : this.cardHeader = "Siteyi Düzenle";
   }
 
-  updateExt(selectedSectionExtDto: SectionExtDto): void {
-    this.sub6 = this.sectionService.updateExt(selectedSectionExtDto).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+  updateExt(): void {
+    let isModelValid = this.validateForUpdate();
+
+    if (isModelValid) {
+      this.sub6 = this.sectionService.updateExt(this.selectedSectionExtDto).subscribe({
+        next: (response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+        }, error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
         }
-        this.loading = false;
-      }, error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedSectionExtDtoErrors);
+    }
+  }
+
+  validateForAdd(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.string(this.selectedSectionExtDto.sectionName)) {
+      this.selectedSectionExtDtoErrors.sectionName = "Lütfen site adı giriniz.";
+      isValid = false;
+    } 
+    if (!this.validationService.number(this.selectedSectionExtDto.sectionGroupId)) {
+      this.selectedSectionExtDtoErrors.sectionGroupId = "Lütfen site grubu seçiniz.";
+      isValid = false;
+    } 
+    if (!this.validationService.number(this.selectedSectionExtDto.managerId)) {
+      this.selectedSectionExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedSectionExtDto.cityId)) {
+      this.selectedSectionExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedSectionExtDto.districtId)) {
+      this.selectedSectionExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedSectionExtDto.postalCode)) {
+      this.selectedSectionExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedSectionExtDto.addressText)) {
+      this.selectedSectionExtDtoErrors.addressText = "Lütfen adres giriniz.";
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  validateForUpdate(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.string(this.selectedSectionExtDto.sectionName)) {
+      this.selectedSectionExtDtoErrors.sectionName = "Lütfen site adı giriniz.";
+      isValid = false;
+    } 
+    if (!this.validationService.number(this.selectedSectionExtDto.sectionGroupId)) {
+      this.selectedSectionExtDtoErrors.sectionGroupId = "Lütfen site grubu seçiniz.";
+      isValid = false;
+    } 
+    if (!this.validationService.number(this.selectedSectionExtDto.managerId)) {
+      this.selectedSectionExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedSectionExtDto.cityId)) {
+      this.selectedSectionExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedSectionExtDto.districtId)) {
+      this.selectedSectionExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
+      isValid = false;
+    }
+    if (!this.validationService.number(this.selectedSectionExtDto.postalCode)) {
+      this.selectedSectionExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedSectionExtDto.addressText)) {
+      this.selectedSectionExtDtoErrors.addressText = "Lütfen adres giriniz.";
+      isValid = false;
+    }
+
+    return isValid;
   }
 
   ngOnInit(): void {

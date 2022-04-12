@@ -17,11 +17,12 @@
                         name="sectionGroupName"
                         [(ngModel)]="selectedSectionGroupDto.sectionGroupName"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionGroupName'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedSectionGroupDtoErrors.sectionGroupName }"
+                        (change)="selectedSectionGroupDtoErrors.sectionGroupName = ''"
                         tabindex="1"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionGroupName'].errors">
-                        <div *ngIf="form.controls['sectionGroupName'].errors['required']">Lütfen site grubu adı giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedSectionGroupDtoErrors.sectionGroupName">
+                        <div>{{selectedSectionGroupDtoErrors.sectionGroupName}}</div>
                     </div>
                 </div>
                 <!-- /Site Grubu Adı -->

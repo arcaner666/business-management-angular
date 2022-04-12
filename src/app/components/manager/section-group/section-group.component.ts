@@ -6,10 +6,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { SectionGroupDto } from 'src/app/models/dtos/section-group-dto';
+import { SectionGroupDtoErrors } from 'src/app/models/validation-errors/section-group-dto-errors';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 const EMPTY_SECTION_GROUP_DTO: SectionGroupDto = {
   sectionGroupId: 0,
@@ -18,6 +20,15 @@ const EMPTY_SECTION_GROUP_DTO: SectionGroupDto = {
   sectionGroupName: "",
   createdAt: new Date(),
   updatedAt: new Date(),
+};
+
+const EMPTY_SECTION_GROUP_DTO_ERRORS: SectionGroupDtoErrors = {
+  sectionGroupId: "",
+  businessId: "",
+  branchId: "",
+  sectionGroupName: "",
+  createdAt: "",
+  updatedAt: "",
 };
 
 @Component({
@@ -34,6 +45,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public sectionGroupDtos$!: Observable<ListDataResult<SectionGroupDto>>;
   public selectedSectionGroupDto: SectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
+  public selectedSectionGroupDtoErrors: SectionGroupDtoErrors = cloneDeep(EMPTY_SECTION_GROUP_DTO_ERRORS);
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -46,34 +58,44 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private sectionGroupService: SectionGroupService,
     private toastService: ToastService,
+    private validationService: ValidationService,
   ) { 
     console.log("SectionGroupComponent constructor çalıştı.");
 
     this.getSectionGroupsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  add(selectedSectionGroupDto: SectionGroupDto): void {
+  add(): void {
     // Sunucuya gönderilecek modelin businessId ve branchId kısmını günceller.
-    selectedSectionGroupDto.businessId = this.authorizationService.authorizationDto.businessId;
-    selectedSectionGroupDto.branchId = this.authorizationService.authorizationDto.branchId;
+    this.selectedSectionGroupDto.businessId = this.authorizationService.authorizationDto.businessId;
+    this.selectedSectionGroupDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    this.sub1 = this.sectionGroupService.add(selectedSectionGroupDto).pipe(
-      concatMap((response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+    let isModelValid = this.validate();
+
+    if (isModelValid) {
+      this.loading = true;
+
+      this.sub1 = this.sectionGroupService.add(this.selectedSectionGroupDto).pipe(
+        concatMap((response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+          return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
-        this.loading = false;
-        return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
-      }
-    )).subscribe({
-      error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      )).subscribe({
+        error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
+        }
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedSectionGroupDtoErrors);
+    }
   }
 
   cancel(): void {
@@ -136,12 +158,24 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     });
   }
 
+  resetErrors() {
+    this.selectedSectionGroupDtoErrors = cloneDeep(EMPTY_SECTION_GROUP_DTO_ERRORS);
+  }
+
+  resetModel() {
+    this.selectedSectionGroupDto.sectionGroupId = 0;
+    this.selectedSectionGroupDto.businessId = 0;
+    this.selectedSectionGroupDto.branchId = 0;
+    this.selectedSectionGroupDto.sectionGroupName = "";
+    this.selectedSectionGroupDto.createdAt = new Date();
+    this.selectedSectionGroupDto.updatedAt = new Date();
+  }
+
   save(selectedSectionGroupDto: SectionGroupDto): void {
-    this.loading = true;
     if (selectedSectionGroupDto.sectionGroupId == 0) {
-      this.add(selectedSectionGroupDto);
+      this.add();
     } else {
-      this.update(selectedSectionGroupDto);
+      this.update();
     }
   }
 
@@ -170,21 +204,41 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     sectionGroupId == 0 ? this.cardHeader = "Site Grubu Ekle" : this.cardHeader = "Site Grubunu Düzenle";
   }
 
-  update(selectedSectionGroupDto: SectionGroupDto): void {
-    this.sub6 = this.sectionGroupService.update(selectedSectionGroupDto).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.toastService.success(response.message);
-          this.activePage = "list";
-          window.scroll(0,0);
+  update(): void {
+    let isModelValid = this.validate();
+
+    if (isModelValid) {
+      this.sub6 = this.sectionGroupService.update(this.selectedSectionGroupDto).subscribe({
+        next: (response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+        }, error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
         }
-        this.loading = false;
-      }, error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedSectionGroupDtoErrors);
+    }
+  }
+
+  validate(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.string(this.selectedSectionGroupDto.sectionGroupName)) {
+      this.selectedSectionGroupDtoErrors.sectionGroupName = "Lütfen site grubu adı giriniz.";
+      isValid = false;
+    } 
+
+    return isValid;
   }
 
   ngOnInit(): void {

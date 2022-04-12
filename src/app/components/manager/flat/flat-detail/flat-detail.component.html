@@ -17,8 +17,9 @@
                         class="form-select"
                         [(ngModel)]="selectedFlatExtDto.sectionId"
                         (change)="selectSection(selectedFlatExtDto.sectionId)"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['sectionId'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedFlatExtDtoErrors.sectionId }"
                         [disabled]="selectedFlatExtDto.flatId != 0"
+                        (change)="selectedFlatExtDtoErrors.sectionId = ''"
                         tabindex="1"
                     >
                         <option 
@@ -28,9 +29,8 @@
                             {{sectionDto.sectionName}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['sectionId'].errors">
-                        <div *ngIf="form.controls['sectionId'].errors['required']">Lütfen site seçiniz.</div>
-                        <div *ngIf="form.controls['sectionId'].errors['min']">Lütfen site seçiniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedFlatExtDtoErrors.sectionId">
+                        <div>{{selectedFlatExtDtoErrors.sectionId}}</div>
                     </div>
                 </div>
                 <!-- /Site -->
@@ -43,8 +43,9 @@
                         name="apartmentId"
                         class="form-select"
                         [(ngModel)]="selectedFlatExtDto.apartmentId"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['apartmentId'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedFlatExtDtoErrors.apartmentId }"
                         [disabled]="selectedFlatExtDto.flatId != 0"
+                        (change)="selectedFlatExtDtoErrors.apartmentId = ''"
                         tabindex="2"
                     >
                         <option 
@@ -54,9 +55,8 @@
                             {{apartmentDto.apartmentName}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['apartmentId'].errors">
-                        <div *ngIf="form.controls['apartmentId'].errors['required']">Lütfen apartman seçiniz.</div>
-                        <div *ngIf="form.controls['apartmentId'].errors['min']">Lütfen apartman seçiniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedFlatExtDtoErrors.apartmentId">
+                        <div>{{selectedFlatExtDtoErrors.apartmentId}}</div>
                     </div>
                 </div>
                 <!-- /Apartman -->
@@ -69,7 +69,6 @@
                         name="houseOwnerId"
                         class="form-select"
                         [(ngModel)]="selectedFlatExtDto.houseOwnerId"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['houseOwnerId'].errors }"
                         tabindex="3"
                     >
                         <option 
@@ -79,10 +78,6 @@
                             {{houseOwnerDto.nameSurname}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['houseOwnerId'].errors">
-                        <div *ngIf="form.controls['houseOwnerId'].errors['required']">Lütfen mülk sahibi seçiniz.</div>
-                        <div *ngIf="form.controls['houseOwnerId'].errors['min']">Lütfen mülk sahibi seçiniz.</div>
-                    </div>
                 </div>
                 <!-- /Mülk Sahibi -->
 
@@ -94,7 +89,6 @@
                         name="tenantId"
                         class="form-select"
                         [(ngModel)]="selectedFlatExtDto.tenantId"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['tenantId'].errors }"
                         tabindex="4"
                     >
                         <option 
@@ -104,10 +98,6 @@
                             {{tenantDto.nameSurname}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['tenantId'].errors">
-                        <div *ngIf="form.controls['tenantId'].errors['required']">Lütfen kiracı seçiniz.</div>
-                        <div *ngIf="form.controls['tenantId'].errors['min']">Lütfen kiracı seçiniz.</div>
-                    </div>
                 </div>
                 <!-- /Kiracı -->
                 
@@ -120,12 +110,12 @@
                         name="doorNumber"
                         [(ngModel)]="selectedFlatExtDto.doorNumber"
                         class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && form.controls['doorNumber'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && selectedFlatExtDtoErrors.doorNumber }"
+                        (change)="selectedFlatExtDtoErrors.doorNumber = ''"
                         tabindex="5"
                     />
-                    <div class="invalid-feedback" *ngIf="submitted && form.controls['doorNumber'].errors">
-                        <div *ngIf="form.controls['doorNumber'].errors['required']">Lütfen kapı numarası giriniz.</div>
-                        <div *ngIf="form.controls['doorNumber'].errors['min']">Lütfen kapı numarası giriniz.</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedFlatExtDtoErrors.doorNumber">
+                        <div>{{selectedFlatExtDtoErrors.doorNumber}}</div>
                     </div>
                 </div>
                 <!-- /Kapı Numarası -->

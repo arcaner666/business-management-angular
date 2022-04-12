@@ -22,10 +22,10 @@
         [loading]="loading"
         [selectedBranchExtDto]="selectedBranchExtDto"
         [selectedBranchExtDtoErrors]="selectedBranchExtDtoErrors"
-        (cancelled)="cancel()"
         (branchCodeGenerated)="generateBranchCode()"
-        (saved)="save($event)"
+        (cancelled)="cancel()"
         (citySelected)="selectCity($event)"
+        (saved)="save($event)"
     ></app-branch-detail>
 </ng-template>
 

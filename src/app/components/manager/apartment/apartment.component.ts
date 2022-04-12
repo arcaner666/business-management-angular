@@ -95,17 +95,17 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.getSectionsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  addExt(selectedApartmentExtDto: ApartmentExtDto): void {
+  addExt(): void {
     // Sunucuya gönderilecek modelin businessId ve branchId kısmını günceller.
-    selectedApartmentExtDto.businessId = this.authorizationService.authorizationDto.businessId;
-    selectedApartmentExtDto.branchId = this.authorizationService.authorizationDto.branchId;
+    this.selectedApartmentExtDto.businessId = this.authorizationService.authorizationDto.businessId;
+    this.selectedApartmentExtDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    let isModelValid = this.validateForAdd(selectedApartmentExtDto);
+    let isModelValid = this.validateForAdd();
 
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.apartmentService.addExt(selectedApartmentExtDto).pipe(
+      this.sub1 = this.apartmentService.addExt(this.selectedApartmentExtDto).pipe(
         concatMap((response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -221,9 +221,9 @@ export class ApartmentComponent implements OnInit, OnDestroy {
 
   save(selectedApartmentExtDto: ApartmentExtDto): void {
     if (selectedApartmentExtDto.apartmentId == 0) {
-      this.addExt(selectedApartmentExtDto);
+      this.addExt();
     } else {
-      this.updateExt(selectedApartmentExtDto);
+      this.updateExt();
     }
   }
 
@@ -252,11 +252,11 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     apartmentId == 0 ? this.cardHeader = "Apartman Ekle" : this.cardHeader = "Apartmanı Düzenle";
   }
 
-  updateExt(selectedApartmentExtDto: ApartmentExtDto): void {
-    let isModelValid = this.validateForUpdate(selectedApartmentExtDto);
+  updateExt(): void {
+    let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub6 = this.apartmentService.updateExt(selectedApartmentExtDto).subscribe({
+      this.sub6 = this.apartmentService.updateExt(this.selectedApartmentExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -276,42 +276,44 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  validateForAdd(selectedApartmentExtDto: ApartmentExtDto): boolean {
+  validateForAdd(): boolean {
     this.resetErrors();
+
     let isValid: boolean = true;
-    if (!this.validationService.number(selectedApartmentExtDto.sectionId)) {
+
+    if (!this.validationService.number(this.selectedApartmentExtDto.sectionId)) {
       this.selectedApartmentExtDtoErrors.sectionId = "Lütfen site seçiniz.";
       isValid = false;
     } 
-    if (!this.validationService.number(selectedApartmentExtDto.managerId)) {
+    if (!this.validationService.number(this.selectedApartmentExtDto.managerId)) {
       this.selectedApartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
       isValid = false;
     } 
-    if (!this.validationService.string(selectedApartmentExtDto.apartmentName)) {
+    if (!this.validationService.string(this.selectedApartmentExtDto.apartmentName)) {
       this.selectedApartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
       isValid = false;
     }
-    if (!this.validationService.number(selectedApartmentExtDto.blockNumber)) {
+    if (!this.validationService.number(this.selectedApartmentExtDto.blockNumber)) {
       this.selectedApartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
       isValid = false;
     }
     return isValid;
   }
 
-  validateForUpdate(selectedApartmentExtDto: ApartmentExtDto): boolean {
+  validateForUpdate(): boolean {
     this.resetErrors();
 
     let isValid: boolean = true;
 
-    if (!this.validationService.number(selectedApartmentExtDto.managerId)) {
+    if (!this.validationService.number(this.selectedApartmentExtDto.managerId)) {
       this.selectedApartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
       isValid = false;
     } 
-    if (!this.validationService.string(selectedApartmentExtDto.apartmentName)) {
+    if (!this.validationService.string(this.selectedApartmentExtDto.apartmentName)) {
       this.selectedApartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
       isValid = false;
     }
-    if (!this.validationService.number(selectedApartmentExtDto.blockNumber)) {
+    if (!this.validationService.number(this.selectedApartmentExtDto.blockNumber)) {
       this.selectedApartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
       isValid = false;
     }

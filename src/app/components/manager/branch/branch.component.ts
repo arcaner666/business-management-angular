@@ -269,7 +269,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   selectCity(cityId: number): void {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
     this.selectedBranchExtDto.districtId = 0;
-    
+
     this.getDistrictsByCityId(cityId);
   }
 
@@ -278,8 +278,6 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   update(): void {
-    console.log(this.selectedBranchExtDto);
-
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {

@@ -22,10 +22,11 @@
         [loading]="loading"
         [sectionDtos]="(sectionDtos$ | async)?.data || []"
         [selectedFlatExtDto]="selectedFlatExtDto"
+        [selectedFlatExtDtoErrors]="selectedFlatExtDtoErrors"
         [tenantDtos]="(tenantDtos$ | async)?.data || []"
         (cancelled)="cancel()"
         (saved)="save($event)"
-        (sectionSelected)="getApartmentsBySectionId($event)"
+        (sectionSelected)="selectSection($event)"
     ></app-flat-detail>
 </ng-template>
 

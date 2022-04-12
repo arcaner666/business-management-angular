@@ -1,18 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgForm, Validators } from '@angular/forms';
-
-import { cloneDeep } from 'lodash';
+import { NgForm } from '@angular/forms';
 
 import { SectionGroupDto } from 'src/app/models/dtos/section-group-dto';
-
-const EMPTY_SECTION_GROUP_DTO: SectionGroupDto = {
-  sectionGroupId: 0,
-  businessId: 0,
-  branchId: 0,
-  sectionGroupName: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import { SectionGroupDtoErrors } from 'src/app/models/validation-errors/section-group-dto-errors';
 
 @Component({
   selector: 'app-section-group-detail',
@@ -24,7 +14,8 @@ export class SectionGroupDetailComponent {
   @ViewChild('form') form!: NgForm;
   
   @Input() cardHeader: string = "";
-  @Input() selectedSectionGroupDto: SectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
+  @Input() selectedSectionGroupDto!: SectionGroupDto;
+  @Input() selectedSectionGroupDtoErrors!: SectionGroupDtoErrors;
   @Input() loading: boolean = false;
 
   @Output() saved = new EventEmitter<SectionGroupDto>();
@@ -44,20 +35,6 @@ export class SectionGroupDetailComponent {
 
   save(selectedSectionGroupDto: SectionGroupDto): void {
     this.submitted = true;
-
-    this.validate(this.form);
-
-    if (this.form.invalid) {
-      console.log("Form geçersiz.");
-      console.log(this.form);
-      return;
-    }
-
     this.saved.emit(selectedSectionGroupDto);
-  }
-
-  validate(form: NgForm): void {
-    form.controls['sectionGroupName'].setValidators(Validators.required);
-    form.controls['sectionGroupName'].updateValueAndValidity();
   }
 }
