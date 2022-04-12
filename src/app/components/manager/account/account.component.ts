@@ -358,39 +358,39 @@ export class AccountComponent implements OnInit, OnDestroy {
   validateForAdd(selectedAccountExtDto: AccountExtDto): boolean {
     this.selectedAccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
     let isValid: boolean = true;
-    if (selectedAccountExtDto.accountTypeName == "") {
+    if (selectedAccountExtDto.accountTypeName == undefined || selectedAccountExtDto.accountTypeName == "") {
       this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.accountGroupId == 0) {
+    if (selectedAccountExtDto.accountGroupId == undefined || selectedAccountExtDto.accountGroupId == 0) {
       this.selectedAccountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.nameSurname == "") {
+    if (selectedAccountExtDto.nameSurname == undefined || selectedAccountExtDto.nameSurname == "") {
       this.selectedAccountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.phone == "") {
+    if (selectedAccountExtDto.phone == undefined || selectedAccountExtDto.phone == "") {
       this.selectedAccountExtDtoErrors.phone = "Lütfen hesap sahibinin telefon numarasını giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.phone.length != 10) {
+    if (selectedAccountExtDto.phone == undefined || selectedAccountExtDto.phone.length != 10) {
       this.selectedAccountExtDtoErrors.phone = "Telefon numarasını başında sıfır olmadan 10 haneden olarak giriniz. Örneğin; 555 444 33 22";
       isValid = false;
     }
-    if (selectedAccountExtDto.branchId == 0) {
+    if (selectedAccountExtDto.branchId == undefined || selectedAccountExtDto.branchId == 0) {
       this.selectedAccountExtDtoErrors.branchId = "Lütfen şube seçiniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.accountName == "") {
+    if (selectedAccountExtDto.accountName == undefined || selectedAccountExtDto.accountName == "") {
       this.selectedAccountExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.accountCode == "") {
+    if (selectedAccountExtDto.accountCode == undefined || selectedAccountExtDto.accountCode == "") {
       this.selectedAccountExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.taxOffice == "") {
+    if (selectedAccountExtDto.taxOffice == undefined || selectedAccountExtDto.taxOffice == "") {
       this.selectedAccountExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
       isValid = false;
     }
@@ -406,11 +406,11 @@ export class AccountComponent implements OnInit, OnDestroy {
       this.selectedAccountExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
       isValid = false;
     }
-    if (selectedAccountExtDto.limit <= 0) {
+    if (selectedAccountExtDto.limit == undefined || selectedAccountExtDto.limit <= 0) {
       this.selectedAccountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.standartMaturity <= 0) {
+    if (selectedAccountExtDto.standartMaturity == undefined || selectedAccountExtDto.standartMaturity <= 0) {
       this.selectedAccountExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
       isValid = false;
     }
@@ -420,15 +420,15 @@ export class AccountComponent implements OnInit, OnDestroy {
   validateForGeneratingAccountCode(selectedAccountExtDto: AccountExtDto): boolean {
     this.selectedAccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
     let isValid: boolean = true;
-    if (selectedAccountExtDto.accountTypeName == "") {
+    if (selectedAccountExtDto.accountTypeName == undefined || selectedAccountExtDto.accountTypeName == "") {
       this.selectedAccountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.accountGroupId == 0) {
+    if (selectedAccountExtDto.accountGroupId == undefined || selectedAccountExtDto.accountGroupId == 0) {
       this.selectedAccountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
       isValid = false;
     } 
-    if (selectedAccountExtDto.branchId == 0) {
+    if (selectedAccountExtDto.branchId == undefined || selectedAccountExtDto.branchId == 0) {
       this.selectedAccountExtDtoErrors.branchId = "Lütfen şube seçiniz.";
       isValid = false;
     }
@@ -438,15 +438,15 @@ export class AccountComponent implements OnInit, OnDestroy {
   validateForUpdate(selectedAccountExtDto: AccountExtDto): boolean {
     this.selectedAccountExtDtoErrors = cloneDeep(ACCOUNT_EXT_DTO_ERRORS);
     let isValid: boolean = true;
-    if (selectedAccountExtDto.nameSurname == "") {
+    if (selectedAccountExtDto.nameSurname == undefined || selectedAccountExtDto.nameSurname == "") {
       this.selectedAccountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.accountName == "") {
+    if (selectedAccountExtDto.accountName == undefined || selectedAccountExtDto.accountName == "") {
       this.selectedAccountExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.taxOffice == "") {
+    if (selectedAccountExtDto.taxOffice == undefined || selectedAccountExtDto.taxOffice == "") {
       this.selectedAccountExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
       isValid = false;
     }
@@ -462,11 +462,11 @@ export class AccountComponent implements OnInit, OnDestroy {
       this.selectedAccountExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
       isValid = false;
     }
-    if (selectedAccountExtDto.limit <= 0) {
+    if (selectedAccountExtDto.limit == undefined || selectedAccountExtDto.limit <= 0) {
       this.selectedAccountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
       isValid = false;
     }
-    if (selectedAccountExtDto.standartMaturity <= 0) {
+    if (selectedAccountExtDto.standartMaturity == undefined || selectedAccountExtDto.standartMaturity <= 0) {
       this.selectedAccountExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
       isValid = false;
     }
