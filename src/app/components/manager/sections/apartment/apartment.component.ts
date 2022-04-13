@@ -10,6 +10,7 @@ import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerDto } from 'src/app/models/dtos/manager-dto';
 import { SectionDto } from 'src/app/models/dtos/section-dto';
 
+import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
 import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { ManagerService } from 'src/app/services/manager.service';
@@ -80,6 +81,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   public sub6: Subscription = new Subscription();
   
   constructor(
+    private apartmentExtService: ApartmentExtService,
     private apartmentService: ApartmentService,
     private authorizationService: AuthorizationService,
     private managerService: ManagerService,
@@ -105,7 +107,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.apartmentService.addExt(this.selectedApartmentExtDto).pipe(
+      this.sub1 = this.apartmentExtService.addExt(this.selectedApartmentExtDto).pipe(
         concatMap((response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -113,7 +115,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
             window.scroll(0,0);
           }
           this.loading = false;
-          return this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
         error: (error) => {
@@ -136,7 +138,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   delete(selectedApartmentExtDto: ApartmentExtDto): void {
     this.selectedApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
 
-    this.sub2 = this.apartmentService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
+    this.sub2 = this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedApartmentExtDto = response.data;
@@ -148,11 +150,11 @@ export class ApartmentComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.apartmentService.deleteExt(selectedApartmentExtDto.apartmentId).pipe(
+              this.sub3 = this.apartmentExtService.deleteExt(selectedApartmentExtDto.apartmentId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
-                  this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -173,7 +175,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   getApartmentExtsByBusinessId(businessId: number): void {
-    this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(businessId);
+    this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(businessId);
   }
 
   getManagersByBusinessId(businessId: number): void {
@@ -185,7 +187,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   getApartmentExtById(id: number): void {
-    this.sub4 = this.apartmentService.getExtById(id).subscribe({
+    this.sub4 = this.apartmentExtService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedApartmentExtDto = response.data;
@@ -233,7 +235,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.selectedApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
 
     if (selectedApartmentExtDto.apartmentId != 0) {
-      this.sub5 = this.apartmentService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
+      this.sub5 = this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedApartmentExtDto = response.data;
@@ -256,7 +258,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub6 = this.apartmentService.updateExt(this.selectedApartmentExtDto).subscribe({
+      this.sub6 = this.apartmentExtService.updateExt(this.selectedApartmentExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);

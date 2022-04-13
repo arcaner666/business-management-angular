@@ -14,7 +14,7 @@ import { TenantDto } from 'src/app/models/dtos/tenant-dto';
 
 import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
-import { FlatService } from 'src/app/services/flat.service';
+import { FlatExtService } from 'src/app/services/flat-ext.service';
 import { HouseOwnerService } from 'src/app/services/house-owner.service';
 import { SectionService } from 'src/app/services/section.service';
 import { TenantService } from 'src/app/services/tenant.service';
@@ -103,7 +103,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     private apartmentService: ApartmentService,
     private authorizationService: AuthorizationService,
     private houseOwnerService: HouseOwnerService,
-    private flatService: FlatService,
+    private flatExtService: FlatExtService,
     private modalService: NgbModal,
     private sectionService: SectionService,
     private tenantService: TenantService,
@@ -128,7 +128,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.flatService.addExt(this.selectedFlatExtDto).pipe(
+      this.sub1 = this.flatExtService.addExt(this.selectedFlatExtDto).pipe(
         concatMap((response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -136,7 +136,7 @@ export class FlatComponent implements OnInit, OnDestroy {
             window.scroll(0,0);
           }
           this.loading = false;
-          return this.flatExtDtos$ = this.flatService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
         error: (error) => {
@@ -159,7 +159,7 @@ export class FlatComponent implements OnInit, OnDestroy {
   delete(selectedFlatExtDto: FlatExtDto): void {
     this.selectedFlatExtDto = cloneDeep(EMPTY_FLAT_EXT_DTO);
 
-    this.sub2 = this.flatService.getExtById(selectedFlatExtDto.flatId).subscribe({
+    this.sub2 = this.flatExtService.getExtById(selectedFlatExtDto.flatId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedFlatExtDto = response.data;
@@ -171,11 +171,11 @@ export class FlatComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.flatService.deleteExt(selectedFlatExtDto.flatId).pipe(
+              this.sub3 = this.flatExtService.deleteExt(selectedFlatExtDto.flatId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
-                  this.flatExtDtos$ = this.flatService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -208,7 +208,7 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   getFlatExtById(id: number): void {
-    this.sub4 = this.flatService.getExtById(id).subscribe({
+    this.sub4 = this.flatExtService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedFlatExtDto = response.data;
@@ -220,7 +220,7 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   getFlatExtsByBusinessId(businessId: number): void {
-    this.flatExtDtos$ = this.flatService.getExtsByBusinessId(businessId);
+    this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(businessId);
   }
 
   getTenantsByBusinessId(businessId: number): void {
@@ -271,7 +271,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.selectedFlatExtDto = cloneDeep(EMPTY_FLAT_EXT_DTO);
 
     if (selectedFlatExtDto.flatId != 0) {
-      this.sub5 = this.flatService.getExtById(selectedFlatExtDto.flatId).subscribe({
+      this.sub5 = this.flatExtService.getExtById(selectedFlatExtDto.flatId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedFlatExtDto = response.data;
@@ -302,7 +302,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub6 = this.flatService.updateExt(this.selectedFlatExtDto).subscribe({
+      this.sub6 = this.flatExtService.updateExt(this.selectedFlatExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);

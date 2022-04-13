@@ -16,6 +16,7 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
 import { ManagerService } from 'src/app/services/manager.service';
+import { SectionExtService } from 'src/app/services/section-ext.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
 import { SectionService } from 'src/app/services/section.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -119,6 +120,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private sectionGroupService: SectionGroupService,
     private sectionService: SectionService,
+    private sectionExtService: SectionExtService,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
@@ -140,7 +142,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.sectionService.addExt(this.selectedSectionExtDto).pipe(
+      this.sub1 = this.sectionExtService.addExt(this.selectedSectionExtDto).pipe(
         concatMap((response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -148,7 +150,7 @@ export class SectionComponent implements OnInit, OnDestroy {
             window.scroll(0,0);
           }
           this.loading = false;
-          return this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
         error: (error) => {
@@ -171,7 +173,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   delete(selectedSectionExtDto: SectionExtDto): void {
     this.selectedSectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
 
-    this.sub2 = this.sectionService.getExtById(selectedSectionExtDto.sectionId).subscribe({
+    this.sub2 = this.sectionExtService.getExtById(selectedSectionExtDto.sectionId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedSectionExtDto = response.data;
@@ -183,11 +185,11 @@ export class SectionComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.sectionService.deleteExt(selectedSectionExtDto.sectionId).pipe(
+              this.sub3 = this.sectionExtService.deleteExt(selectedSectionExtDto.sectionId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
-                  this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -220,7 +222,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   getSectionExtsByBusinessId(businessId: number): void {
-    this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(businessId);
+    this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(businessId);
   }
 
   getSectionGroupsByBusinessId(businessId: number): void {
@@ -228,7 +230,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   getSectionExtById(id: number): void {
-    this.sub4 = this.sectionService.getExtById(id).subscribe({
+    this.sub4 = this.sectionExtService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedSectionExtDto = response.data;
@@ -289,7 +291,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.selectedSectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
 
     if (selectedSectionExtDto.sectionId != 0) {
-      this.sub5 = this.sectionService.getExtById(selectedSectionExtDto.sectionId).subscribe({
+      this.sub5 = this.sectionExtService.getExtById(selectedSectionExtDto.sectionId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedSectionExtDto = response.data;
@@ -320,7 +322,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub6 = this.sectionService.updateExt(this.selectedSectionExtDto).subscribe({
+      this.sub6 = this.sectionExtService.updateExt(this.selectedSectionExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);

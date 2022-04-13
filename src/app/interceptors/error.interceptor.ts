@@ -21,7 +21,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       // arayüze geri döndürüyor.
       catchError(err => {
         console.log(err);
-        if (err.error.message == "TokenInvalid" || err.error.message == "CanNotGetPrincipal") {
+        if (err.error?.message == "TokenInvalid" || err.error?.message == "CanNotGetPrincipal") {
           this.authorizationService.clearAuthorizationDto();
           this.router.navigate(['public/not-authorized', 'public/login']);
         }

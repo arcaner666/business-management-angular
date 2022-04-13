@@ -13,7 +13,7 @@ import { AccountType } from 'src/app/models/various/account-type';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
-import { AccountService } from 'src/app/services/account.service';
+import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
@@ -146,7 +146,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   public sub8: Subscription = new Subscription();
   
   constructor(
-    private accountService: AccountService,
+    private accountExtService: AccountExtService,
     private accountGroupService: AccountGroupService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
@@ -175,7 +175,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.accountService.addExt(this.selectedAccountExtDto).pipe(
+      this.sub1 = this.accountExtService.addExt(this.selectedAccountExtDto).pipe(
         concatMap((response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -186,7 +186,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   
           this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
           this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-          return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+          return this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
         }
       )).subscribe({
         error: (error) => {
@@ -209,7 +209,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   delete(selectedAccountExtDto: AccountExtDto): void {
     this.selectedAccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
 
-    this.sub2 = this.accountService.getExtById(selectedAccountExtDto.accountId).subscribe({
+    this.sub2 = this.accountExtService.getExtById(selectedAccountExtDto.accountId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedAccountExtDto = response.data;
@@ -221,14 +221,14 @@ export class AccountComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.accountService.deleteExt(selectedAccountExtDto.accountId).pipe(
+              this.sub3 = this.accountExtService.deleteExt(selectedAccountExtDto.accountId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
 
                   this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
                   this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-                  return this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+                  return this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
                 })
               ).subscribe({
                 error: (error) => {
@@ -256,7 +256,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     let isModelValid = this.validateForGeneratingAccountCode();
 
     if (isModelValid) {      
-      this.sub4 = this.accountService.generateAccountCode(
+      this.sub4 = this.accountExtService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.authorizationService.authorizationDto.branchId, 
         selectedAccountGroupDtos[0].accountGroupCode).subscribe({
@@ -276,7 +276,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getAccountExtById(id: number): void {
-    this.sub5 = this.accountService.getExtById(id).subscribe({
+    this.sub5 = this.accountExtService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedAccountExtDto = response.data;
@@ -288,7 +288,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getAccountExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): void {
-    this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto);
+    this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto);
   }
 
   getAllAccountGroups(): void {
@@ -366,7 +366,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
 
     if (selectedAccountExtDto.accountId != 0) {
-      this.sub7 = this.accountService.getExtById(selectedAccountExtDto.accountId).subscribe({
+      this.sub7 = this.accountExtService.getExtById(selectedAccountExtDto.accountId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedAccountExtDto = response.data;
@@ -415,7 +415,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub8 = this.accountService.updateExt(this.selectedAccountExtDto).subscribe({
+      this.sub8 = this.accountExtService.updateExt(this.selectedAccountExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);

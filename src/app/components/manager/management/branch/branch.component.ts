@@ -13,6 +13,7 @@ import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
+import { BranchExtService } from 'src/app/services/branch-ext.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -81,6 +82,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   
   constructor(
     private authorizationService: AuthorizationService,
+    private branchExtService: BranchExtService,
     private branchService: BranchService,
     private cityService: CityService,
     private districtService: DistrictService,
@@ -103,7 +105,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.branchService.addExt(this.selectedBranchExtDto).pipe(
+      this.sub1 = this.branchExtService.addExt(this.selectedBranchExtDto).pipe(
         concatMap((response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -134,7 +136,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   delete(selectedBranchDto: BranchDto): void {
     this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
 
-    this.sub2 = this.branchService.getExtById(selectedBranchDto.branchId).subscribe({
+    this.sub2 = this.branchExtService.getExtById(selectedBranchDto.branchId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedBranchExtDto = response.data;
@@ -147,7 +149,7 @@ export class BranchComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.branchService.deleteExt(selectedBranchDto.branchId).pipe(
+              this.sub3 = this.branchExtService.deleteExt(selectedBranchDto.branchId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
@@ -197,7 +199,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   getBranchExtById(id: number): void {
-    this.sub5 = this.branchService.getExtById(id).subscribe({
+    this.sub5 = this.branchExtService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedBranchExtDto = response.data;
@@ -249,7 +251,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
 
     if (selectedBranchDto.branchId != 0) {
-      this.sub6 = this.branchService.getExtById(selectedBranchDto.branchId).subscribe({
+      this.sub6 = this.branchExtService.getExtById(selectedBranchDto.branchId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedBranchExtDto = response.data;
@@ -281,7 +283,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub7 = this.branchService.updateExt(this.selectedBranchExtDto).subscribe({
+      this.sub7 = this.branchExtService.updateExt(this.selectedBranchExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);

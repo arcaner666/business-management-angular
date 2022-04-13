@@ -87,6 +87,15 @@ import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
+import { HouseOwnerComponent } from './components/manager/persons/house-owner/house-owner.component';
+import { HouseOwnerDetailComponent } from './components/manager/persons/house-owner/house-owner-detail/house-owner-detail.component';
+import { HouseOwnerListComponent } from './components/manager/persons/house-owner/house-owner-list/house-owner-list.component';
+import { TenantComponent } from './components/manager/persons/tenant/tenant.component';
+import { TenantListComponent } from './components/manager/persons/tenant/tenant-list/tenant-list.component';
+import { TenantDetailComponent } from './components/manager/persons/tenant/tenant-detail/tenant-detail.component';
+import { EmployeeComponent } from './components/manager/persons/employee/employee.component';
+import { EmployeeListComponent } from './components/manager/persons/employee/employee-list/employee-list.component';
+import { EmployeeDetailComponent } from './components/manager/persons/employee/employee-detail/employee-detail.component';
 
 @NgModule({
   declarations: [
@@ -151,6 +160,15 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 
     // Toast Components
     ToastComponent,
+    HouseOwnerComponent,
+    HouseOwnerDetailComponent,
+    HouseOwnerListComponent,
+    TenantComponent,
+    TenantListComponent,
+    TenantDetailComponent,
+    EmployeeComponent,
+    EmployeeListComponent,
+    EmployeeDetailComponent,
   ],
   imports: [
     // Angular Modules
