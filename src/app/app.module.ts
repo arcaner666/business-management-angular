@@ -17,42 +17,69 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
-import { AccountComponent } from 'src/app/components/manager/account/account.component';
-import { AccountDetailComponent } from 'src/app/components/manager/account/account-detail/account-detail.component';
-import { AccountGroupComponent } from 'src/app/components/manager/account-group/account-group.component';
-import { AccountGroupListComponent } from 'src/app/components/manager/account-group/account-group-list/account-group-list.component';
-import { AccountListComponent } from 'src/app/components/manager/account/account-list/account-list.component';
-import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
-import { ApartmentComponent } from 'src/app/components/manager/apartment/apartment.component';
-import { ApartmentDetailComponent } from 'src/app/components/manager/apartment/apartment-detail/apartment-detail.component';
-import { ApartmentListComponent } from 'src/app/components/manager/apartment/apartment-list/apartment-list.component';
 import { AppComponent } from 'src/app/app.component';
-import { BranchComponent } from 'src/app/components/manager/branch/branch.component';
-import { BranchDetailComponent } from 'src/app/components/manager/branch/branch-detail/branch-detail.component';
-import { BranchListComponent } from 'src/app/components/manager/branch/branch-list/branch-list.component';
-import { ContentComponent } from 'src/app/components/layout/content/content.component';
+
+// Admin - Admin Dashboard Components
+import { AdminDashboardComponent } from 'src/app/components/admin/admin-dashboard/admin-dashboard.component';
+
+// Customer - Customer Dashboard Components
 import { CustomerDashboardComponent } from 'src/app/components/customer/customer-dashboard/customer-dashboard.component';
-import { ErrorComponent } from 'src/app/components/public/error/error.component';
-import { FlatComponent } from 'src/app/components/manager/flat/flat.component';
-import { FlatListComponent } from 'src/app/components/manager/flat/flat-list/flat-list.component';
-import { FlatDetailComponent } from 'src/app/components/manager/flat/flat-detail/flat-detail.component';
+
+// Layout Components
+import { ContentComponent } from 'src/app/components/layout/content/content.component';
 import { FooterComponent } from 'src/app/components/layout/footer/footer.component';
-import { HomeComponent } from 'src/app/components/public/home/home.component';
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
-import { LoginComponent } from 'src/app/components/public/login/login.component';
-import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
-import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { NavbarComponent } from 'src/app/components/layout/navbar/navbar.component';
-import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
-import { RegisterComponent } from 'src/app/components/public/register/register.component';
-import { SectionComponent } from 'src/app/components/manager/section/section.component';
-import { SectionDetailComponent } from 'src/app/components/manager/section/section-detail/section-detail.component';
-import { SectionListComponent } from 'src/app/components/manager/section/section-list/section-list.component';
-import { SectionGroupComponent } from 'src/app/components/manager/section-group/section-group.component';
-import { SectionGroupDetailComponent } from 'src/app/components/manager/section-group/section-group-detail/section-group-detail.component';
-import { SectionGroupListComponent } from 'src/app/components/manager/section-group/section-group-list/section-group-list.component';
 import { SidebarFloatingComponent } from 'src/app/components/layout/sidebar-floating/sidebar-floating.component';
 import { SidebarStaticComponent } from 'src/app/components/layout/sidebar-static/sidebar-static.component';
+
+// Manager - Accounting Components
+import { AccountComponent } from 'src/app/components/manager/accounting/account/account.component';
+import { AccountDetailComponent } from 'src/app/components/manager/accounting/account/account-detail/account-detail.component';
+import { AccountListComponent } from 'src/app/components/manager/accounting/account/account-list/account-list.component';
+
+import { AccountGroupComponent } from 'src/app/components/manager/accounting/account-group/account-group.component';
+import { AccountGroupListComponent } from 'src/app/components/manager/accounting/account-group/account-group-list/account-group-list.component';
+
+// Manager - Management Components
+import { BranchComponent } from 'src/app/components/manager/management/branch/branch.component';
+import { BranchDetailComponent } from 'src/app/components/manager/management/branch/branch-detail/branch-detail.component';
+import { BranchListComponent } from 'src/app/components/manager/management/branch/branch-list/branch-list.component';
+
+// Manager - Manager Dashboard Components
+import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
+
+// Manager - Persons Components
+//...
+
+// Manager - Sections Components
+import { ApartmentComponent } from 'src/app/components/manager/sections/apartment/apartment.component';
+import { ApartmentDetailComponent } from 'src/app/components/manager/sections/apartment/apartment-detail/apartment-detail.component';
+import { ApartmentListComponent } from 'src/app/components/manager/sections/apartment/apartment-list/apartment-list.component';
+
+import { FlatComponent } from 'src/app/components/manager/sections/flat/flat.component';
+import { FlatListComponent } from 'src/app/components/manager/sections/flat/flat-list/flat-list.component';
+import { FlatDetailComponent } from 'src/app/components/manager/sections/flat/flat-detail/flat-detail.component';
+
+import { SectionComponent } from 'src/app/components/manager/sections/section/section.component';
+import { SectionDetailComponent } from 'src/app/components/manager/sections/section/section-detail/section-detail.component';
+import { SectionListComponent } from 'src/app/components/manager/sections/section/section-list/section-list.component';
+
+import { SectionGroupComponent } from 'src/app/components/manager/sections/section-group/section-group.component';
+import { SectionGroupDetailComponent } from 'src/app/components/manager/sections/section-group/section-group-detail/section-group-detail.component';
+import { SectionGroupListComponent } from 'src/app/components/manager/sections/section-group/section-group-list/section-group-list.component';
+
+// Modal Components
+import { ModalComponent } from 'src/app/components/modal/modal.component';
+
+// Public Components
+import { ErrorComponent } from 'src/app/components/public/error/error.component';
+import { HomeComponent } from 'src/app/components/public/home/home.component';
+import { LoginComponent } from 'src/app/components/public/login/login.component';
+import { NotAuthorizedComponent } from 'src/app/components/public/not-authorized/not-authorized.component';
+import { RegisterComponent } from 'src/app/components/public/register/register.component';
+
+// Toast Components
 import { ToastComponent } from 'src/app/components/toast/toast.component';
 
 // Interceptors
@@ -63,43 +90,66 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 
 @NgModule({
   declarations: [
-    // Components
+
+    AppComponent,
+
+    // Admin - Admin Dashboard Components
+    AdminDashboardComponent,
+
+    // Customer - Customer Dashboard Components
+    CustomerDashboardComponent,
+
+    // Layout Components
+    ContentComponent,
+    FooterComponent,
+    LayoutComponent,
+    NavbarComponent,
+    SidebarFloatingComponent,
+    SidebarStaticComponent,
+
+    // Manager - Accounting Components
     AccountComponent,
     AccountDetailComponent,
+    AccountListComponent,
     AccountGroupComponent,
     AccountGroupListComponent,
-    AccountListComponent,
-    AdminDashboardComponent,
-    ApartmentComponent,
-    ApartmentListComponent,
-    ApartmentDetailComponent,
-    AppComponent,
+
+    // Manager - Management Components
     BranchComponent,
     BranchDetailComponent,
     BranchListComponent,
-    ContentComponent,
-    CustomerDashboardComponent,
-    ErrorComponent,
+
+    // Manager - Manager Dashboard Components
+    ManagerDashboardComponent,
+
+    // Manager - Persons Components
+    //...
+
+    // Manager - Sections Components
+    ApartmentComponent,
+    ApartmentDetailComponent,
+    ApartmentListComponent,
     FlatComponent,
     FlatListComponent,
     FlatDetailComponent,
-    FooterComponent,
-    HomeComponent,
-    LayoutComponent,
-    LoginComponent,
-    ManagerDashboardComponent,
-    ModalComponent,
-    NavbarComponent,
-    NotAuthorizedComponent,
-    RegisterComponent,
     SectionComponent,
     SectionDetailComponent,
     SectionListComponent,
     SectionGroupComponent,
     SectionGroupDetailComponent,
     SectionGroupListComponent,
-    SidebarFloatingComponent,
-    SidebarStaticComponent,
+
+    // Modal Components
+    ModalComponent,
+
+    // Public Components
+    ErrorComponent,
+    HomeComponent,
+    LoginComponent,
+    NotAuthorizedComponent,
+    RegisterComponent,
+
+    // Toast Components
     ToastComponent,
   ],
   imports: [
