@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 
 // ng-bootstrap Module
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateAdapter, NgbDateNativeAdapter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // ng-select Module
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -41,33 +41,41 @@ import { AccountListComponent } from 'src/app/components/manager/accounting/acco
 import { AccountGroupComponent } from 'src/app/components/manager/accounting/account-group/account-group.component';
 import { AccountGroupListComponent } from 'src/app/components/manager/accounting/account-group/account-group-list/account-group-list.component';
 
-// Manager - Management Components
-import { BranchComponent } from 'src/app/components/manager/management/branch/branch.component';
-import { BranchDetailComponent } from 'src/app/components/manager/management/branch/branch-detail/branch-detail.component';
-import { BranchListComponent } from 'src/app/components/manager/management/branch/branch-list/branch-list.component';
+// Manager - General Management Components
+import { BranchComponent } from 'src/app/components/manager/general-management/branch/branch.component';
+import { BranchDetailComponent } from 'src/app/components/manager/general-management/branch/branch-detail/branch-detail.component';
+import { BranchListComponent } from 'src/app/components/manager/general-management/branch/branch-list/branch-list.component';
 
 // Manager - Manager Dashboard Components
 import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
 
-// Manager - Persons Components
-//...
+// Manager - Person Management Components
+import { EmployeeComponent } from 'src/app/components/manager/person-management/employee/employee.component';
+import { EmployeeListComponent } from 'src/app/components/manager/person-management/employee/employee-list/employee-list.component';
+import { EmployeeDetailComponent } from 'src/app/components/manager/person-management/employee/employee-detail/employee-detail.component';
+import { HouseOwnerComponent } from 'src/app/components/manager/person-management/house-owner/house-owner.component';
+import { HouseOwnerDetailComponent } from 'src/app/components/manager/person-management/house-owner/house-owner-detail/house-owner-detail.component';
+import { HouseOwnerListComponent } from 'src/app/components/manager/person-management/house-owner/house-owner-list/house-owner-list.component';
+import { TenantComponent } from 'src/app/components/manager/person-management/tenant/tenant.component';
+import { TenantListComponent } from 'src/app/components/manager/person-management/tenant/tenant-list/tenant-list.component';
+import { TenantDetailComponent } from 'src/app/components/manager/person-management/tenant/tenant-detail/tenant-detail.component';
 
-// Manager - Sections Components
-import { ApartmentComponent } from 'src/app/components/manager/sections/apartment/apartment.component';
-import { ApartmentDetailComponent } from 'src/app/components/manager/sections/apartment/apartment-detail/apartment-detail.component';
-import { ApartmentListComponent } from 'src/app/components/manager/sections/apartment/apartment-list/apartment-list.component';
+// Manager - Section Management Components
+import { ApartmentComponent } from 'src/app/components/manager/section-management/apartment/apartment.component';
+import { ApartmentDetailComponent } from 'src/app/components/manager/section-management/apartment/apartment-detail/apartment-detail.component';
+import { ApartmentListComponent } from 'src/app/components/manager/section-management/apartment/apartment-list/apartment-list.component';
 
-import { FlatComponent } from 'src/app/components/manager/sections/flat/flat.component';
-import { FlatListComponent } from 'src/app/components/manager/sections/flat/flat-list/flat-list.component';
-import { FlatDetailComponent } from 'src/app/components/manager/sections/flat/flat-detail/flat-detail.component';
+import { FlatComponent } from 'src/app/components/manager/section-management/flat/flat.component';
+import { FlatListComponent } from 'src/app/components/manager/section-management/flat/flat-list/flat-list.component';
+import { FlatDetailComponent } from 'src/app/components/manager/section-management/flat/flat-detail/flat-detail.component';
 
-import { SectionComponent } from 'src/app/components/manager/sections/section/section.component';
-import { SectionDetailComponent } from 'src/app/components/manager/sections/section/section-detail/section-detail.component';
-import { SectionListComponent } from 'src/app/components/manager/sections/section/section-list/section-list.component';
+import { SectionComponent } from 'src/app/components/manager/section-management/section/section.component';
+import { SectionDetailComponent } from 'src/app/components/manager/section-management/section/section-detail/section-detail.component';
+import { SectionListComponent } from 'src/app/components/manager/section-management/section/section-list/section-list.component';
 
-import { SectionGroupComponent } from 'src/app/components/manager/sections/section-group/section-group.component';
-import { SectionGroupDetailComponent } from 'src/app/components/manager/sections/section-group/section-group-detail/section-group-detail.component';
-import { SectionGroupListComponent } from 'src/app/components/manager/sections/section-group/section-group-list/section-group-list.component';
+import { SectionGroupComponent } from 'src/app/components/manager/section-management/section-group/section-group.component';
+import { SectionGroupDetailComponent } from 'src/app/components/manager/section-management/section-group/section-group-detail/section-group-detail.component';
+import { SectionGroupListComponent } from 'src/app/components/manager/section-management/section-group/section-group-list/section-group-list.component';
 
 // Modal Components
 import { ModalComponent } from 'src/app/components/modal/modal.component';
@@ -87,15 +95,7 @@ import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
-import { HouseOwnerComponent } from './components/manager/persons/house-owner/house-owner.component';
-import { HouseOwnerDetailComponent } from './components/manager/persons/house-owner/house-owner-detail/house-owner-detail.component';
-import { HouseOwnerListComponent } from './components/manager/persons/house-owner/house-owner-list/house-owner-list.component';
-import { TenantComponent } from './components/manager/persons/tenant/tenant.component';
-import { TenantListComponent } from './components/manager/persons/tenant/tenant-list/tenant-list.component';
-import { TenantDetailComponent } from './components/manager/persons/tenant/tenant-detail/tenant-detail.component';
-import { EmployeeComponent } from './components/manager/persons/employee/employee.component';
-import { EmployeeListComponent } from './components/manager/persons/employee/employee-list/employee-list.component';
-import { EmployeeDetailComponent } from './components/manager/persons/employee/employee-detail/employee-detail.component';
+
 
 @NgModule({
   declarations: [
@@ -123,7 +123,7 @@ import { EmployeeDetailComponent } from './components/manager/persons/employee/e
     AccountGroupComponent,
     AccountGroupListComponent,
 
-    // Manager - Management Components
+    // Manager - General Management Components
     BranchComponent,
     BranchDetailComponent,
     BranchListComponent,
@@ -131,10 +131,18 @@ import { EmployeeDetailComponent } from './components/manager/persons/employee/e
     // Manager - Manager Dashboard Components
     ManagerDashboardComponent,
 
-    // Manager - Persons Components
-    //...
+    // Manager - Person Management Components
+    EmployeeComponent,
+    EmployeeListComponent,
+    EmployeeDetailComponent,
+    HouseOwnerComponent,
+    HouseOwnerDetailComponent,
+    HouseOwnerListComponent,
+    TenantComponent,
+    TenantListComponent,
+    TenantDetailComponent,
 
-    // Manager - Sections Components
+    // Manager - Section Management Components
     ApartmentComponent,
     ApartmentDetailComponent,
     ApartmentListComponent,
@@ -160,15 +168,6 @@ import { EmployeeDetailComponent } from './components/manager/persons/employee/e
 
     // Toast Components
     ToastComponent,
-    HouseOwnerComponent,
-    HouseOwnerDetailComponent,
-    HouseOwnerListComponent,
-    TenantComponent,
-    TenantListComponent,
-    TenantDetailComponent,
-    EmployeeComponent,
-    EmployeeListComponent,
-    EmployeeDetailComponent,
   ],
   imports: [
     // Angular Modules
@@ -200,6 +199,7 @@ import { EmployeeDetailComponent } from './components/manager/persons/employee/e
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }
   ],
   bootstrap: [AppComponent]
 })

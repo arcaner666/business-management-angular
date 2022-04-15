@@ -12,4 +12,15 @@ export interface HouseOwnerExtDto {
     avatarUrl: string;
     createdAt: Date;
     updatedAt: Date;
+
+    // Extended With Account
+    accountGroupId: number;
+    accountOrder: number;
+    accountName: string;
+    accountCode: string;
+    taxOffice: string;
+    taxNumber: number;
+    identityNumber: number;
+    limit: number;
+    standartMaturity: number;
 }

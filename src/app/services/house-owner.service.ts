@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 import { HouseOwnerDto } from 'src/app/models/dtos/house-owner-dto';
-import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/single-data-result';
@@ -23,23 +22,7 @@ export class HouseOwnerService {
   ) {}
 
   // API İstekleri
-  deleteExt(id: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
-  }
-
   getByBusinessId(businessId: number): Observable<ListDataResult<HouseOwnerDto>> {
     return this.http.get<ListDataResult<HouseOwnerDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
-  }
-
-  getExtById(id: number): Observable<SingleDataResult<HouseOwnerExtDto>> {
-    return this.http.get<SingleDataResult<HouseOwnerExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
-  }
-
-  getExtsByBusinessId(businessId: number): Observable<ListDataResult<HouseOwnerExtDto>> {
-    return this.http.get<ListDataResult<HouseOwnerExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
-  }
-
-  updateExt(houseOwnerExtDto: HouseOwnerExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, houseOwnerExtDto);
   }
 }

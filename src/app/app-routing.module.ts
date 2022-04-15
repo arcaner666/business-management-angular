@@ -16,33 +16,41 @@ import { AccountListComponent } from 'src/app/components/manager/accounting/acco
 import { AccountGroupComponent } from 'src/app/components/manager/accounting/account-group/account-group.component';
 import { AccountGroupListComponent } from 'src/app/components/manager/accounting/account-group/account-group-list/account-group-list.component';
 
-// Manager - Management Components
-import { BranchComponent } from 'src/app/components/manager/management/branch/branch.component';
-import { BranchDetailComponent } from 'src/app/components/manager/management/branch/branch-detail/branch-detail.component';
-import { BranchListComponent } from 'src/app/components/manager/management/branch/branch-list/branch-list.component';
+// Manager - General Management Components
+import { BranchComponent } from 'src/app/components/manager/general-management/branch/branch.component';
+import { BranchDetailComponent } from 'src/app/components/manager/general-management/branch/branch-detail/branch-detail.component';
+import { BranchListComponent } from 'src/app/components/manager/general-management/branch/branch-list/branch-list.component';
 
 // Manager - Manager Dashboard Components
 import { ManagerDashboardComponent } from 'src/app/components/manager/manager-dashboard/manager-dashboard.component';
 
-// Manager - Persons Components
-//...
+// Manager - Person Management Components
+import { EmployeeComponent } from 'src/app/components/manager/person-management/employee/employee.component';
+import { EmployeeListComponent } from 'src/app/components/manager/person-management/employee/employee-list/employee-list.component';
+import { EmployeeDetailComponent } from 'src/app/components/manager/person-management/employee/employee-detail/employee-detail.component';
+import { HouseOwnerComponent } from 'src/app/components/manager/person-management/house-owner/house-owner.component';
+import { HouseOwnerDetailComponent } from 'src/app/components/manager/person-management/house-owner/house-owner-detail/house-owner-detail.component';
+import { HouseOwnerListComponent } from 'src/app/components/manager/person-management/house-owner/house-owner-list/house-owner-list.component';
+import { TenantComponent } from 'src/app/components/manager/person-management/tenant/tenant.component';
+import { TenantListComponent } from 'src/app/components/manager/person-management/tenant/tenant-list/tenant-list.component';
+import { TenantDetailComponent } from 'src/app/components/manager/person-management/tenant/tenant-detail/tenant-detail.component';
 
-// Manager - Sections Components
-import { ApartmentComponent } from 'src/app/components/manager/sections/apartment/apartment.component';
-import { ApartmentDetailComponent } from 'src/app/components/manager/sections/apartment/apartment-detail/apartment-detail.component';
-import { ApartmentListComponent } from 'src/app/components/manager/sections/apartment/apartment-list/apartment-list.component';
+// Manager - Section Management Components
+import { ApartmentComponent } from 'src/app/components/manager/section-management/apartment/apartment.component';
+import { ApartmentDetailComponent } from 'src/app/components/manager/section-management/apartment/apartment-detail/apartment-detail.component';
+import { ApartmentListComponent } from 'src/app/components/manager/section-management/apartment/apartment-list/apartment-list.component';
 
-import { FlatComponent } from 'src/app/components/manager/sections/flat/flat.component';
-import { FlatListComponent } from 'src/app/components/manager/sections/flat/flat-list/flat-list.component';
-import { FlatDetailComponent } from 'src/app/components/manager/sections/flat/flat-detail/flat-detail.component';
+import { FlatComponent } from 'src/app/components/manager/section-management/flat/flat.component';
+import { FlatListComponent } from 'src/app/components/manager/section-management/flat/flat-list/flat-list.component';
+import { FlatDetailComponent } from 'src/app/components/manager/section-management/flat/flat-detail/flat-detail.component';
 
-import { SectionComponent } from 'src/app/components/manager/sections/section/section.component';
-import { SectionDetailComponent } from 'src/app/components/manager/sections/section/section-detail/section-detail.component';
-import { SectionListComponent } from 'src/app/components/manager/sections/section/section-list/section-list.component';
+import { SectionComponent } from 'src/app/components/manager/section-management/section/section.component';
+import { SectionDetailComponent } from 'src/app/components/manager/section-management/section/section-detail/section-detail.component';
+import { SectionListComponent } from 'src/app/components/manager/section-management/section/section-list/section-list.component';
 
-import { SectionGroupComponent } from 'src/app/components/manager/sections/section-group/section-group.component';
-import { SectionGroupDetailComponent } from 'src/app/components/manager/sections/section-group/section-group-detail/section-group-detail.component';
-import { SectionGroupListComponent } from 'src/app/components/manager/sections/section-group/section-group-list/section-group-list.component';
+import { SectionGroupComponent } from 'src/app/components/manager/section-management/section-group/section-group.component';
+import { SectionGroupDetailComponent } from 'src/app/components/manager/section-management/section-group/section-group-detail/section-group-detail.component';
+import { SectionGroupListComponent } from 'src/app/components/manager/section-management/section-group/section-group-list/section-group-list.component';
 
 // Public Components
 import { ErrorComponent } from 'src/app/components/public/error/error.component';
@@ -68,89 +76,127 @@ const routes: Routes = [
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 
-  // Manager - Management
+  // Manager - General Management
   {
-    path: 'manager/branch', component: BranchComponent, 
+    path: 'manager/general-management/branch', component: BranchComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/branch-list', component: BranchListComponent, 
+    path: 'manager/general-management/branch-list', component: BranchListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/branch-detail', component: BranchDetailComponent, 
+    path: 'manager/general-management/branch-detail', component: BranchDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   
-  // Manager - Sections
+  // Manager - Person Management
   {
-    path: 'manager/section-group', component: SectionGroupComponent, 
+    path: 'manager/person-management/employee', component: EmployeeComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/section-group-list', component: SectionGroupListComponent, 
+    path: 'manager/person-management/employee-list', component: EmployeeListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/section-group-detail', component: SectionGroupDetailComponent, 
+    path: 'manager/person-management/employee-detail', component: EmployeeDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/section', component: SectionComponent, 
+    path: 'manager/person-management/house-owner', component: HouseOwnerComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/section-list', component: SectionListComponent, 
+    path: 'manager/person-management/house-owner-list', component: HouseOwnerListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/section-detail', component: SectionDetailComponent, 
+    path: 'manager/person-management/house-owner-detail', component: HouseOwnerDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/apartment', component: ApartmentComponent, 
+    path: 'manager/person-management/tenant', component: TenantComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/apartment-list', component: ApartmentListComponent, 
+    path: 'manager/person-management/tenant-list', component: TenantListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/apartment-detail', component: ApartmentDetailComponent, 
+    path: 'manager/person-management/tenant-detail', component: TenantDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  
+  // Manager - Section Management
+  {
+    path: 'manager/section-management/section-group', component: SectionGroupComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/flat', component: FlatComponent, 
+    path: 'manager/section-management/section-group-list', component: SectionGroupListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/flat-list', component: FlatListComponent, 
+    path: 'manager/section-management/section-group-detail', component: SectionGroupDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/flat-detail', component: FlatDetailComponent, 
+    path: 'manager/section-management/section', component: SectionComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/section-list', component: SectionListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/section-detail', component: SectionDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/apartment', component: ApartmentComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/apartment-list', component: ApartmentListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/apartment-detail', component: ApartmentDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/flat', component: FlatComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/flat-list', component: FlatListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/section-management/flat-detail', component: FlatDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 
   // Manager - Accounting
   {
-    path: 'manager/account-group', component: AccountGroupComponent, 
+    path: 'manager/accounting/account-group', component: AccountGroupComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/account-group-list', component: AccountGroupListComponent, 
+    path: 'manager/accounting/account-group-list', component: AccountGroupListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/account', component: AccountComponent, 
+    path: 'manager/accounting/account', component: AccountComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/account-list', component: AccountListComponent, 
+    path: 'manager/accounting/account-list', component: AccountListComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/account-detail', component: AccountDetailComponent, 
+    path: 'manager/accounting/account-detail', component: AccountDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 

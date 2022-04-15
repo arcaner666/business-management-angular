@@ -165,6 +165,60 @@
                                 </div>
                                 <!-- /Adres -->
                     
+                                <!-- Vergi Dairesi -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-section-manager-tax-office">Vergi Dairesi</label>
+                                    <input
+                                        id="register-section-manager-tax-office"
+                                        type="text"
+                                        formControlName="taxOffice"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['taxOffice'].errors }"
+                                        placeholder=""
+                                        tabindex="8"
+                                    />
+                                    <div *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['taxOffice'].errors" class="invalid-feedback">
+                                        <div *ngIf="sectionManagerForm.controls['taxOffice'].errors['required']">Lütfen vergi dairesi giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /Vergi Dairesi -->
+
+                                <!-- Vergi Numarası -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-section-manager-tax-number">Vergi Numarası</label>
+                                    <input
+                                        id="register-section-manager-tax-number"
+                                        type="number"
+                                        formControlName="taxNumber"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['taxNumber'].errors }"
+                                        placeholder=""
+                                        tabindex="9"
+                                    />
+                                    <div *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['taxNumber'].errors" class="invalid-feedback">
+                                        <div *ngIf="sectionManagerForm.controls['taxNumber'].errors['required']">Lütfen vergi numarası giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /Vergi Numarası -->
+
+                                <!-- Kimlik Numarası -->
+                                <div class="mt-3 mb-3">
+                                    <label class="form-label" for="register-section-manager-identity-number">Kimlik Numarası</label>
+                                    <input
+                                        id="register-section-manager-identity-number"
+                                        type="number"
+                                        formControlName="identityNumber"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['identityNumber'].errors }"
+                                        placeholder=""
+                                        tabindex="10"
+                                    />
+                                    <div *ngIf="submittedSectionManagerForm && sectionManagerForm.controls['identityNumber'].errors" class="invalid-feedback">
+                                        <div *ngIf="sectionManagerForm.controls['identityNumber'].errors['required']">Lütfen kimlik numarası giriniz.</div>
+                                    </div>
+                                </div>
+                                <!-- /Kimlik Numarası -->
+                                
                                 <!-- Kullanıcı Sözleşmesi -->
                                 <div class="mt-3 mb-3">
                                     <div class="form-check">
@@ -174,7 +228,7 @@
                                             formControlName="userAgreement"
                                             class="form-check-input"
                                             [ngClass]="{ 'is-invalid': submittedSectionManagerForm && sectionManagerForm.controls['userAgreement'].errors }" 
-                                            tabindex="8"
+                                            tabindex="11"
                                         />
                                         <label class="form-check-label" for="register-section-manager-user-agreement">
                                             <a href="javascript:void(0);">Gizlilik Sözleşmesi ve Kullanım Koşulları</a>'nı kabul ediyorum.
@@ -191,7 +245,7 @@
                                     <button 
                                         class="btn btn-success"
                                         [disabled]="loadingSectionManagerForm"
-                                        tabindex="9"
+                                        tabindex="12"
                                     >
                                         <span *ngIf="loadingSectionManagerForm" class="spinner-border spinner-border-sm"></span> Kayıt Ol
                                     </button>

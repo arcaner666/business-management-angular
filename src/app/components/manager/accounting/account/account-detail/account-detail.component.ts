@@ -24,7 +24,7 @@ export class AccountDetailComponent {
   @Input() selectedAccountExtDto!: AccountExtDto;
   @Input() selectedAccountExtDtoErrors!: AccountExtDtoErrors;
   
-  @Output() accountCodeGenerated = new EventEmitter<AccountExtDto>();
+  @Output() accountCodeGenerated = new EventEmitter<number>();
   @Output() accountGroupSelected = new EventEmitter();
   @Output() accountTypeSelected = new EventEmitter<string>();
   @Output() cancelled = new EventEmitter();
@@ -43,9 +43,9 @@ export class AccountDetailComponent {
     this.cancelled.emit();
   }
 
-  generateAccountCode(selectedAccountExtDto: AccountExtDto): void {
+  generateAccountCode(accountGroupId: number): void {
     this.submitted = true;
-    this.accountCodeGenerated.emit(selectedAccountExtDto);
+    this.accountCodeGenerated.emit(accountGroupId);
   }
 
   resetModel() {

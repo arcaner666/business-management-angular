@@ -4,24 +4,19 @@ import { Subscription, Observable, concatMap, tap } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
-import { AccountExtDtoErrors } from 'src/app/models/validation-errors/account-ext-dto-errors';
-import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-get-by-account-group-codes-dto';
-import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
-import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
-import { AccountType } from 'src/app/models/various/account-type';
-import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
+import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-owner-ext-dto-errors';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
-import { AccountService } from 'src/app/services/account-ext.service';
-import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
-import { BranchService } from 'src/app/services/branch.service';
+import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-owner-ext-dto-errors';
-import { HouseOwnerService } from 'src/app/services/house-owner.service';
+import { BranchDto } from 'src/app/models/dtos/branch-dto';
+import { BranchService } from 'src/app/services/branch.service';
+import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
+import { AccountGroupService } from 'src/app/services/account-group.service';
+import { AccountExtService } from 'src/app/services/account-ext.service';
 
 const EMPTY_HOUSE_OWNER_EXT_DTO: HouseOwnerExtDto = {
   houseOwnerId: 0,
@@ -37,6 +32,17 @@ const EMPTY_HOUSE_OWNER_EXT_DTO: HouseOwnerExtDto = {
   avatarUrl: "",
   createdAt: new Date(),
   updatedAt: new Date(),
+
+  // Extended With Account
+  accountGroupId: 0,
+  accountOrder: 0,
+  accountName: "",
+  accountCode: "",
+  taxOffice: "",
+  taxNumber: 0,
+  identityNumber: 0,
+  limit: 0,
+  standartMaturity: 0,
 };
 
 const EMPTY_HOUSE_OWNER_EXT_DTO_ERRORS: HouseOwnerExtDtoErrors = {
@@ -53,6 +59,17 @@ const EMPTY_HOUSE_OWNER_EXT_DTO_ERRORS: HouseOwnerExtDtoErrors = {
   avatarUrl: "",
   createdAt: "",
   updatedAt: "",
+
+  // Extended With Account
+  accountGroupId: "",
+  accountOrder: "",
+  accountName: "",
+  accountCode: "",
+  taxOffice: "",
+  taxNumber: "",
+  identityNumber: "",
+  limit: "",
+  standartMaturity: "",
 };
 
 @Component({
@@ -64,6 +81,8 @@ export class HouseOwnerComponent implements OnInit {
 
   @ViewChild('deleteModal') deleteModal!: ElementRef;
   
+  public accountGroupDtos: AccountGroupDto[] = [];
+  public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public houseOwnerExtDtos$!: Observable<ListDataResult<HouseOwnerExtDto>>;
   public activePage: string = "list";
   public cardHeader: string = "";
@@ -80,16 +99,55 @@ export class HouseOwnerComponent implements OnInit {
   public sub8: Subscription = new Subscription();
   
   constructor(
-    private accountService: AccountService,
+    private accountExtService: AccountExtService,
+    private accountGroupService: AccountGroupService,
     private authorizationService: AuthorizationService,
-    private houseOwnerService: HouseOwnerService,
+    private branchService: BranchService,
+    private houseOwnerExtService: HouseOwnerExtService,
     private modalService: NgbModal,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
     console.log("HouseOwnerComponent constructor çalıştı.");
 
+    this.getAllAccountGroups();
+
+    this.getBranchsByBusinessId(this.authorizationService.authorizationDto.businessId);
+
     this.getHouseOwnerExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+  }
+
+  addExt(): void {
+    // Sunucuya gönderilecek modelin businessId kısmını günceller.
+    this.selectedHouseOwnerExtDto.businessId = this.authorizationService.authorizationDto.businessId;
+
+    let isModelValid = this.validateForAdd();
+
+    if (isModelValid) {
+      this.loading = true;
+
+      this.sub1 = this.houseOwnerExtService.addExt(this.selectedHouseOwnerExtDto).pipe(
+        concatMap((response) => {
+          if(response.success) {
+            this.toastService.success(response.message);
+            this.activePage = "list";
+            window.scroll(0,0);
+          }
+          this.loading = false;
+  
+          return this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        }
+      )).subscribe({
+        error: (error) => {
+          console.log(error);
+          this.toastService.danger(error.message);
+          this.loading = false;
+        }
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedHouseOwnerExtDtoErrors);
+    }
   }
 
   cancel(): void {
@@ -100,7 +158,7 @@ export class HouseOwnerComponent implements OnInit {
   delete(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
     this.selectedHouseOwnerExtDto = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO);
 
-    this.sub2 = this.houseOwnerService.getExtById(selectedHouseOwnerExtDto.accountId).subscribe({
+    this.sub2 = this.houseOwnerExtService.getExtById(selectedHouseOwnerExtDto.houseOwnerId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedHouseOwnerExtDto = response.data;
@@ -112,12 +170,12 @@ export class HouseOwnerComponent implements OnInit {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.houseOwnerService.deleteExt(selectedHouseOwnerExtDto.accountId).pipe(
+              this.sub3 = this.houseOwnerExtService.deleteExt(selectedHouseOwnerExtDto.houseOwnerId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
 
-                  return this.houseOwnerExtDtos$ = this.houseOwnerService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  return this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -137,8 +195,47 @@ export class HouseOwnerComponent implements OnInit {
     });
   }
 
+  generateAccountCode() {
+    let isModelValid = this.validateForGeneratingAccountCode();
+
+    if (isModelValid) {      
+      this.sub4 = this.accountExtService.generateAccountCode(
+        this.authorizationService.authorizationDto.businessId, 
+        this.authorizationService.authorizationDto.branchId, 
+        "120").subscribe({
+        next: (response) => {
+          if(response.success) {
+            this.selectedHouseOwnerExtDto.accountOrder = response.data.accountOrder;
+            this.selectedHouseOwnerExtDto.accountCode = response.data.accountCode;
+          }
+        }, error: (error) => {
+          console.log(error);
+        }
+      });
+    } else {
+      console.log("Form geçersiz.");
+      console.log(this.selectedHouseOwnerExtDtoErrors);
+    }
+  }
+
+  getAllAccountGroups(): void {
+    this.sub5 = this.accountGroupService.getAll().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.accountGroupDtos = response.data;
+        }
+      }, error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  getBranchsByBusinessId(businessId: number): void {
+    this.branchDtos$ = this.branchService.getByBusinessId(businessId);
+  }
+
   getHouseOwnerExtById(id: number): void {
-    this.sub5 = this.houseOwnerService.getExtById(id).subscribe({
+    this.sub5 = this.houseOwnerExtService.getExtById(id).subscribe({
       next: (response) => {
         if (response.success) {
           this.selectedHouseOwnerExtDto = response.data;
@@ -150,7 +247,7 @@ export class HouseOwnerComponent implements OnInit {
   }
 
   getHouseOwnerExtsByBusinessId(id: number): void {
-    this.houseOwnerExtDtos$ = this.houseOwnerService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   resetErrors() {
@@ -171,19 +268,35 @@ export class HouseOwnerComponent implements OnInit {
     this.selectedHouseOwnerExtDto.avatarUrl = "";
     this.selectedHouseOwnerExtDto.createdAt = new Date();
     this.selectedHouseOwnerExtDto.updatedAt = new Date();
+
+    // Extended With Account
+    this.selectedHouseOwnerExtDto.accountGroupId = 0;
+    this.selectedHouseOwnerExtDto.accountOrder = 0;
+    this.selectedHouseOwnerExtDto.accountName = "";
+    this.selectedHouseOwnerExtDto.accountCode = "";
+    this.selectedHouseOwnerExtDto.taxOffice = "";
+    this.selectedHouseOwnerExtDto.taxNumber = 0;
+    this.selectedHouseOwnerExtDto.identityNumber = 0;
+    this.selectedHouseOwnerExtDto.limit = 0;
+    this.selectedHouseOwnerExtDto.standartMaturity = 0;
   }
 
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    this.updateExt();
+    if (selectedHouseOwnerExtDto.houseOwnerId == 0) {
+      this.addExt();
+    } else {
+      this.updateExt();
+    }
   }
 
+
   select(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    this.setHeader(selectedHouseOwnerExtDto.accountId);
+    this.setHeader(selectedHouseOwnerExtDto.houseOwnerId);
 
     this.selectedHouseOwnerExtDto = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO);
 
-    if (selectedHouseOwnerExtDto.accountId != 0) {
-      this.sub7 = this.houseOwnerService.getExtById(selectedHouseOwnerExtDto.accountId).subscribe({
+    if (selectedHouseOwnerExtDto.houseOwnerId != 0) {
+      this.sub7 = this.houseOwnerExtService.getExtById(selectedHouseOwnerExtDto.houseOwnerId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedHouseOwnerExtDto = response.data;
@@ -198,15 +311,15 @@ export class HouseOwnerComponent implements OnInit {
     this.activePage = "detail";
   }
 
-  setHeader(accountId: number): void {
-    this.cardHeader = "Mülk Sahibini Düzenle";
+  setHeader(houseOwnerId: number): void {
+    houseOwnerId == 0 ? this.cardHeader = "Mülk Sahibi Ekle" : this.cardHeader = "Mülk Sahibini Düzenle";
   }
 
   updateExt(): void {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {
-      this.sub8 = this.houseOwnerService.updateExt(this.selectedHouseOwnerExtDto).subscribe({
+      this.sub8 = this.houseOwnerExtService.updateExt(this.selectedHouseOwnerExtDto).subscribe({
         next: (response) => {
           if(response.success) {
             this.toastService.success(response.message);
@@ -226,7 +339,7 @@ export class HouseOwnerComponent implements OnInit {
     }
   }
 
-  validateForUpdate(): boolean {
+  validateForAdd(): boolean {
     this.resetErrors();
 
     let isValid: boolean = true;
@@ -243,8 +356,38 @@ export class HouseOwnerComponent implements OnInit {
       this.selectedHouseOwnerExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
       isValid = false;
     }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.gender)) {
-      this.selectedHouseOwnerExtDtoErrors.gender = "Lütfen cinsiyet seçiniz.";
+
+    return isValid;
+  }
+
+  validateForGeneratingAccountCode(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.number(this.selectedHouseOwnerExtDto.branchId)) {
+      this.selectedHouseOwnerExtDtoErrors.branchId = "Lütfen şube seçiniz.";
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  validateForUpdate(): boolean {
+    this.resetErrors();
+
+    let isValid: boolean = true;
+
+    if (!this.validationService.string(this.selectedHouseOwnerExtDto.nameSurname)) {
+      this.selectedHouseOwnerExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.string(this.selectedHouseOwnerExtDto.phone)) {
+      this.selectedHouseOwnerExtDtoErrors.phone = "Lütfen telefon numarası giriniz.";
+      isValid = false;
+    }
+    if (!this.validationService.stringPreciseLength(this.selectedHouseOwnerExtDto.phone, 10)) {
+      this.selectedHouseOwnerExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
       isValid = false;
     }
 

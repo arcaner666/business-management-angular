@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash';
 import { environment } from 'src/environments/environment';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
-import { ManagerExtDto } from 'src/app/models/dtos/manager-ext-dto';
+import { RegisterSectionManagerDto } from 'src/app/models/dtos/register-section-manager-dto';
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/single-data-result';
 
@@ -81,11 +81,12 @@ export class AuthorizationService {
     return this.http.post<SingleDataResult<AuthorizationDto>>(`${environment.apiUrl}/${this.controllerUrl}/refreshaccesstoken`, authorizationDto);
   }
 
-  registerCompanyManager(managerExtDto: ManagerExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registercompanymanager`, managerExtDto);
+  // RegisterSectionManagerDto şuan için kullanıldı fakat RegisterCompanyManagerDto ile değiştirilecek.
+  registerCompanyManager(registerSectionManagerDto: RegisterSectionManagerDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registercompanymanager`, registerSectionManagerDto);
   }
 
-  registerSectionManager(managerExtDto: ManagerExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registersectionmanager`, managerExtDto);
+  registerSectionManager(registerSectionManagerDto: RegisterSectionManagerDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/registersectionmanager`, registerSectionManagerDto);
   }
 }

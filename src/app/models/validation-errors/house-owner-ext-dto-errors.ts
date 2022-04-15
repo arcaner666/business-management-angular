@@ -12,4 +12,15 @@ export interface HouseOwnerExtDtoErrors {
     avatarUrl: string;
     createdAt: string;
     updatedAt: string;
+
+    // Extended With Account
+    accountGroupId: string;
+    accountOrder: string;
+    accountName: string;
+    accountCode: string;
+    taxOffice: string;
+    taxNumber: string;
+    identityNumber: string;
+    limit: string;
+    standartMaturity: string;
 }

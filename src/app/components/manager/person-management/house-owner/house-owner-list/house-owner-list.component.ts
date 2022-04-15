@@ -18,6 +18,17 @@ const EMPTY_HOUSE_OWNER_EXT_DTO: HouseOwnerExtDto = {
   avatarUrl: "",
   createdAt: new Date(),
   updatedAt: new Date(),
+
+  // Extended With Account
+  accountGroupId: 0,
+  accountOrder: 0,
+  accountName: "",
+  accountCode: "",
+  taxOffice: "",
+  taxNumber: 0,
+  identityNumber: 0,
+  limit: 0,
+  standartMaturity: 0,
 };
 
 @Component({

@@ -248,10 +248,10 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  generateAccountCode(selectedAccountExtDto: AccountExtDto) {
+  generateAccountCode(accountGroupId: number) {
     // Seçili hesap grubunun id'sinden hesap grubu kodu bulunur.
     const selectedAccountGroupDtos: AccountGroupDto[] = this.accountGroupDtos.filter(a => 
-      a.accountGroupId == selectedAccountExtDto.accountGroupId);
+      a.accountGroupId == accountGroupId);
 
     let isModelValid = this.validateForGeneratingAccountCode();
 

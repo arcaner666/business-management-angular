@@ -16,10 +16,12 @@
 
 <ng-template #houseOwnerDetail>
     <app-house-owner-detail
+        [branchDtos]="(branchDtos$ | async)?.data || []"
         [cardHeader]="cardHeader"
         [loading]="loading"
         [selectedHouseOwnerExtDto]="selectedHouseOwnerExtDto"
         [selectedHouseOwnerExtDtoErrors]="selectedHouseOwnerExtDtoErrors"
+        (accountCodeGenerated)="generateAccountCode()"
         (cancelled)="cancel()"
         (modelReset)="resetModel()"
         (saved)="save($event)"

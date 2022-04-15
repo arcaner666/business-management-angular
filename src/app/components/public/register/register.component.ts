@@ -8,8 +8,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CityDto } from 'src/app/models/dtos/city-dto';
 import { DistrictDto } from 'src/app/models/dtos/district-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
-import { ManagerExtDto } from 'src/app/models/dtos/manager-ext-dto';
 import { ModuleOption } from 'src/app/models/various/module-option';
+import { RegisterSectionManagerDto } from 'src/app/models/dtos/register-section-manager-dto';
 import { Result } from 'src/app/models/results/result';
 
 import { AuthorizationService } from 'src/app/services/authorization.service';
@@ -22,27 +22,16 @@ const EMPTY_RESULT: Result = {
   message: "",
 };
 
-const EMPTY_MANAGER_EXT_DTO: ManagerExtDto = {
-  managerId: 0,
-  businessId: 0,
-  branchId: 0,
+const EMPTY_REGISTER_SECTION_MANAGER_EXT_DTO: RegisterSectionManagerDto = {
   nameSurname: "",
-  email: "",
   phone: "",
-  dateOfBirth: new Date(),
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Business
   businessName: "",
-
-  // Extended With Branch + FullAddress
   cityId: 0,
   districtId: 0,
   addressText: "",
+  taxOffice: "",
+  taxNumber: 0,
+  identityNumber: 0,
 };
 
 @Component({
@@ -59,7 +48,7 @@ export class RegisterComponent implements OnInit {
   public districtDtos$!: Observable<ListDataResult<DistrictDto>>;
   public loadingCompanyManagerForm: boolean = false;
   public loadingSectionManagerForm: boolean = false;
-  public managerExtDto: ManagerExtDto = cloneDeep(EMPTY_MANAGER_EXT_DTO);
+  public registerSectionManagerDto: RegisterSectionManagerDto = cloneDeep(EMPTY_REGISTER_SECTION_MANAGER_EXT_DTO);
   public moduleForm: FormGroup;
   public moduleOptions: ModuleOption[] = [
     { id: 1, name: "Site Yönetimi" }, 
@@ -85,7 +74,6 @@ export class RegisterComponent implements OnInit {
     ) {
     console.log("RegisterComponent constructor çalıştı.");
 
-    // Sunucudan şehirleri getirir ve modellere doldurur.
     this.getCities();
 
     // Modül formu oluşturulur.
@@ -95,49 +83,49 @@ export class RegisterComponent implements OnInit {
 
     // Site yöneticisi kayıt formu oluşturulur.
     this.sectionManagerForm = this.formBuilder.group({
+      nameSurname: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
       businessName: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       districtId: ['', [Validators.required]],
       addressText: ['', [Validators.required]],
-      nameSurname: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
+      taxOffice: ['', [Validators.required]],
+      taxNumber: ['', [Validators.required]],
+      identityNumber: ['', [Validators.required]],
       userAgreement: [false, [Validators.requiredTrue]],
     });
 
     // İşletme yöneticisi kayıt formu oluşturulur.
     this.companyManagerForm = this.formBuilder.group({
+      nameSurname: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
       businessName: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       districtId: ['', [Validators.required]],
       addressText: ['', [Validators.required]],
-      nameSurname: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
+      taxOffice: ['', [Validators.required]],
+      taxNumber: ['', [Validators.required]],
+      identityNumber: ['', [Validators.required]],
       userAgreement: [false, [Validators.requiredTrue]],
     });
   }
 
   addCompanyManager(): void {
-    // "Kayıt Ol" butonuna basıldığını belirtir.
     this.submittedCompanyManagerForm = true;
 
-    // Form geçersizse burada durur.
     if (this.companyManagerForm.invalid) {
       console.log("Form geçersiz.");
       console.log(this.companyManagerForm);
       return;
     }
 
-    // Sunucuya bir istek yapıldığını ve cevap beklendiğini belirtir.
     this.loadingCompanyManagerForm = true;
 
-    // Formdaki veriler sunucuya gönderilecek modele doldurulur.
-    this.fillManagerExtDto(this.moduleForm.controls['module'].value);
+    this.fillRegisterManagerDto(this.moduleForm.controls['module'].value);
 
-    // Sunucuya kayıt isteği gönderilir.
-    this.sub1 = this.authorizationService.registerCompanyManager(this.managerExtDto).subscribe({
+    this.sub1 = this.authorizationService.registerCompanyManager(this.registerSectionManagerDto).subscribe({
       next: (response) => {
         if (response.success) {
-          // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
           this.modalService.open(this.registrationModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
@@ -156,30 +144,23 @@ export class RegisterComponent implements OnInit {
   }
   
   addSectionManager(): void {
-    // "Kayıt Ol" butonuna basıldığını belirtir.
     this.submittedSectionManagerForm = true;
 
-    // Önceki hata mesajları temizlenir.
     this.result = { success: false, message: ""};
 
-    // Form geçersizse burada durur.
     if (this.sectionManagerForm.invalid) {
       console.log("Form geçersiz.");
       console.log(this.sectionManagerForm);
       return;
     }
 
-    // Sunucuya bir istek yapıldığını ve cevap beklendiğini belirtir.
     this.loadingSectionManagerForm = true;
 
-    // Formdaki veriler sunucuya gönderilecek modele doldurulur.
-    this.fillManagerExtDto(this.moduleForm.controls['module'].value);
+    this.fillRegisterManagerDto(this.moduleForm.controls['module'].value);
 
-    // Sunucuya kayıt isteği gönderilir.
-    this.sub2 = this.authorizationService.registerSectionManager(this.managerExtDto).subscribe({
+    this.sub2 = this.authorizationService.registerSectionManager(this.registerSectionManagerDto).subscribe({
       next: (response) => {
         if (response.success) {
-          // Kayıt işlemi başarılıysa yönlendirme modal'ını tetikler.
           this.modalService.open(this.registrationModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
@@ -197,44 +178,46 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  // Formdaki verileri modele doldurur.
-  fillManagerExtDto(selectedModule: number): void {
+  fillRegisterManagerDto(selectedModule: number): void {
     switch (selectedModule) {
       case 1:
-        this.managerExtDto.businessName = this.sectionManagerForm.controls['businessName'].value;
-        this.managerExtDto.cityId = this.sectionManagerForm.controls['cityId'].value;
-        this.managerExtDto.districtId = this.sectionManagerForm.controls['districtId'].value;
-        this.managerExtDto.addressText = this.sectionManagerForm.controls['addressText'].value;
-        this.managerExtDto.nameSurname = this.sectionManagerForm.controls['nameSurname'].value;
-        this.managerExtDto.phone = this.sectionManagerForm.controls['phone'].value.toString();
+        this.registerSectionManagerDto.nameSurname = this.sectionManagerForm.controls['nameSurname'].value;
+        this.registerSectionManagerDto.phone = this.sectionManagerForm.controls['phone'].value.toString();
+        this.registerSectionManagerDto.businessName = this.sectionManagerForm.controls['businessName'].value;
+        this.registerSectionManagerDto.cityId = this.sectionManagerForm.controls['cityId'].value;
+        this.registerSectionManagerDto.districtId = this.sectionManagerForm.controls['districtId'].value;
+        this.registerSectionManagerDto.addressText = this.sectionManagerForm.controls['addressText'].value;
+        this.registerSectionManagerDto.taxOffice = this.sectionManagerForm.controls['taxOffice'].value;
+        this.registerSectionManagerDto.taxNumber = this.sectionManagerForm.controls['taxNumber'].value;
+        this.registerSectionManagerDto.identityNumber = this.sectionManagerForm.controls['identityNumber'].value;
         break;
       case 2:
-        this.managerExtDto.businessName = this.sectionManagerForm.controls['businessName'].value;
-        this.managerExtDto.cityId = this.sectionManagerForm.controls['cityId'].value;
-        this.managerExtDto.districtId = this.sectionManagerForm.controls['districtId'].value;
-        this.managerExtDto.addressText = this.sectionManagerForm.controls['addressText'].value;
-        this.managerExtDto.nameSurname = this.sectionManagerForm.controls['nameSurname'].value;
-        this.managerExtDto.phone = this.sectionManagerForm.controls['phone'].value.value.toString();
+        this.registerSectionManagerDto.nameSurname = this.sectionManagerForm.controls['nameSurname'].value;
+        this.registerSectionManagerDto.phone = this.sectionManagerForm.controls['phone'].value.toString();
+        this.registerSectionManagerDto.businessName = this.sectionManagerForm.controls['businessName'].value;
+        this.registerSectionManagerDto.cityId = this.sectionManagerForm.controls['cityId'].value;
+        this.registerSectionManagerDto.districtId = this.sectionManagerForm.controls['districtId'].value;
+        this.registerSectionManagerDto.addressText = this.sectionManagerForm.controls['addressText'].value;
+        this.registerSectionManagerDto.taxOffice = this.sectionManagerForm.controls['taxOffice'].value;
+        this.registerSectionManagerDto.taxNumber = this.sectionManagerForm.controls['taxNumber'].value;
+        this.registerSectionManagerDto.identityNumber = this.sectionManagerForm.controls['identityNumber'].value;
         break;
       default:
         break;
     }
   }
 
-  // Sunucudan şehirleri getirir ve modellere doldurur.
   getCities(): void {
     this.cityDtos$ = this.cityService.getAll();
   }
 
-  // İlçeleri sunucudan getirir ve modellere doldurur.
   getDistrictsByCityId(cityId: number): void {
     this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
-  // Formda herhangi bir şehir seçildiğinde çalışır.
   selectCity(cityId: number): void {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
-    this.managerExtDto.districtId = 0;
+    this.registerSectionManagerDto.districtId = 0;
     this.sectionManagerForm.controls['districtId'].setValue(0);
 
     this.getDistrictsByCityId(cityId);

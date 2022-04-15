@@ -160,7 +160,7 @@
                         <label class="form-label" for="account-code">Hesap Kodu</label>
 
                         <!-- Hesap Kodu Üretme Butonu -->
-                        <a class="code-link cursor-pointer" (click)="generateAccountCode(selectedAccountExtDto)" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
+                        <a class="code-link cursor-pointer" (click)="generateAccountCode(selectedAccountExtDto.accountGroupId)" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
                         <!-- /Hesap Kodu Üretme Butonu -->
                     </div>
                     <input
