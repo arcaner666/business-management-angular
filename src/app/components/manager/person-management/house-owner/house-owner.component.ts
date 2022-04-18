@@ -4,19 +4,19 @@ import { Subscription, Observable, concatMap, tap } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
+import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-owner-ext-dto-errors';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
+import { AccountExtService } from 'src/app/services/account-ext.service';
+import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { BranchService } from 'src/app/services/branch.service';
 import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { BranchDto } from 'src/app/models/dtos/branch-dto';
-import { BranchService } from 'src/app/services/branch.service';
-import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
-import { AccountGroupService } from 'src/app/services/account-group.service';
-import { AccountExtService } from 'src/app/services/account-ext.service';
 
 const EMPTY_HOUSE_OWNER_EXT_DTO: HouseOwnerExtDto = {
   houseOwnerId: 0,
@@ -282,8 +282,6 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    console.log("Formdan gelen:");
-    console.log(this.selectedHouseOwnerExtDto.dateOfBirth);
     if (selectedHouseOwnerExtDto.houseOwnerId == 0) {
       this.addExt();
     } else {

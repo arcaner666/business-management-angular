@@ -1,1 +1,338 @@
-<p>tenant-detail works!</p>
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <!-- Card Başlığı -->
+            <h2 class="card-title text-center fs-4">{{cardHeader}}</h2>
+            <!-- /Card Başlığı -->
+
+            <!-- Kiracı Ekleme/Düzenleme Formu -->
+            <form #form="ngForm" (ngSubmit)="save(selectedTenantExtDto)">
+                <!-- Ad Soyad -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="name-surname">Ad Soyad</label>
+                    <input
+                        id="name-surname"
+                        type="text"
+                        name="nameSurname"
+                        [(ngModel)]="selectedTenantExtDto.nameSurname"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.nameSurname }"
+                        (change)="selectedTenantExtDtoErrors.nameSurname = ''"
+                        tabindex="1"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.nameSurname">
+                        <div>{{selectedTenantExtDtoErrors.nameSurname}}</div>
+                    </div>
+                </div>
+                <!-- /Ad Soyad -->
+                
+                <!-- E-Posta -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="email">E-Posta</label>
+                    <input
+                        id="email"
+                        type="text"
+                        name="email"
+                        [(ngModel)]="selectedTenantExtDto.email"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.email }"
+                        (change)="selectedTenantExtDtoErrors.email = ''"
+                        tabindex="2"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.email">
+                        <div>{{selectedTenantExtDtoErrors.email}}</div>
+                    </div>
+                </div>
+                <!-- /E-Posta -->
+                
+                <!-- Telefon Numarası -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="phone">Telefon Numarası</label>
+                    <input
+                        id="phone"
+                        type="text"
+                        name="phone"
+                        [(ngModel)]="selectedTenantExtDto.phone"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.phone }"
+                        [readOnly]="selectedTenantExtDto.accountId != 0"
+                        (change)="selectedTenantExtDtoErrors.phone = ''"
+                        tabindex="3"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.phone">
+                        <div>{{selectedTenantExtDtoErrors.phone}}</div>
+                    </div>
+                </div>
+                <!-- /Telefon Numarası -->
+                
+                <!-- Doğum Tarihi -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="dateOfBirth">Doğum Tarihi</label>
+                    <div class="input-group">
+                        <input
+                            id="date-of-birth"
+                            type="text"
+                            name="customDateOfBirth"
+                            ngbDatepicker
+                            #dateOfBirth="ngbDatepicker"
+                            [minDate]="{year: 1950, month: 1, day: 1}"
+                            [maxDate]="{year: 2030, month: 12, day: 31}"
+                            class="form-control"
+                            [(ngModel)]="selectedTenantExtDto.dateOfBirth"
+                            [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.dateOfBirth }"
+                            placeholder="gg/aa/yyyy"
+                            (change)="selectedTenantExtDtoErrors.dateOfBirth = ''"
+                            tabindex="4"
+                        />
+                        <button class="btn btn-outline-color-2" (click)="dateOfBirth.toggle()" type="button">
+                            <i class="far fa-calendar-alt fa-lg"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.dateOfBirth">
+                        <div>{{selectedTenantExtDtoErrors.dateOfBirth}}</div>
+                    </div>
+                </div>
+                <!-- /Doğum Tarihi -->
+
+                <!-- Cinsiyet -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="gender">Cinsiyet</label>
+                    <select 
+                        id="gender"
+                        name="gender"
+                        class="form-select"
+                        [(ngModel)]="selectedTenantExtDto.gender"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.gender }"
+                        (change)="selectedTenantExtDtoErrors.gender = ''"
+                        tabindex="5"
+                    >
+                        <option 
+                            *ngFor="let gender of genders"
+                            [value]="gender.charAt(0).toUpperCase()"
+                        >
+                            {{gender}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.gender">
+                        <div>{{selectedTenantExtDtoErrors.gender}}</div>
+                    </div>
+                </div>
+                <!-- /Cinsiyet -->
+
+                <!-- Notlar -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="notes">Notlar</label>
+                    <textarea
+                        id="notes"
+                        type="text"
+                        name="notes"
+                        [(ngModel)]="selectedTenantExtDto.notes"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.notes }"
+                        (change)="selectedTenantExtDtoErrors.notes = ''"
+                        tabindex="6"
+                    ></textarea>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.notes">
+                        <div>{{selectedTenantExtDtoErrors.notes}}</div>
+                    </div>
+                </div>
+                <!-- /Notlar -->
+
+                <!-- Şube -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="branch-id">Şube</label>
+                    <select 
+                        id="branch-id"
+                        name="branchId"
+                        class="form-select"
+                        [(ngModel)]="selectedTenantExtDto.branchId"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.branchId }"
+                        [disabled]="selectedTenantExtDto.accountId != 0"
+                        (change)="selectedTenantExtDtoErrors.branchId = ''"
+                        tabindex="5"
+                    >
+                        <option 
+                            *ngFor="let branchDto of branchDtos"
+                            [value]="branchDto.branchId"
+                        >
+                            {{branchDto.branchName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.branchId">
+                        <div>{{selectedTenantExtDtoErrors.branchId}}</div>
+                    </div>
+                </div>
+                <!-- /Şube -->
+    
+                <!-- Hesap Adı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="account-name">Hesap Adı</label>
+                    <input
+                        id="account-name"
+                        type="text"
+                        name="accountName"
+                        [(ngModel)]="selectedTenantExtDto.accountName"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.accountName }"
+                        (change)="selectedTenantExtDtoErrors.accountName = ''"
+                        tabindex="6"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.accountName">
+                        <div>{{selectedTenantExtDtoErrors.accountName}}</div>
+                    </div>
+                </div>
+                <!-- /Hesap Adı -->
+
+                <!-- Hesap Kodu -->
+                <div class="mt-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label" for="account-code">Hesap Kodu</label>
+
+                        <!-- Hesap Kodu Üretme Butonu -->
+                        <a class="code-link cursor-pointer" (click)="generateAccountCode()" *ngIf="selectedTenantExtDto.accountId == 0"><small>Kod Üret</small></a>
+                        <!-- /Hesap Kodu Üretme Butonu -->
+                    </div>
+                    <input
+                        id="account-code"
+                        type="text"
+                        name="accountCode"
+                        [(ngModel)]="selectedTenantExtDto.accountCode"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.accountCode }"
+                        [readOnly]="selectedTenantExtDto.accountId != 0"
+                        (change)="selectedTenantExtDtoErrors.accountCode = ''"
+                        tabindex="7"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.accountCode">
+                        <div>{{selectedTenantExtDtoErrors.accountCode}}</div>
+                    </div>
+
+                </div>
+                <!-- /Hesap Kodu -->
+                
+                <!-- Vergi Dairesi -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="tax-office">Vergi Dairesi</label>
+                    <input
+                        id="tax-office"
+                        type="text"
+                        name="taxOffice"
+                        [(ngModel)]="selectedTenantExtDto.taxOffice"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.taxOffice }"
+                        (change)="selectedTenantExtDtoErrors.taxOffice = ''"
+                        tabindex="8"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.taxOffice">
+                        <div>{{selectedTenantExtDtoErrors.taxOffice}}</div>
+                    </div>
+                </div>
+                <!-- /Vergi Dairesi -->
+
+                <!-- Vergi Numarası -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="tax-number">Vergi Numarası</label>
+                    <input
+                        id="tax-number"
+                        type="number"
+                        name="taxNumber"
+                        [(ngModel)]="selectedTenantExtDto.taxNumber"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.taxNumber }"
+                        (change)="selectedTenantExtDtoErrors.taxNumber = ''"
+                        tabindex="9"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.taxNumber">
+                        <div>{{selectedTenantExtDtoErrors.taxNumber}}</div>
+                    </div>
+                </div>
+                <!-- /Vergi Numarası -->
+
+                <!-- Kimlik Numarası -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="identity-number">Kimlik Numarası</label>
+                    <input
+                        id="identity-number"
+                        type="number"
+                        name="identityNumber"
+                        [(ngModel)]="selectedTenantExtDto.identityNumber"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.identityNumber }"
+                        (change)="selectedTenantExtDtoErrors.identityNumber = ''"
+                        tabindex="10"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.identityNumber">
+                        <div>{{selectedTenantExtDtoErrors.identityNumber}}</div>
+                    </div>
+                </div>
+                <!-- /Kimlik Numarası -->
+
+                <!-- Limit -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="limit">Limit</label>
+                    <input
+                        id="limit"
+                        type="number"
+                        name="limit"
+                        [(ngModel)]="selectedTenantExtDto.limit"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.limit }"
+                        (change)="selectedTenantExtDtoErrors.limit = ''"
+                        tabindex="11"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.limit">
+                        <div>{{selectedTenantExtDtoErrors.limit}}</div>
+                    </div>
+                </div>
+                <!-- /Limit -->
+
+                <!-- Standart Vade -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="standart-maturity">Standart Vade</label>
+                    <input
+                        id="standart-maturity"
+                        type="number"
+                        name="standartMaturity"
+                        [(ngModel)]="selectedTenantExtDto.standartMaturity"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedTenantExtDtoErrors.standartMaturity }"
+                        (change)="selectedTenantExtDtoErrors.standartMaturity = ''"
+                        tabindex="12"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedTenantExtDtoErrors.standartMaturity">
+                        <div>{{selectedTenantExtDtoErrors.standartMaturity}}</div>
+                    </div>
+                </div>
+                <!-- /Standart Vade -->
+
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="7"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                                (click)="cancel()"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
+            </form>
+            <!-- /Kiracı Ekleme/Düzenleme Formu -->
+        </div>
+    </div>
+</div>
+    
