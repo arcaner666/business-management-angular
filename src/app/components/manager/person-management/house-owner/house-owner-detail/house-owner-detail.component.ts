@@ -49,8 +49,6 @@ export class HouseOwnerDetailComponent {
   }
 
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    console.log(this.selectedHouseOwnerExtDto.dateOfBirth);
-    console.log(typeof this.selectedHouseOwnerExtDto.dateOfBirth);
     this.submitted = true;
     this.saved.emit(selectedHouseOwnerExtDto);
   }

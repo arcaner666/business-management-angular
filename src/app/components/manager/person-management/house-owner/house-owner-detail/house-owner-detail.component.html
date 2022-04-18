@@ -56,6 +56,7 @@
                         [(ngModel)]="selectedHouseOwnerExtDto.phone"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.phone }"
+                        [readOnly]="selectedHouseOwnerExtDto.accountId != 0"
                         (change)="selectedHouseOwnerExtDtoErrors.phone = ''"
                         tabindex="3"
                     />
@@ -68,21 +69,26 @@
                 <!-- Doğum Tarihi -->
                 <div class="mt-3 mb-3">
                     <label class="form-label" for="dateOfBirth">Doğum Tarihi</label>
-                    <input
-                        id="date-of-birth"
-                        type="text"
-                        name="dateOfBirth"
-                        ngbDatepicker
-                        #dateOfBirth="ngbDatepicker"
-                        [minDate]="{year: 1950, month: 1, day: 1}"
-                        [maxDate]="{year: 2030, month: 12, day: 31}"
-                        [(ngModel)]="selectedHouseOwnerExtDto.dateOfBirth"
-                        (click)="dateOfBirth.toggle()"
-                        class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.dateOfBirth }"
-                        (change)="selectedHouseOwnerExtDtoErrors.dateOfBirth = ''"
-                        tabindex="4"
-                    />
+                    <div class="input-group">
+                        <input
+                            id="date-of-birth"
+                            type="text"
+                            name="customDateOfBirth"
+                            ngbDatepicker
+                            #dateOfBirth="ngbDatepicker"
+                            [minDate]="{year: 1950, month: 1, day: 1}"
+                            [maxDate]="{year: 2030, month: 12, day: 31}"
+                            class="form-control"
+                            [(ngModel)]="selectedHouseOwnerExtDto.dateOfBirth"
+                            [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.dateOfBirth }"
+                            placeholder="yyyy-aa-gg"
+                            (change)="selectedHouseOwnerExtDtoErrors.dateOfBirth = ''"
+                            tabindex="4"
+                        />
+                        <button class="btn btn-outline-color-2" (click)="dateOfBirth.toggle()" type="button">
+                            <i class="far fa-calendar-alt fa-lg"></i>
+                        </button>
+                    </div>
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.dateOfBirth">
                         <div>{{selectedHouseOwnerExtDtoErrors.dateOfBirth}}</div>
                     </div>

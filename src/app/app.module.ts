@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 
 // ng-bootstrap Module
-import { NgbDateAdapter, NgbDateNativeAdapter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateAdapter, NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // ng-select Module
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -96,6 +96,9 @@ import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 // Models
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 
+// Services
+import { CustomDateAdapter } from 'src/app/services/custom-date-adapter.service';
+import { CustomDateParserFormatter } from 'src/app/services/custom-date-parser-formatter.service';
 
 @NgModule({
   declarations: [
@@ -199,7 +202,8 @@ import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }
+    { provide: NgbDateAdapter, useClass: CustomDateAdapter},
+    { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter}
   ],
   bootstrap: [AppComponent]
 })
