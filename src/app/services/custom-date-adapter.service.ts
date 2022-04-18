@@ -3,9 +3,9 @@ import { NgbDateAdapter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
 
-// 2020-04-30T04:00:00.000Z | 2020-04-30T04:00:00.000+00:00 | 2020-04-30T04:00:00.000-00:00
+// ISO 8601 Date Formats => 2020-04-30T04:00:00.000Z | 2020-04-30T04:00:00.000+00:00 | 2020-04-30T04:00:00.000-00:00
 // Bu servis ngb-select'in kullandığı NgbDateStruct yapısı ile backend'den gelen Date string'i
-// karşılıklı olarak birbirine atar.
+// karşılıklı olarak birbirine çevirir.
 export class CustomDateAdapter extends NgbDateAdapter<string>{
 
   readonly DELIMITER = '-';
