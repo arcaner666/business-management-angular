@@ -54,8 +54,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.selectedSectionGroupDto.businessId = this.authorizationService.authorizationDto.businessId;
     this.selectedSectionGroupDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    let isModelValid = this.validate();
-
+    let [isModelValid, errors] = this.validationService.validateSectionGroupDto(this.selectedSectionGroupDto, "add");
+    this.selectedSectionGroupDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
 
@@ -140,10 +140,6 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  resetErrors() {
-    this.selectedSectionGroupDtoErrors = this.sectionGroupService.emptySectionGroupDtoErrors;
-  }
-
   save(selectedSectionGroupDto: SectionGroupDto): void {
     if (selectedSectionGroupDto.sectionGroupId == 0) {
       this.add();
@@ -182,8 +178,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   update(): void {
-    let isModelValid = this.validate();
-
+    let [isModelValid, errors] = this.validationService.validateSectionGroupDto(this.selectedSectionGroupDto, "update");
+    this.selectedSectionGroupDtoErrors = errors;
     if (isModelValid) {
       this.sub6 = this.sectionGroupService.update(this.selectedSectionGroupDto).subscribe({
         next: (response) => {
@@ -203,19 +199,6 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedSectionGroupDtoErrors);
     }
-  }
-
-  validate(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedSectionGroupDto.sectionGroupName)) {
-      this.selectedSectionGroupDtoErrors.sectionGroupName = "Lütfen site grubu adı giriniz.";
-      isValid = false;
-    } 
-
-    return isValid;
   }
 
   ngOnInit(): void {

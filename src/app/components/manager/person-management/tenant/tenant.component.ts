@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
@@ -70,8 +69,8 @@ export class TenantComponent implements OnInit, OnDestroy {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     this.selectedTenantExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
-    let isModelValid = this.validateForAdd();
-
+    let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "add");
+    this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
 
@@ -142,8 +141,8 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   generateAccountCode() {
-    let isModelValid = this.validateForGeneratingAccountCode();
-
+    let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "code");
+    this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {      
       this.sub4 = this.accountExtService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
@@ -196,10 +195,6 @@ export class TenantComponent implements OnInit, OnDestroy {
     this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  resetErrors() {
-    this.selectedTenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;
-  }
-
   save(selectedTenantExtDto: TenantExtDto): void {
     if (selectedTenantExtDto.tenantId == 0) {
       this.addExt();
@@ -239,8 +234,8 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   updateExt(): void {
-    let isModelValid = this.validateForUpdate();
-
+    let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "update");
+    this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {
       this.sub8 = this.tenantExtService.updateExt(this.selectedTenantExtDto).subscribe({
         next: (response) => {
@@ -260,117 +255,6 @@ export class TenantComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedTenantExtDtoErrors);
     }
-  }
-
-  validateForAdd(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedTenantExtDto.nameSurname)) {
-      this.selectedTenantExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedTenantExtDto.phone)) {
-      this.selectedTenantExtDtoErrors.phone = "Lütfen telefon numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.stringPreciseLength(this.selectedTenantExtDto.phone, 10)) {
-      this.selectedTenantExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.branchId)) {
-      this.selectedTenantExtDtoErrors.branchId = "Lütfen şube seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedTenantExtDto.accountName)) {
-      this.selectedTenantExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedTenantExtDto.accountCode)) {
-      this.selectedTenantExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedTenantExtDto.taxOffice)) {
-      this.selectedTenantExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.taxNumber)) {
-      this.selectedTenantExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.identityNumber)) {
-      this.selectedTenantExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.numberPreciseLength(this.selectedTenantExtDto.identityNumber, 11)) {
-      this.selectedTenantExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.limit)) {
-      this.selectedTenantExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.standartMaturity)) {
-      this.selectedTenantExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForGeneratingAccountCode(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.number(this.selectedTenantExtDto.branchId)) {
-      this.selectedTenantExtDtoErrors.branchId = "Lütfen şube seçiniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForUpdate(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedTenantExtDto.nameSurname)) {
-      this.selectedTenantExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedTenantExtDto.accountName)) {
-      this.selectedTenantExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedTenantExtDto.taxOffice)) {
-      this.selectedTenantExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.taxNumber)) {
-      this.selectedTenantExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.identityNumber)) {
-      this.selectedTenantExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.numberPreciseLength(this.selectedTenantExtDto.identityNumber, 11)) {
-      this.selectedTenantExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.limit)) {
-      this.selectedTenantExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedTenantExtDto.standartMaturity)) {
-      this.selectedTenantExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
   }
 
   ngOnInit(): void {

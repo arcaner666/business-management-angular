@@ -65,8 +65,8 @@ export class BranchComponent implements OnInit, OnDestroy {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     this.selectedBranchExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
-    let isModelValid = this.validateForAdd();
-
+    let [isModelValid, errors] = this.validationService.validateBranchExtDto(this.selectedBranchExtDto, "add");
+    this.selectedBranchExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
 
@@ -174,10 +174,6 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.districtDtos$ = this.districtService.getByCityId(cityId);
   }
 
-  resetErrors() {
-    this.selectedBranchExtDtoErrors = this.branchExtService.emptyBranchExtDtoErrors;
-  }
-
   save(selectedBranchExtDto: BranchExtDto): void {
     if (selectedBranchExtDto.branchId == 0) {
       this.addExt();
@@ -225,8 +221,8 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   updateExt(): void {
-    let isModelValid = this.validateForUpdate();
-
+    let [isModelValid, errors] = this.validationService.validateBranchExtDto(this.selectedBranchExtDto, "update");
+    this.selectedBranchExtDtoErrors = errors;
     if (isModelValid) {
       this.sub7 = this.branchExtService.updateExt(this.selectedBranchExtDto).subscribe({
         next: (response) => {
@@ -246,76 +242,6 @@ export class BranchComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedBranchExtDtoErrors);
     }
-  }
-
-  validateForAdd(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedBranchExtDto.branchName)) {
-      this.selectedBranchExtDtoErrors.branchName = "Lütfen şube adı giriniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.string(this.selectedBranchExtDto.branchCode)) {
-      this.selectedBranchExtDtoErrors.branchCode = "Lütfen şube kodu oluşturunuz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedBranchExtDto.cityId)) {
-      this.selectedBranchExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedBranchExtDto.districtId)) {
-      this.selectedBranchExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedBranchExtDto.addressTitle)) {
-      this.selectedBranchExtDtoErrors.addressTitle = "Lütfen adres başlığı giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedBranchExtDto.postalCode)) {
-      this.selectedBranchExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedBranchExtDto.addressText)) {
-      this.selectedBranchExtDtoErrors.addressText = "Lütfen adres giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForUpdate(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedBranchExtDto.branchName)) {
-      this.selectedBranchExtDtoErrors.branchName = "Lütfen şube adı giriniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedBranchExtDto.cityId)) {
-      this.selectedBranchExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedBranchExtDto.districtId)) {
-      this.selectedBranchExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedBranchExtDto.addressTitle)) {
-      this.selectedBranchExtDtoErrors.addressTitle = "Lütfen adres başlığı giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedBranchExtDto.postalCode)) {
-      this.selectedBranchExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedBranchExtDto.addressText)) {
-      this.selectedBranchExtDtoErrors.addressText = "Lütfen adres giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
   }
 
   ngOnInit(): void {

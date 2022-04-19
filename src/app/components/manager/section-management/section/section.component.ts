@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CityDto } from 'src/app/models/dtos/city-dto';
@@ -74,8 +73,8 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.selectedSectionExtDto.businessId = this.authorizationService.authorizationDto.businessId;
     this.selectedSectionExtDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    let isModelValid = this.validateForAdd();
-
+    let [isModelValid, errors] = this.validationService.validateSectionExtDto(this.selectedSectionExtDto, "add");
+    this.selectedSectionExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
 
@@ -176,10 +175,6 @@ export class SectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  resetErrors() {
-    this.selectedSectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;
-  }
-
   save(selectedSectionExtDto: SectionExtDto): void {
     if (selectedSectionExtDto.sectionId == 0) {
       this.addExt();
@@ -226,8 +221,8 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   updateExt(): void {
-    let isModelValid = this.validateForUpdate();
-
+    let [isModelValid, errors] = this.validationService.validateSectionExtDto(this.selectedSectionExtDto, "update");
+    this.selectedSectionExtDtoErrors = errors;
     if (isModelValid) {
       this.sub6 = this.sectionExtService.updateExt(this.selectedSectionExtDto).subscribe({
         next: (response) => {
@@ -247,80 +242,6 @@ export class SectionComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedSectionExtDtoErrors);
     }
-  }
-
-  validateForAdd(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedSectionExtDto.sectionName)) {
-      this.selectedSectionExtDtoErrors.sectionName = "Lütfen site adı giriniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedSectionExtDto.sectionGroupId)) {
-      this.selectedSectionExtDtoErrors.sectionGroupId = "Lütfen site grubu seçiniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedSectionExtDto.managerId)) {
-      this.selectedSectionExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedSectionExtDto.cityId)) {
-      this.selectedSectionExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedSectionExtDto.districtId)) {
-      this.selectedSectionExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedSectionExtDto.postalCode)) {
-      this.selectedSectionExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedSectionExtDto.addressText)) {
-      this.selectedSectionExtDtoErrors.addressText = "Lütfen adres giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForUpdate(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedSectionExtDto.sectionName)) {
-      this.selectedSectionExtDtoErrors.sectionName = "Lütfen site adı giriniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedSectionExtDto.sectionGroupId)) {
-      this.selectedSectionExtDtoErrors.sectionGroupId = "Lütfen site grubu seçiniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedSectionExtDto.managerId)) {
-      this.selectedSectionExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedSectionExtDto.cityId)) {
-      this.selectedSectionExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedSectionExtDto.districtId)) {
-      this.selectedSectionExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedSectionExtDto.postalCode)) {
-      this.selectedSectionExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedSectionExtDto.addressText)) {
-      this.selectedSectionExtDtoErrors.addressText = "Lütfen adres giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
   }
 
   ngOnInit(): void {

@@ -67,8 +67,8 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     this.selectedHouseOwnerExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
-    let isModelValid = this.validateForAdd();
-
+    let [isModelValid, errors] = this.validationService.validateHouseOwnerExtDto(this.selectedHouseOwnerExtDto, "add");
+    this.selectedHouseOwnerExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
 
@@ -138,8 +138,8 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   generateAccountCode() {
-    let isModelValid = this.validateForGeneratingAccountCode();
-
+    let [isModelValid, errors] = this.validationService.validateHouseOwnerExtDto(this.selectedHouseOwnerExtDto, "code");
+    this.selectedHouseOwnerExtDtoErrors = errors;
     if (isModelValid) {      
       this.sub4 = this.accountExtService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
@@ -192,10 +192,6 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  resetErrors() {
-    this.selectedHouseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;
-  }
-
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
     if (selectedHouseOwnerExtDto.houseOwnerId == 0) {
       this.addExt();
@@ -234,8 +230,8 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   updateExt(): void {
-    let isModelValid = this.validateForUpdate();
-
+    let [isModelValid, errors] = this.validationService.validateHouseOwnerExtDto(this.selectedHouseOwnerExtDto, "update");
+    this.selectedHouseOwnerExtDtoErrors = errors;
     if (isModelValid) {
       this.sub8 = this.houseOwnerExtService.updateExt(this.selectedHouseOwnerExtDto).subscribe({
         next: (response) => {
@@ -255,117 +251,6 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedHouseOwnerExtDtoErrors);
     }
-  }
-
-  validateForAdd(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.nameSurname)) {
-      this.selectedHouseOwnerExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.phone)) {
-      this.selectedHouseOwnerExtDtoErrors.phone = "Lütfen telefon numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.stringPreciseLength(this.selectedHouseOwnerExtDto.phone, 10)) {
-      this.selectedHouseOwnerExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.branchId)) {
-      this.selectedHouseOwnerExtDtoErrors.branchId = "Lütfen şube seçiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.accountName)) {
-      this.selectedHouseOwnerExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.accountCode)) {
-      this.selectedHouseOwnerExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.taxOffice)) {
-      this.selectedHouseOwnerExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.taxNumber)) {
-      this.selectedHouseOwnerExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.identityNumber)) {
-      this.selectedHouseOwnerExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.numberPreciseLength(this.selectedHouseOwnerExtDto.identityNumber, 11)) {
-      this.selectedHouseOwnerExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.limit)) {
-      this.selectedHouseOwnerExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.standartMaturity)) {
-      this.selectedHouseOwnerExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForGeneratingAccountCode(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.branchId)) {
-      this.selectedHouseOwnerExtDtoErrors.branchId = "Lütfen şube seçiniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForUpdate(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.nameSurname)) {
-      this.selectedHouseOwnerExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.accountName)) {
-      this.selectedHouseOwnerExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.string(this.selectedHouseOwnerExtDto.taxOffice)) {
-      this.selectedHouseOwnerExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.taxNumber)) {
-      this.selectedHouseOwnerExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.identityNumber)) {
-      this.selectedHouseOwnerExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.numberPreciseLength(this.selectedHouseOwnerExtDto.identityNumber, 11)) {
-      this.selectedHouseOwnerExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.limit)) {
-      this.selectedHouseOwnerExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
-      isValid = false;
-    }
-    if (!this.validationService.number(this.selectedHouseOwnerExtDto.standartMaturity)) {
-      this.selectedHouseOwnerExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
   }
 
   ngOnInit(): void {

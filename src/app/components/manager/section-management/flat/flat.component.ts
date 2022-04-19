@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApartmentDto } from 'src/app/models/dtos/apartment-dto';
@@ -74,8 +73,8 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.selectedFlatExtDto.businessId = this.authorizationService.authorizationDto.businessId;
     this.selectedFlatExtDto.branchId = this.authorizationService.authorizationDto.branchId;
 
-    let isModelValid = this.validateForAdd();
-
+    let [isModelValid, errors] = this.validationService.validateFlatExtDto(this.selectedFlatExtDto, "add");
+    this.selectedFlatExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
 
@@ -176,10 +175,6 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.tenantDtos$ = this.tenantService.getByBusinessId(businessId);
   }
 
-  resetErrors() {
-    this.selectedFlatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;
-  }
-
   save(selectedFlatExtDto: FlatExtDto): void {
     if (selectedFlatExtDto.flatId == 0) {
       this.addExt();
@@ -226,8 +221,8 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   updateExt(): void {
-    let isModelValid = this.validateForUpdate();
-
+    let [isModelValid, errors] = this.validationService.validateFlatExtDto(this.selectedFlatExtDto, "update");
+    this.selectedFlatExtDtoErrors = errors;
     if (isModelValid) {
       this.sub6 = this.flatExtService.updateExt(this.selectedFlatExtDto).subscribe({
         next: (response) => {
@@ -247,40 +242,6 @@ export class FlatComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedFlatExtDtoErrors);
     }
-  }
-
-  validateForAdd(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.number(this.selectedFlatExtDto.sectionId)) {
-      this.selectedFlatExtDtoErrors.sectionId = "Lütfen site seçiniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedFlatExtDto.apartmentId)) {
-      this.selectedFlatExtDtoErrors.apartmentId = "Lütfen apartman seçiniz.";
-      isValid = false;
-    } 
-    if (!this.validationService.number(this.selectedFlatExtDto.doorNumber)) {
-      this.selectedFlatExtDtoErrors.doorNumber = "Lütfen kapı numarası giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  validateForUpdate(): boolean {
-    this.resetErrors();
-
-    let isValid: boolean = true;
-
-    if (!this.validationService.number(this.selectedFlatExtDto.doorNumber)) {
-      this.selectedFlatExtDtoErrors.doorNumber = "Lütfen kapı numarası giriniz.";
-      isValid = false;
-    }
-
-    return isValid;
   }
 
   ngOnInit(): void {
