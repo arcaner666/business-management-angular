@@ -178,24 +178,6 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.selectedBranchExtDtoErrors = this.branchExtService.emptyBranchExtDtoErrors;
   }
 
-  resetModel() {
-    this.selectedBranchExtDto.branchId = 0;
-    this.selectedBranchExtDto.businessId = 0;
-    this.selectedBranchExtDto.fullAddressId = 0;
-    this.selectedBranchExtDto.branchOrder = 0;
-    this.selectedBranchExtDto.branchName = "";
-    this.selectedBranchExtDto.branchCode = "";
-    this.selectedBranchExtDto.createdAt = new Date();
-    this.selectedBranchExtDto.updatedAt = new Date();
-  
-    // Extended With FullAddress
-    this.selectedBranchExtDto.cityId = 0;
-    this.selectedBranchExtDto.districtId = 0;
-    this.selectedBranchExtDto.addressTitle = "";
-    this.selectedBranchExtDto.postalCode = 0;
-    this.selectedBranchExtDto.addressText = "";
-  }
-
   save(selectedBranchExtDto: BranchExtDto): void {
     if (selectedBranchExtDto.branchId == 0) {
       this.addExt();

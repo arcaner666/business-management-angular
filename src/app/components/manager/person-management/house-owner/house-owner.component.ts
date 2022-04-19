@@ -196,33 +196,6 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     this.selectedHouseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;
   }
 
-  resetModel() {
-    this.selectedHouseOwnerExtDto.houseOwnerId = 0;
-    this.selectedHouseOwnerExtDto.businessId = 0;
-    this.selectedHouseOwnerExtDto.branchId = 0;
-    this.selectedHouseOwnerExtDto.accountId = 0;
-    this.selectedHouseOwnerExtDto.nameSurname = "";
-    this.selectedHouseOwnerExtDto.email = "";
-    this.selectedHouseOwnerExtDto.phone = "";
-    this.selectedHouseOwnerExtDto.dateOfBirth = undefined;
-    this.selectedHouseOwnerExtDto.gender = "";
-    this.selectedHouseOwnerExtDto.notes = "";
-    this.selectedHouseOwnerExtDto.avatarUrl = "";
-    this.selectedHouseOwnerExtDto.createdAt = new Date();
-    this.selectedHouseOwnerExtDto.updatedAt = new Date();
-
-    // Extended With Account
-    this.selectedHouseOwnerExtDto.accountGroupId = 0;
-    this.selectedHouseOwnerExtDto.accountOrder = 0;
-    this.selectedHouseOwnerExtDto.accountName = "";
-    this.selectedHouseOwnerExtDto.accountCode = "";
-    this.selectedHouseOwnerExtDto.taxOffice = "";
-    this.selectedHouseOwnerExtDto.taxNumber = 0;
-    this.selectedHouseOwnerExtDto.identityNumber = 0;
-    this.selectedHouseOwnerExtDto.limit = 0;
-    this.selectedHouseOwnerExtDto.standartMaturity = 0;
-  }
-
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
     if (selectedHouseOwnerExtDto.houseOwnerId == 0) {
       this.addExt();

@@ -144,15 +144,6 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.selectedSectionGroupDtoErrors = this.sectionGroupService.emptySectionGroupDtoErrors;
   }
 
-  resetModel() {
-    this.selectedSectionGroupDto.sectionGroupId = 0;
-    this.selectedSectionGroupDto.businessId = 0;
-    this.selectedSectionGroupDto.branchId = 0;
-    this.selectedSectionGroupDto.sectionGroupName = "";
-    this.selectedSectionGroupDto.createdAt = new Date();
-    this.selectedSectionGroupDto.updatedAt = new Date();
-  }
-
   save(selectedSectionGroupDto: SectionGroupDto): void {
     if (selectedSectionGroupDto.sectionGroupId == 0) {
       this.add();

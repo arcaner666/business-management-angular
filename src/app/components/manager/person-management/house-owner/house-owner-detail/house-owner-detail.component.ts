@@ -22,7 +22,6 @@ export class HouseOwnerDetailComponent {
   
   @Output() accountCodeGenerated = new EventEmitter();
   @Output() cancelled = new EventEmitter();
-  @Output() modelReset = new EventEmitter();
   @Output() saved = new EventEmitter<HouseOwnerExtDto>();
   
   public submitted: boolean = false;
@@ -41,11 +40,6 @@ export class HouseOwnerDetailComponent {
   generateAccountCode(): void {
     this.submitted = true;
     this.accountCodeGenerated.emit();
-  }
-
-  resetModel() {
-    this.submitted = false;
-    this.modelReset.emit();
   }
 
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {

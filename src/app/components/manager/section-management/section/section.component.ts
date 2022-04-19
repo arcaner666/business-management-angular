@@ -180,38 +180,6 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.selectedSectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;
   }
 
-  resetModel() {
-    this.selectedSectionExtDto.sectionId = 0;
-    this.selectedSectionExtDto.sectionGroupId = 0;
-    this.selectedSectionExtDto.businessId = 0;
-    this.selectedSectionExtDto.branchId = 0;
-    this.selectedSectionExtDto.managerId = 0;
-    this.selectedSectionExtDto.fullAddressId = 0;
-    this.selectedSectionExtDto.sectionName = "";
-    this.selectedSectionExtDto.sectionCode = "";
-    this.selectedSectionExtDto.createdAt = new Date();
-    this.selectedSectionExtDto.updatedAt = new Date();
-  
-    // Extended With SectionGroup
-    this.selectedSectionExtDto.sectionGroupName = "";
-  
-    // Extended With Manager
-    this.selectedSectionExtDto.managerNameSurname = "";
-  
-    // Extended With FullAddress
-    this.selectedSectionExtDto.cityId = 0;
-    this.selectedSectionExtDto.districtId = 0;
-    this.selectedSectionExtDto.addressTitle = "";
-    this.selectedSectionExtDto.postalCode = 0;
-    this.selectedSectionExtDto.addressText = "";
-  
-    // Extended With FullAddress + City
-    this.selectedSectionExtDto.cityName = "";
-  
-    // Extended With FullAddress + District
-    this.selectedSectionExtDto.districtName = "";
-  }
-
   save(selectedSectionExtDto: SectionExtDto): void {
     if (selectedSectionExtDto.sectionId == 0) {
       this.addExt();

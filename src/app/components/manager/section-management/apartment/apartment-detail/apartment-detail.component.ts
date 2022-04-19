@@ -23,7 +23,6 @@ export class ApartmentDetailComponent {
   @Input() selectedApartmentExtDtoErrors!: ApartmentExtDtoErrors;
 
   @Output() cancelled = new EventEmitter();
-  @Output() modelReset = new EventEmitter();
   @Output() saved = new EventEmitter<ApartmentExtDto>();
 
   public submitted: boolean = false;
@@ -36,11 +35,6 @@ export class ApartmentDetailComponent {
 
   cancel(): void {
     this.cancelled.emit();
-  }
-
-  resetModel() {
-    this.submitted = false;
-    this.modelReset.emit();
   }
 
   save(selectedApartmentExtDto: ApartmentExtDto): void {

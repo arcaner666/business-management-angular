@@ -200,33 +200,6 @@ export class TenantComponent implements OnInit, OnDestroy {
     this.selectedTenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;
   }
 
-  resetModel() {
-    this.selectedTenantExtDto.tenantId = 0;
-    this.selectedTenantExtDto.businessId = 0;
-    this.selectedTenantExtDto.branchId = 0;
-    this.selectedTenantExtDto.accountId = 0;
-    this.selectedTenantExtDto.nameSurname = "";
-    this.selectedTenantExtDto.email = "";
-    this.selectedTenantExtDto.phone = "";
-    this.selectedTenantExtDto.dateOfBirth = undefined;
-    this.selectedTenantExtDto.gender = "";
-    this.selectedTenantExtDto.notes = "";
-    this.selectedTenantExtDto.avatarUrl = "";
-    this.selectedTenantExtDto.createdAt = new Date();
-    this.selectedTenantExtDto.updatedAt = new Date();
-
-    // Extended With Account
-    this.selectedTenantExtDto.accountGroupId = 0;
-    this.selectedTenantExtDto.accountOrder = 0;
-    this.selectedTenantExtDto.accountName = "";
-    this.selectedTenantExtDto.accountCode = "";
-    this.selectedTenantExtDto.taxOffice = "";
-    this.selectedTenantExtDto.taxNumber = 0;
-    this.selectedTenantExtDto.identityNumber = 0;
-    this.selectedTenantExtDto.limit = 0;
-    this.selectedTenantExtDto.standartMaturity = 0;
-  }
-
   save(selectedTenantExtDto: TenantExtDto): void {
     if (selectedTenantExtDto.tenantId == 0) {
       this.addExt();

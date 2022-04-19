@@ -180,32 +180,6 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.selectedFlatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;
   }
 
-  resetModel() {
-    this.selectedFlatExtDto.flatId = 0;
-    this.selectedFlatExtDto.sectionId = 0;
-    this.selectedFlatExtDto.apartmentId = 0;
-    this.selectedFlatExtDto.businessId = 0;
-    this.selectedFlatExtDto.branchId = 0;
-    this.selectedFlatExtDto.houseOwnerId = undefined;
-    this.selectedFlatExtDto.tenantId = undefined;
-    this.selectedFlatExtDto.flatCode = "";
-    this.selectedFlatExtDto.doorNumber = 0;
-    this.selectedFlatExtDto.createdAt = new Date();
-    this.selectedFlatExtDto.updatedAt = new Date();
-
-    // Extended With Section
-    this.selectedFlatExtDto.sectionName = "";
-
-    // Extended With Apartment
-    this.selectedFlatExtDto.apartmentName = "";
-
-    // Extended With HouseOwner
-    this.selectedFlatExtDto.houseOwnerNameSurname = "";
-
-    // Extended With Tenant
-    this.selectedFlatExtDto.tenantNameSurname = "";
-  }
-
   save(selectedFlatExtDto: FlatExtDto): void {
     if (selectedFlatExtDto.flatId == 0) {
       this.addExt();

@@ -163,25 +163,6 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.selectedApartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;
   }
 
-  resetModel() {
-    this.selectedApartmentExtDto.apartmentId = 0;
-    this.selectedApartmentExtDto.sectionId = 0;
-    this.selectedApartmentExtDto.businessId = 0;
-    this.selectedApartmentExtDto.branchId = 0;
-    this.selectedApartmentExtDto.managerId = 0;
-    this.selectedApartmentExtDto.apartmentName = "";
-    this.selectedApartmentExtDto.apartmentCode = "";
-    this.selectedApartmentExtDto.blockNumber = 0;
-    this.selectedApartmentExtDto.createdAt = new Date(),
-    this.selectedApartmentExtDto.updatedAt = new Date(),
-
-    // Extended With Section
-    this.selectedApartmentExtDto.sectionName = "";
-
-    // Extended With Manager
-    this.selectedApartmentExtDto.managerNameSurname = "";
-  }
-
   save(selectedApartmentExtDto: ApartmentExtDto): void {
     if (selectedApartmentExtDto.apartmentId == 0) {
       this.addExt();
