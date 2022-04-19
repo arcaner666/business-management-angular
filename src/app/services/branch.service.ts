@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { cloneDeep } from 'lodash';
 
 import { environment } from 'src/environments/environment';
 
@@ -17,10 +18,24 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 export class BranchService {
 
   private controllerUrl: string = "branches";
+  private _emptyBranchDto: BranchDto = {
+    branchId: 0,
+    businessId: 0,
+    fullAddressId: 0,
+    branchOrder: 0,
+    branchName: "",
+    branchCode: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   constructor(
     private http: HttpClient,
   ) {}
+
+  public get emptyBranchDto(): BranchDto {
+    return cloneDeep(this._emptyBranchDto);
+  }
 
   // API İstekleri
   generateBranchCode(businessId: number): Observable<SingleDataResult<BranchCodeDto>> {

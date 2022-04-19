@@ -11,50 +11,11 @@ import { ManagerDto } from 'src/app/models/dtos/manager-dto';
 import { SectionDto } from 'src/app/models/dtos/section-dto';
 
 import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
-import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { ManagerService } from 'src/app/services/manager.service';
 import { SectionService } from 'src/app/services/section.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
-
-const EMPTY_APARTMENT_EXT_DTO: ApartmentExtDto = {
-  apartmentId: 0,
-  sectionId: 0,
-  businessId: 0,
-  branchId: 0,
-  managerId: 0,
-  apartmentName: "",
-  apartmentCode: "",
-  blockNumber: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  
-  // Extended With Section
-  sectionName: "",
-
-  // Extended With Manager
-  managerNameSurname: "",
-};
-
-const EMPTY_APARTMENT_EXT_DTO_ERRORS: ApartmentExtDtoErrors = {
-  apartmentId: "",
-  sectionId: "",
-  businessId: "",
-  branchId: "",
-  managerId: "",
-  apartmentName: "",
-  apartmentCode: "",
-  blockNumber: "",
-  createdAt: "",
-  updatedAt: "",
-  
-  // Extended With Section
-  sectionName: "",
-
-  // Extended With Manager
-  managerNameSurname: "",
-};
 
 @Component({
   selector: 'app-apartment',
@@ -71,8 +32,8 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public managerDtos$!: Observable<ListDataResult<ManagerDto>>;
   public sectionDtos$!: Observable<ListDataResult<SectionDto>>;
-  public selectedApartmentExtDto: ApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
-  public selectedApartmentExtDtoErrors: ApartmentExtDtoErrors = cloneDeep(EMPTY_APARTMENT_EXT_DTO_ERRORS);
+  public selectedApartmentExtDto: ApartmentExtDto;
+  public selectedApartmentExtDtoErrors: ApartmentExtDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -82,7 +43,6 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   
   constructor(
     private apartmentExtService: ApartmentExtService,
-    private apartmentService: ApartmentService,
     private authorizationService: AuthorizationService,
     private managerService: ManagerService,
     private modalService: NgbModal,
@@ -91,6 +51,9 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
   ) { 
     console.log("ApartmentComponent constructor çalıştı.");
+
+    this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;
+    this.selectedApartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;
 
     this.getApartmentExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     this.getManagersByBusinessId(this.authorizationService.authorizationDto.businessId);
@@ -136,8 +99,6 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.selectedApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
-
     this.sub2 = this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -199,7 +160,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedApartmentExtDtoErrors = cloneDeep(EMPTY_APARTMENT_EXT_DTO_ERRORS);
+    this.selectedApartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;
   }
 
   resetModel() {
@@ -230,9 +191,13 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   select(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.setHeader(selectedApartmentExtDto.apartmentId);
+    this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;
+    
+    if (!selectedApartmentExtDto) {  
+      selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;    
+    } 
 
-    this.selectedApartmentExtDto = cloneDeep(EMPTY_APARTMENT_EXT_DTO);
+    this.setHeader(selectedApartmentExtDto.apartmentId);
 
     if (selectedApartmentExtDto.apartmentId != 0) {
       this.sub5 = this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({

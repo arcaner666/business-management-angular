@@ -4,32 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { FlatExtDto } from 'src/app/models/dtos/flat-ext-dto';
 
-const EMPTY_FLAT_EXT_DTO: FlatExtDto = {
-  flatId: 0,
-  sectionId: 0,
-  apartmentId: 0,
-  businessId: 0,
-  branchId: 0,
-  houseOwnerId: 0,
-  tenantId: 0,
-  flatCode: "",
-  doorNumber: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Section
-  sectionName: "",
-
-  // Extended With Apartment
-  apartmentName: "",
-
-  // Extended With HouseOwner
-  houseOwnerNameSurname: "",
-
-  // Extended With Tenant
-  tenantNameSurname: "",
-};
-
 @Component({
   selector: 'app-flat-list',
   templateUrl: './flat-list.component.html',
@@ -62,7 +36,7 @@ export class FlatListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_FLAT_EXT_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedFlatExtDto: FlatExtDto): void {

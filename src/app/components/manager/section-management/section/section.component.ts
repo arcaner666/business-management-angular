@@ -18,73 +18,8 @@ import { DistrictService } from 'src/app/services/district.service';
 import { ManagerService } from 'src/app/services/manager.service';
 import { SectionExtService } from 'src/app/services/section-ext.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
-import { SectionService } from 'src/app/services/section.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
-
-const EMPTY_SECTION_EXT_DTO: SectionExtDto = {
-  sectionId: 0,
-  sectionGroupId: 0,
-  businessId: 0,
-  branchId: 0,
-  managerId: 0,
-  fullAddressId: 0,
-  sectionName: "",
-  sectionCode: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With SectionGroup
-  sectionGroupName: "",
-
-  // Extended With Manager
-  managerNameSurname: "",
-
-  // Extended With FullAddress
-  cityId: 0,
-  districtId: 0,
-  addressTitle: "",
-  postalCode: 0,
-  addressText: "",
-
-  // Extended With FullAddress + City
-  cityName: "",
-
-  // Extended With FullAddress + District
-  districtName: "",
-};
-
-const EMPTY_SECTION_EXT_DTO_ERRORS: SectionExtDtoErrors = {
-  sectionId: "",
-  sectionGroupId: "",
-  businessId: "",
-  branchId: "",
-  managerId: "",
-  fullAddressId: "",
-  sectionName: "",
-  sectionCode: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With SectionGroup
-  sectionGroupName: "",
-
-  // Extended With Manager
-  managerNameSurname: "",
-
-  // Extended With FullAddress
-  cityId: "",
-  districtId: "",
-  addressTitle: "",
-  postalCode: "",
-  addressText: "",
-
-  // Extended With FullAddress + City
-  cityName: "",
-
-  // Extended With FullAddress + District
-  districtName: "",
-};
 
 @Component({
   selector: 'app-section',
@@ -103,8 +38,8 @@ export class SectionComponent implements OnInit, OnDestroy {
   public managerDtos$!: Observable<ListDataResult<ManagerDto>>;
   public sectionExtDtos$!: Observable<ListDataResult<SectionExtDto>>;
   public sectionGroupDtos$!: Observable<ListDataResult<SectionGroupDto>>;
-  public selectedSectionExtDto: SectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
-  public selectedSectionExtDtoErrors: SectionExtDtoErrors = cloneDeep(EMPTY_SECTION_EXT_DTO_ERRORS);
+  public selectedSectionExtDto: SectionExtDto;
+  public selectedSectionExtDtoErrors: SectionExtDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -119,12 +54,14 @@ export class SectionComponent implements OnInit, OnDestroy {
     private managerService: ManagerService,
     private modalService: NgbModal,
     private sectionGroupService: SectionGroupService,
-    private sectionService: SectionService,
     private sectionExtService: SectionExtService,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
     console.log("SectionComponent constructor çalıştı.");
+
+    this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;
+    this.selectedSectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;
 
     this.getAllCities();
     this.getManagersByBusinessId(this.authorizationService.authorizationDto.businessId);
@@ -171,8 +108,6 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedSectionExtDto: SectionExtDto): void {
-    this.selectedSectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
-
     this.sub2 = this.sectionExtService.getExtById(selectedSectionExtDto.sectionId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -242,7 +177,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedSectionExtDtoErrors = cloneDeep(EMPTY_SECTION_EXT_DTO_ERRORS);
+    this.selectedSectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;
   }
 
   resetModel() {
@@ -286,9 +221,13 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   select(selectedSectionExtDto: SectionExtDto): void {
-    this.setHeader(selectedSectionExtDto.sectionId);
+    this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;
+    
+    if (!selectedSectionExtDto) {  
+      selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;    
+    } 
 
-    this.selectedSectionExtDto = cloneDeep(EMPTY_SECTION_EXT_DTO);
+    this.setHeader(selectedSectionExtDto.sectionId);
 
     if (selectedSectionExtDto.sectionId != 0) {
       this.sub5 = this.sectionExtService.getExtById(selectedSectionExtDto.sectionId).subscribe({

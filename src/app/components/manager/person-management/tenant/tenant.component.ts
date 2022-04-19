@@ -18,60 +18,6 @@ import { TenantExtService } from 'src/app/services/tenant-ext.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
-const EMPTY_TENANT_EXT_DTO: TenantExtDto = {
-  tenantId: 0,
-  businessId: 0,
-  branchId: 0,
-  accountId: 0,
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: undefined,
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Account
-  accountGroupId: 0,
-  accountOrder: 0,
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: 0,
-  identityNumber: 0,
-  limit: 0,
-  standartMaturity: 0,
-};
-
-const EMPTY_TENANT_EXT_DTO_ERRORS: TenantExtDtoErrors = {
-  tenantId: "",
-  businessId: "",
-  branchId: "",
-  accountId: "",
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: "",
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With Account
-  accountGroupId: "",
-  accountOrder: "",
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: "",
-  identityNumber: "",
-  limit: "",
-  standartMaturity: "",
-};
-
 @Component({
   selector: 'app-tenant',
   templateUrl: './tenant.component.html',
@@ -86,8 +32,8 @@ export class TenantComponent implements OnInit, OnDestroy {
   public cardHeader: string = "";
   public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public loading: boolean = false;
-  public selectedTenantExtDto: TenantExtDto = cloneDeep(EMPTY_TENANT_EXT_DTO);
-  public selectedTenantExtDtoErrors: TenantExtDtoErrors = cloneDeep(EMPTY_TENANT_EXT_DTO_ERRORS);
+  public selectedTenantExtDto: TenantExtDto;
+  public selectedTenantExtDtoErrors: TenantExtDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -109,6 +55,9 @@ export class TenantComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
   ) { 
     console.log("TenantComponent constructor çalıştı.");
+
+    this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;
+    this.selectedTenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;
 
     this.getAllAccountGroups();
 
@@ -156,8 +105,6 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedTenantExtDto: TenantExtDto): void {
-    this.selectedTenantExtDto = cloneDeep(EMPTY_TENANT_EXT_DTO);
-
     this.sub2 = this.tenantExtService.getExtById(selectedTenantExtDto.tenantId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -174,8 +121,7 @@ export class TenantComponent implements OnInit, OnDestroy {
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
-
-                  return this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -251,7 +197,7 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedTenantExtDtoErrors = cloneDeep(EMPTY_TENANT_EXT_DTO_ERRORS);
+    this.selectedTenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;
   }
 
   resetModel() {
@@ -291,9 +237,13 @@ export class TenantComponent implements OnInit, OnDestroy {
 
 
   select(selectedTenantExtDto: TenantExtDto): void {
-    this.setHeader(selectedTenantExtDto.tenantId);
+    this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;
+    
+    if (!selectedTenantExtDto) {  
+      selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;    
+    } 
 
-    this.selectedTenantExtDto = cloneDeep(EMPTY_TENANT_EXT_DTO);
+    this.setHeader(selectedTenantExtDto.tenantId);
 
     if (selectedTenantExtDto.tenantId != 0) {
       this.sub7 = this.tenantExtService.getExtById(selectedTenantExtDto.tenantId).subscribe({

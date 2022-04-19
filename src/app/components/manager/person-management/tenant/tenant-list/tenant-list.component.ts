@@ -4,33 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { TenantExtDto } from 'src/app/models/dtos/tenant-ext-dto';
 
-const EMPTY_TENANT_EXT_DTO: TenantExtDto = {
-  tenantId: 0,
-  businessId: 0,
-  branchId: 0,
-  accountId: 0,
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: undefined,
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Account
-  accountGroupId: 0,
-  accountOrder: 0,
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: 0,
-  identityNumber: 0,
-  limit: 0,
-  standartMaturity: 0,
-};
-
 @Component({
   selector: 'app-tenant-list',
   templateUrl: './tenant-list.component.html',
@@ -63,7 +36,7 @@ export class TenantListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_TENANT_EXT_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedTenantExtDto: TenantExtDto): void {

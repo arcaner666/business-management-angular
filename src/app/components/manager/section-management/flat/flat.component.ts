@@ -21,58 +21,6 @@ import { TenantService } from 'src/app/services/tenant.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
-const EMPTY_FLAT_EXT_DTO: FlatExtDto = {
-  flatId: 0,
-  sectionId: 0,
-  apartmentId: 0,
-  businessId: 0,
-  branchId: 0,
-  houseOwnerId: undefined,
-  tenantId: undefined,
-  flatCode: "",
-  doorNumber: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Section
-  sectionName: "",
-
-  // Extended With Apartment
-  apartmentName: "",
-
-  // Extended With HouseOwner
-  houseOwnerNameSurname: "",
-
-  // Extended With Tenant
-  tenantNameSurname: "",
-};
-
-const EMPTY_FLAT_EXT_DTO_ERRORS: FlatExtDtoErrors = {
-  flatId: "",
-  sectionId: "",
-  apartmentId: "",
-  businessId: "",
-  branchId: "",
-  houseOwnerId: "",
-  tenantId: "",
-  flatCode: "",
-  doorNumber: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With Section
-  sectionName: "",
-
-  // Extended With Apartment
-  apartmentName: "",
-
-  // Extended With HouseOwner
-  houseOwnerNameSurname: "",
-
-  // Extended With Tenant
-  tenantNameSurname: "",
-};
-
 @Component({
   selector: 'app-flat',
   templateUrl: './flat.component.html',
@@ -89,8 +37,8 @@ export class FlatComponent implements OnInit, OnDestroy {
   public flatExtDtos$!: Observable<ListDataResult<FlatExtDto>>;
   public loading: boolean = false;
   public sectionDtos$!: Observable<ListDataResult<SectionDto>>;
-  public selectedFlatExtDto: FlatExtDto = cloneDeep(EMPTY_FLAT_EXT_DTO);
-  public selectedFlatExtDtoErrors: FlatExtDtoErrors = cloneDeep(EMPTY_FLAT_EXT_DTO_ERRORS);
+  public selectedFlatExtDto: FlatExtDto;
+  public selectedFlatExtDtoErrors: FlatExtDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -111,6 +59,9 @@ export class FlatComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
   ) { 
     console.log("FlatComponent constructor çalıştı.");
+
+    this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;
+    this.selectedFlatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;
 
     this.getFlatExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     this.getHouseOwnersByBusinessId(this.authorizationService.authorizationDto.businessId);
@@ -157,8 +108,6 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedFlatExtDto: FlatExtDto): void {
-    this.selectedFlatExtDto = cloneDeep(EMPTY_FLAT_EXT_DTO);
-
     this.sub2 = this.flatExtService.getExtById(selectedFlatExtDto.flatId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -228,7 +177,7 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedFlatExtDtoErrors = cloneDeep(EMPTY_FLAT_EXT_DTO_ERRORS);
+    this.selectedFlatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;
   }
 
   resetModel() {
@@ -266,9 +215,13 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   select(selectedFlatExtDto: FlatExtDto): void {
-    this.setHeader(selectedFlatExtDto.flatId);
+    this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;
+    
+    if (!selectedFlatExtDto) {  
+      selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;    
+    } 
 
-    this.selectedFlatExtDto = cloneDeep(EMPTY_FLAT_EXT_DTO);
+    this.setHeader(selectedFlatExtDto.flatId);
 
     if (selectedFlatExtDto.flatId != 0) {
       this.sub5 = this.flatExtService.getExtById(selectedFlatExtDto.flatId).subscribe({

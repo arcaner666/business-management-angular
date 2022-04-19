@@ -4,33 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 
-const EMPTY_HOUSE_OWNER_EXT_DTO: HouseOwnerExtDto = {
-  houseOwnerId: 0,
-  businessId: 0,
-  branchId: 0,
-  accountId: 0,
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: undefined,
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Account
-  accountGroupId: 0,
-  accountOrder: 0,
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: 0,
-  identityNumber: 0,
-  limit: 0,
-  standartMaturity: 0,
-};
-
 @Component({
   selector: 'app-house-owner-list',
   templateUrl: './house-owner-list.component.html',
@@ -63,7 +36,7 @@ export class HouseOwnerListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {

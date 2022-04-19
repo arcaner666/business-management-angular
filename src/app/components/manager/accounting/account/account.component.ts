@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
@@ -11,105 +10,16 @@ import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dt
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { AccountType } from 'src/app/models/various/account-type';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
+import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
+import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
-
-const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
-  accountId: 0,
-  businessId: 0,
-  branchId: 0,
-  accountGroupId: 0,
-  currencyId: 0,
-  accountOrder: 0,
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: undefined,
-  identityNumber: undefined,
-  debitBalance: 0,
-  creditBalance: 0,
-  balance: 0,
-  limit: 0,
-  standartMaturity: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Branch
-  branchName: "",
-
-  // Extended With AccountGroup
-  accountGroupName: "",
-  accountGroupCode: "",
-
-  // Extended With Currency
-  currencyName: "",
-
-  // Added Custom Fields
-  accountTypeName: "",
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: new Date(),
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-};
-
-const EMPTY_ACCOUNT_EXT_DTO_ERRORS: AccountExtDtoErrors = {
-  accountId: "",
-  businessId: "",
-  branchId: "",
-  accountGroupId: "",
-  currencyId: "",
-  accountOrder: "",
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: "",
-  identityNumber: "",
-  debitBalance: "",
-  creditBalance: "",
-  balance: "",
-  limit: "",
-  standartMaturity: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With Branch
-  branchName: "",
-
-  // Extended With AccountGroup
-  accountGroupName: "",
-  accountGroupCode: "",
-
-  // Extended With Currency
-  currencyName: "",
-
-  // Added Custom Fields
-  accountTypeName: "",
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: "",
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-};
-
-const EMPTY_ACCOUNT_GET_BY_ACCOUNT_GROUP_CODES_DTO: AccountGetByAccountGroupCodesDto = {
-  businessId: 0,
-  accountGroupCodes: [],
-};
-
-const EMPTY_ACCOUNT_GROUP_CODES_DTO: AccountGroupCodesDto = {
-  accountGroupCodes: [],
-};
 
 @Component({
   selector: 'app-account',
@@ -122,8 +32,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   
   public accountExtDtos$!: Observable<ListDataResult<AccountExtDto>>;
   public accountGroupDtos: AccountGroupDto[] = [];
-  public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto = cloneDeep(EMPTY_ACCOUNT_GET_BY_ACCOUNT_GROUP_CODES_DTO);
-  public accountGroupCodesDto: AccountGroupCodesDto = cloneDeep(EMPTY_ACCOUNT_GROUP_CODES_DTO);
+  public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto;
+  public accountGroupCodesDto: AccountGroupCodesDto;
   public activePage: string = "list";
   public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public cardHeader: string = "";
@@ -134,8 +44,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     { accountTypeName: "Ev Sahibi" },
     { accountTypeName: "Kiracı" },
   ];
-  public selectedAccountExtDto: AccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
-  public selectedAccountExtDtoErrors: AccountExtDtoErrors = cloneDeep(EMPTY_ACCOUNT_EXT_DTO_ERRORS);
+  public selectedAccountExtDto: AccountExtDto;
+  public selectedAccountExtDtoErrors: AccountExtDtoErrors;
+  public selectedHouseOwnerExtDto: HouseOwnerExtDto;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -150,11 +61,18 @@ export class AccountComponent implements OnInit, OnDestroy {
     private accountGroupService: AccountGroupService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
+    private houseOwnerExtService: HouseOwnerExtService,
     private modalService: NgbModal,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
     console.log("AccountComponent constructor çalıştı.");
+
+    this.accountGetByAccountGroupCodesDto = this.accountExtService.emptyAccountGetByAccountGroupCodesDto;
+    this.accountGroupCodesDto = this.accountExtService.emptyAccountGroupCodesDto;
+    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+    this.selectedAccountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;
+    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
 
     this.getAllAccountGroups();
 
@@ -207,8 +125,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedAccountExtDto: AccountExtDto): void {
-    this.selectedAccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
-
     this.sub2 = this.accountExtService.getExtById(selectedAccountExtDto.accountId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -228,7 +144,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
                   this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
                   this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-                  return this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+                  this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
                 })
               ).subscribe({
                 error: (error) => {
@@ -308,7 +224,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedAccountExtDtoErrors = cloneDeep(EMPTY_ACCOUNT_EXT_DTO_ERRORS);
+    this.selectedAccountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;
   }
 
   resetModel() {
@@ -316,7 +232,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDto.businessId = 0;
     this.selectedAccountExtDto.branchId = 0;
     this.selectedAccountExtDto.accountGroupId = 0;
-    this.selectedAccountExtDto.currencyId = 0;
+    this.selectedAccountExtDto.accountTypeId = 0;
     this.selectedAccountExtDto.accountOrder = 0;
     this.selectedAccountExtDto.accountName = "";
     this.selectedAccountExtDto.accountCode = "";
@@ -330,7 +246,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDto.standartMaturity = 0;
     this.selectedAccountExtDto.createdAt = new Date();
     this.selectedAccountExtDto.updatedAt = new Date();
-      
+
     // Extended With Branch
     this.selectedAccountExtDto.branchName = "";
 
@@ -338,18 +254,12 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDto.accountGroupName = "";
     this.selectedAccountExtDto.accountGroupCode = "";
 
-    // Extended With Currency
-    this.selectedAccountExtDto.currencyName = "";
-
-    // Added Custom Fields
+    // Extended With AccountType
     this.selectedAccountExtDto.accountTypeName = "";
+
+    // Added Custom Required Fields
     this.selectedAccountExtDto.nameSurname = "";
-    this.selectedAccountExtDto.email = "";
     this.selectedAccountExtDto.phone = "";
-    this.selectedAccountExtDto.dateOfBirth = new Date();
-    this.selectedAccountExtDto.gender = "";
-    this.selectedAccountExtDto.notes = "";
-    this.selectedAccountExtDto.avatarUrl = "";
   }
 
   save(selectedAccountExtDto: AccountExtDto): void {
@@ -361,9 +271,13 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   select(selectedAccountExtDto: AccountExtDto): void {
-    this.setHeader(selectedAccountExtDto.accountId);
+    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
 
-    this.selectedAccountExtDto = cloneDeep(EMPTY_ACCOUNT_EXT_DTO);
+    if (!selectedAccountExtDto) {
+      selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+    }
+
+    this.setHeader(selectedAccountExtDto.accountId);
 
     if (selectedAccountExtDto.accountId != 0) {
       this.sub7 = this.accountExtService.getExtById(selectedAccountExtDto.accountId).subscribe({

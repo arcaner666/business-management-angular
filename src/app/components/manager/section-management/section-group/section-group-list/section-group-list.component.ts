@@ -4,15 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { SectionGroupDto } from 'src/app/models/dtos/section-group-dto';
 
-const EMPTY_SECTION_GROUP_DTO: SectionGroupDto = {
-  sectionGroupId: 0,
-  businessId: 0,
-  branchId: 0,
-  sectionGroupName: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
 @Component({
   selector: 'app-section-group-list',
   templateUrl: './section-group-list.component.html',
@@ -45,7 +36,7 @@ export class SectionGroupListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_SECTION_GROUP_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedSectionGroupDto: SectionGroupDto): void {

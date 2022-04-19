@@ -2,7 +2,7 @@
     <div class="card shadow-lg">
         <!-- Sayfa Başına Kayıt Menüsü -->
         <div class="row g-0 p-3">
-            <ng-container *ngIf="branchDtos.length > 10">
+            <ng-container *ngIf="branchExtDtos.length > 10">
                 <div class="col-6 d-flex">
                     <label class="form-label">
                         <select class="form-select" [(ngModel)]="itemsPerPage">
@@ -40,11 +40,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let branchDto of branchDtos | slice: pageSize | slice: 0 : itemsPerPage; let i = index">
+                            <tr *ngFor="let branchExtDto of branchExtDtos | slice: pageSize | slice: 0 : itemsPerPage; let i = index">
                                 <td>{{ elementIndex + i + 1 }}</td>
-                                <td>{{ branchDto.branchCode }}</td>
-                                <td>{{ branchDto.branchName }}</td>
-                                <td>{{ branchDto.createdAt | date: "dd/MM/yyyy HH:mm:ss" }}</td>
+                                <td>{{ branchExtDto.branchCode }}</td>
+                                <td>{{ branchExtDto.branchName }}</td>
+                                <td>{{ branchExtDto.createdAt | date: "dd/MM/yyyy HH:mm:ss" }}</td>
                                 <td class="overflow-hidden">
                                     <div ngbDropdown container="body">
                                         <button type="button" class="btn btn-sm hide-arrow" ngbDropdownToggle data-toggle="dropdown">
@@ -53,13 +53,13 @@
                                             </div>
                                         </button>
                                         <div ngbDropdownMenu>
-                                            <a ngbDropdownItem class="cursor-pointer" (click)="openEditPage(branchDto)">
+                                            <a ngbDropdownItem class="cursor-pointer" (click)="openEditPage(branchExtDto)">
                                                 <div class="icon me-2">
                                                     <i class="fas fa-edit fa-lg"></i>
                                                 </div>
                                                 <span>Düzenle</span>
                                             </a>
-                                            <a ngbDropdownItem class="cursor-pointer" (click)="openDeleteModal(branchDto)">
+                                            <a ngbDropdownItem class="cursor-pointer" (click)="openDeleteModal(branchExtDto)">
                                                 <div class="icon me-2">
                                                     <i class="fas fa-trash fa-lg"></i>
                                                 </div>
@@ -77,10 +77,10 @@
         <!-- /Şube Tablosu -->
 
         <!-- Sayfalama Menüsü -->
-        <ng-container *ngIf="branchDtos.length > 10">
+        <ng-container *ngIf="branchExtDtos.length > 10">
             <div class="row g-0 ps-3 pe-3 pt-0 pb-0">
                 <div class="col-12 d-flex">
-                    <ngb-pagination class="ms-auto" [collectionSize]="branchDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
+                    <ngb-pagination class="ms-auto" [collectionSize]="branchExtDtos.length" [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
                         <ng-template ngbPaginationPrevious>
                             <i class="fas fa-angle-left fa-lg"></i>
                         </ng-template>

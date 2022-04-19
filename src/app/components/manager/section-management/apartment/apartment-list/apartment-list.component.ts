@@ -4,25 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
 
-const EMPTY_APARTMENT_EXT_DTO: ApartmentExtDto = {
-  apartmentId: 0,
-  sectionId: 0,
-  businessId: 0,
-  branchId: 0,
-  managerId: 0,
-  apartmentName: "",
-  apartmentCode: "",
-  blockNumber: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  
-  // Extended With Section
-  sectionName: "",
-
-  // Extended With Manager
-  managerNameSurname: "",
-};
-
 @Component({
   selector: 'app-apartment-list',
   templateUrl: './apartment-list.component.html',
@@ -55,7 +36,7 @@ export class ApartmentListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_APARTMENT_EXT_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedApartmentExtDto: ApartmentExtDto): void {

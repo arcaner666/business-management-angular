@@ -8,7 +8,7 @@
 
 <ng-template #branchList>
     <app-branch-list
-        [branchDtos]="(branchDtos$ | async)?.data || []"
+        [branchExtDtos]="(branchExtDtos$ | async)?.data || []"
         (deleted)="delete($event)"
         (selected)="select($event)"
     ></app-branch-list>

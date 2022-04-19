@@ -2,18 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { cloneDeep } from 'lodash';
 
-import { BranchDto } from 'src/app/models/dtos/branch-dto';
-
-const EMPTY_BRANCH_DTO: BranchDto = {
-  branchId: 0,
-  businessId: 0,
-  fullAddressId: 0,
-  branchOrder: 0,
-  branchName: "",
-  branchCode: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 
 @Component({
   selector: 'app-branch-list',
@@ -22,10 +11,10 @@ const EMPTY_BRANCH_DTO: BranchDto = {
 })
 export class BranchListComponent {
 
-  @Input() branchDtos: BranchDto[] = [];
+  @Input() branchExtDtos: BranchExtDto[] = [];
 
-  @Output() deleted = new EventEmitter<BranchDto>();
-  @Output() selected = new EventEmitter<BranchDto>();
+  @Output() deleted = new EventEmitter<BranchExtDto>();
+  @Output() selected = new EventEmitter<BranchExtDto>();
 
   public currentPage: number = 1;
   public elementIndex: number = 0;
@@ -47,14 +36,14 @@ export class BranchListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_BRANCH_DTO));
+    this.selected.emit();
   }
   
-  openDeleteModal(selectedBranchDto: BranchDto): void {
-    this.deleted.emit(cloneDeep(selectedBranchDto));
+  openDeleteModal(selectedBranchExtDto: BranchExtDto): void {
+    this.deleted.emit(cloneDeep(selectedBranchExtDto));
   }
 
-  openEditPage(selectedBranchDto: BranchDto): void {
-    this.selected.emit(cloneDeep(selectedBranchDto));
+  openEditPage(selectedBranchExtDto: BranchExtDto): void {
+    this.selected.emit(cloneDeep(selectedBranchExtDto));
   }
 }

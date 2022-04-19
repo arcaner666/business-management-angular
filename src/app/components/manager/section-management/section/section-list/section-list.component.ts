@@ -4,38 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { SectionExtDto } from 'src/app/models/dtos/section-ext-dto';
 
-const EMPTY_SECTION_EXT_DTO: SectionExtDto = {
-  sectionId: 0,
-  sectionGroupId: 0,
-  businessId: 0,
-  branchId: 0,
-  managerId: 0,
-  fullAddressId: 0,
-  sectionName: "",
-  sectionCode: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With SectionGroup
-  sectionGroupName: "",
-
-  // Extended With Manager
-  managerNameSurname: "",
-
-  // Extended With FullAddress
-  cityId: 0,
-  districtId: 0,
-  addressTitle: "",
-  postalCode: 0,
-  addressText: "",
-
-  // Extended With FullAddress + City
-  cityName: "",
-
-  // Extended With FullAddress + District
-  districtName: "",
-};
-
 @Component({
   selector: 'app-section-list',
   templateUrl: './section-list.component.html',
@@ -68,7 +36,7 @@ export class SectionListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_SECTION_EXT_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedSectionExtDto: SectionExtDto): void {

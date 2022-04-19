@@ -16,7 +16,7 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 export class ApartmentService {
 
   private controllerUrl: string = "apartments";
-  
+
   constructor(
     private http: HttpClient, 
   ) {}

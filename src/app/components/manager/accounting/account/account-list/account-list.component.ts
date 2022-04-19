@@ -4,47 +4,6 @@ import { cloneDeep } from 'lodash';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
 
-const EMPTY_ACCOUNT_EXT_DTO: AccountExtDto = {
-  accountId: 0,
-  businessId: 0,
-  branchId: 0,
-  accountGroupId: 0,
-  currencyId: 0,
-  accountOrder: 0,
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: undefined,
-  identityNumber: undefined,
-  debitBalance: 0,
-  creditBalance: 0,
-  balance: 0,
-  limit: 0,
-  standartMaturity: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Branch
-  branchName: "",
-
-  // Extended With AccountGroup
-  accountGroupName: "",
-  accountGroupCode: "",
-
-  // Extended With Currency
-  currencyName: "",
-
-  // Added Custom Fields
-  accountTypeName: "",
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: new Date(),
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-};
-
 @Component({
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
@@ -62,7 +21,9 @@ export class AccountListComponent {
   public itemsPerPage: number = 10;
   public pageSize: number = 0;
 
-  constructor() {
+  constructor(
+    
+  ) {
     console.log("AccountListComponent constructor çalıştı.");
   }
 
@@ -77,7 +38,7 @@ export class AccountListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit(cloneDeep(EMPTY_ACCOUNT_EXT_DTO));
+    this.selected.emit();
   }
   
   openDeleteModal(selectedAccountExtDto: AccountExtDto): void {

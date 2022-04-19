@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ListDataResult } from 'src/app/models/results/list-data-result';
@@ -12,24 +11,6 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
-
-const EMPTY_SECTION_GROUP_DTO: SectionGroupDto = {
-  sectionGroupId: 0,
-  businessId: 0,
-  branchId: 0,
-  sectionGroupName: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const EMPTY_SECTION_GROUP_DTO_ERRORS: SectionGroupDtoErrors = {
-  sectionGroupId: "",
-  businessId: "",
-  branchId: "",
-  sectionGroupName: "",
-  createdAt: "",
-  updatedAt: "",
-};
 
 @Component({
   selector: 'app-section-group',
@@ -44,8 +25,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   public cardHeader: string = "";
   public loading: boolean = false;
   public sectionGroupDtos$!: Observable<ListDataResult<SectionGroupDto>>;
-  public selectedSectionGroupDto: SectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
-  public selectedSectionGroupDtoErrors: SectionGroupDtoErrors = cloneDeep(EMPTY_SECTION_GROUP_DTO_ERRORS);
+  public selectedSectionGroupDto: SectionGroupDto;
+  public selectedSectionGroupDtoErrors: SectionGroupDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -61,6 +42,9 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
   ) { 
     console.log("SectionGroupComponent constructor çalıştı.");
+
+    this.selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;
+    this.selectedSectionGroupDtoErrors = this.sectionGroupService.emptySectionGroupDtoErrors;
 
     this.getSectionGroupsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
@@ -104,8 +88,6 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedSectionGroupDto: SectionGroupDto): void {
-    this.selectedSectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
-
     this.sub2 = this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -159,7 +141,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedSectionGroupDtoErrors = cloneDeep(EMPTY_SECTION_GROUP_DTO_ERRORS);
+    this.selectedSectionGroupDtoErrors = this.sectionGroupService.emptySectionGroupDtoErrors;
   }
 
   resetModel() {
@@ -180,9 +162,13 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   select(selectedSectionGroupDto: SectionGroupDto): void {
-    this.setHeader(selectedSectionGroupDto.sectionGroupId);
+    this.selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;
+    
+    if (!selectedSectionGroupDto) {  
+      selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;    
+    } 
 
-    this.selectedSectionGroupDto = cloneDeep(EMPTY_SECTION_GROUP_DTO);
+    this.setHeader(selectedSectionGroupDto.sectionGroupId);
 
     if (selectedSectionGroupDto.sectionGroupId != 0) {
       this.sub5 = this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId).subscribe({

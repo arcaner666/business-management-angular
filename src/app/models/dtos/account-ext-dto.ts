@@ -3,7 +3,7 @@ export interface AccountExtDto {
     businessId: number;
     branchId: number;
     accountGroupId: number;
-    currencyId: number;
+    accountTypeId: number;
     accountOrder: number;
     accountName: string;
     accountCode: string;
@@ -25,16 +25,10 @@ export interface AccountExtDto {
     accountGroupName: string;
     accountGroupCode: string;
 
-    // Extended With Currency
-    currencyName: string;
-
-    // Added Custom Fields
+    // Extended With AccountType
     accountTypeName: string;
+
+    // Added Custom Required Fields
     nameSurname: string;
-    email: string;
     phone: string;
-    dateOfBirth: Date;
-    gender: string;
-    notes: string;
-    avatarUrl: string;
 }

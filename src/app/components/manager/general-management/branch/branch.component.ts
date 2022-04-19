@@ -1,10 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { BranchExtDtoErrors } from 'src/app/models/validation-errors/branch-ext-dto-errors';
 import { CityDto } from 'src/app/models/dtos/city-dto';
@@ -19,42 +17,6 @@ import { DistrictService } from 'src/app/services/district.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
-const EMPTY_BRANCH_EXT_DTO: BranchExtDto = {
-  branchId: 0,
-  businessId: 0,
-  fullAddressId: 0,
-  branchOrder: 0,
-  branchName: "",
-  branchCode: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With FullAddress
-  cityId: 0,
-  districtId: 0,
-  addressTitle: "",
-  postalCode: 0,
-  addressText: "",
-};
-
-const EMPTY_BRANCH_EXT_DTO_ERRORS: BranchExtDtoErrors = {
-  branchId: "",
-  businessId: "",
-  fullAddressId: "",
-  branchOrder: "",
-  branchName: "",
-  branchCode: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With FullAddress
-  cityId: "",
-  districtId: "",
-  addressTitle: "",
-  postalCode: "",
-  addressText: "",
-};
-
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -65,13 +27,13 @@ export class BranchComponent implements OnInit, OnDestroy {
   @ViewChild('deleteModal') deleteModal!: ElementRef;
   
   public activePage: string = "list";
-  public branchDtos$!: Observable<ListDataResult<BranchDto>>;
+  public branchExtDtos$!: Observable<ListDataResult<BranchExtDto>>;
   public cardHeader: string = "";
   public cityDtos$!: Observable<ListDataResult<CityDto>>;
   public districtDtos$!: Observable<ListDataResult<DistrictDto>>;
   public loading: boolean = false;
-  public selectedBranchExtDto: BranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
-  public selectedBranchExtDtoErrors: BranchExtDtoErrors = cloneDeep(EMPTY_BRANCH_EXT_DTO_ERRORS);
+  public selectedBranchExtDto: BranchExtDto;
+  public selectedBranchExtDtoErrors: BranchExtDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -92,11 +54,14 @@ export class BranchComponent implements OnInit, OnDestroy {
   ) { 
     console.log("BranchComponent constructor çalıştı.");
 
+    this.selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;
+    this.selectedBranchExtDtoErrors = this.branchExtService.emptyBranchExtDtoErrors;
+
     this.getAllCities();
-    this.getBranchesByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.getBranchExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  add(): void {
+  addExt(): void {
     // Sunucuya gönderilecek modelin businessId kısmını günceller.
     this.selectedBranchExtDto.businessId = this.authorizationService.authorizationDto.businessId;
 
@@ -113,7 +78,7 @@ export class BranchComponent implements OnInit, OnDestroy {
             window.scroll(0,0);
           }
           this.loading = false;
-          return this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
         error: (error) => {
@@ -133,10 +98,8 @@ export class BranchComponent implements OnInit, OnDestroy {
     window.scroll(0,0);
   }
 
-  delete(selectedBranchDto: BranchDto): void {
-    this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
-
-    this.sub2 = this.branchExtService.getExtById(selectedBranchDto.branchId).subscribe({
+  delete(selectedBranchExtDto: BranchExtDto): void {
+    this.sub2 = this.branchExtService.getExtById(selectedBranchExtDto.branchId).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedBranchExtDto = response.data;
@@ -149,11 +112,11 @@ export class BranchComponent implements OnInit, OnDestroy {
           }).result.then((response) => {
             // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
             if (response == "ok") {
-              this.sub3 = this.branchExtService.deleteExt(selectedBranchDto.branchId).pipe(
+              this.sub3 = this.branchExtService.deleteExt(selectedBranchExtDto.branchId).pipe(
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
-                  this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -164,14 +127,10 @@ export class BranchComponent implements OnInit, OnDestroy {
             }
           }).catch(() => {});
         }
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }, error: (error) => {
         console.log(error);
         this.toastService.danger(error.message);
-
-        // Sunucudan yapılan isteğe cevap geldiğini child component'e bildirir.
         this.loading = false;
       }
     });
@@ -194,8 +153,8 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.cityDtos$ = this.cityService.getAll();
   }
 
-  getBranchesByBusinessId(businessId: number): void {
-    this.branchDtos$ = this.branchService.getByBusinessId(businessId);
+  getBranchExtsByBusinessId(businessId: number): void {
+    this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(businessId);
   }
 
   getBranchExtById(id: number): void {
@@ -216,7 +175,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedBranchExtDtoErrors = cloneDeep(EMPTY_BRANCH_EXT_DTO_ERRORS);
+    this.selectedBranchExtDtoErrors = this.branchExtService.emptyBranchExtDtoErrors;
   }
 
   resetModel() {
@@ -239,19 +198,23 @@ export class BranchComponent implements OnInit, OnDestroy {
 
   save(selectedBranchExtDto: BranchExtDto): void {
     if (selectedBranchExtDto.branchId == 0) {
-      this.add();
+      this.addExt();
     } else {
-      this.update();
+      this.updateExt();
     }
   }
 
-  select(selectedBranchDto: BranchDto): void {
-    this.setHeader(selectedBranchDto.branchId);
+  select(selectedBranchExtDto: BranchExtDto): void {
+    this.selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;
 
-    this.selectedBranchExtDto = cloneDeep(EMPTY_BRANCH_EXT_DTO);
+    if (!selectedBranchExtDto) {  
+      selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;    
+    }
 
-    if (selectedBranchDto.branchId != 0) {
-      this.sub6 = this.branchExtService.getExtById(selectedBranchDto.branchId).subscribe({
+    this.setHeader(selectedBranchExtDto.branchId);
+
+    if (selectedBranchExtDto.branchId != 0) {
+      this.sub6 = this.branchExtService.getExtById(selectedBranchExtDto.branchId).subscribe({
         next: (response) => {
           if(response.success) {
             this.selectedBranchExtDto = response.data;
@@ -279,7 +242,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     branchId == 0 ? this.cardHeader = "Şube Ekle" : this.cardHeader = "Şubeyi Düzenle";
   }
 
-  update(): void {
+  updateExt(): void {
     let isModelValid = this.validateForUpdate();
 
     if (isModelValid) {

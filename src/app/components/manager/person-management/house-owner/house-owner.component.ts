@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Subscription, Observable, concatMap, tap } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
@@ -18,60 +17,6 @@ import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
-const EMPTY_HOUSE_OWNER_EXT_DTO: HouseOwnerExtDto = {
-  houseOwnerId: 0,
-  businessId: 0,
-  branchId: 0,
-  accountId: 0,
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: undefined,
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended With Account
-  accountGroupId: 0,
-  accountOrder: 0,
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: 0,
-  identityNumber: 0,
-  limit: 0,
-  standartMaturity: 0,
-};
-
-const EMPTY_HOUSE_OWNER_EXT_DTO_ERRORS: HouseOwnerExtDtoErrors = {
-  houseOwnerId: "",
-  businessId: "",
-  branchId: "",
-  accountId: "",
-  nameSurname: "",
-  email: "",
-  phone: "",
-  dateOfBirth: "",
-  gender: "",
-  notes: "",
-  avatarUrl: "",
-  createdAt: "",
-  updatedAt: "",
-
-  // Extended With Account
-  accountGroupId: "",
-  accountOrder: "",
-  accountName: "",
-  accountCode: "",
-  taxOffice: "",
-  taxNumber: "",
-  identityNumber: "",
-  limit: "",
-  standartMaturity: "",
-};
-
 @Component({
   selector: 'app-house-owner',
   templateUrl: './house-owner.component.html',
@@ -87,8 +32,8 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public houseOwnerExtDtos$!: Observable<ListDataResult<HouseOwnerExtDto>>;
   public loading: boolean = false;
-  public selectedHouseOwnerExtDto: HouseOwnerExtDto = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO);
-  public selectedHouseOwnerExtDtoErrors: HouseOwnerExtDtoErrors = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO_ERRORS);
+  public selectedHouseOwnerExtDto: HouseOwnerExtDto;
+  public selectedHouseOwnerExtDtoErrors: HouseOwnerExtDtoErrors;
   public sub1: Subscription = new Subscription();
   public sub2: Subscription = new Subscription();
   public sub3: Subscription = new Subscription();
@@ -110,10 +55,11 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   ) { 
     console.log("HouseOwnerComponent constructor çalıştı.");
 
+    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
+    this.selectedHouseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;
+
     this.getAllAccountGroups();
-
     this.getBranchsByBusinessId(this.authorizationService.authorizationDto.businessId);
-
     this.getHouseOwnerExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
@@ -134,7 +80,6 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
             window.scroll(0,0);
           }
           this.loading = false;
-  
           return this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
@@ -156,8 +101,6 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    this.selectedHouseOwnerExtDto = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO);
-
     this.sub2 = this.houseOwnerExtService.getExtById(selectedHouseOwnerExtDto.houseOwnerId).subscribe({
       next: (response) => {
         if(response.success) {
@@ -174,8 +117,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
                 tap((response) => {
                   console.log(response);
                   this.toastService.success(response.message);
-
-                  return this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+                  this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
                 })
               ).subscribe({
                 error: (error) => {
@@ -251,7 +193,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   resetErrors() {
-    this.selectedHouseOwnerExtDtoErrors = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO_ERRORS);
+    this.selectedHouseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;
   }
 
   resetModel() {
@@ -289,11 +231,14 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     }
   }
 
-
   select(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    this.setHeader(selectedHouseOwnerExtDto.houseOwnerId);
+    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
+    
+    if (!selectedHouseOwnerExtDto) {  
+      selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;    
+    } 
 
-    this.selectedHouseOwnerExtDto = cloneDeep(EMPTY_HOUSE_OWNER_EXT_DTO);
+    this.setHeader(selectedHouseOwnerExtDto.houseOwnerId);
 
     if (selectedHouseOwnerExtDto.houseOwnerId != 0) {
       this.sub7 = this.houseOwnerExtService.getExtById(selectedHouseOwnerExtDto.houseOwnerId).subscribe({

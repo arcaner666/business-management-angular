@@ -3,7 +3,7 @@ export interface AccountExtDtoErrors {
     businessId: string;
     branchId: string;
     accountGroupId: string;
-    currencyId: string;
+    accountTypeId: string;
     accountOrder: string;
     accountName: string;
     accountCode: string;
@@ -25,16 +25,10 @@ export interface AccountExtDtoErrors {
     accountGroupName: string;
     accountGroupCode: string;
 
-    // Extended With Currency
-    currencyName: string;
-
-    // Added Custom Fields
+    // Extended With AccountType
     accountTypeName: string;
+
+    // Added Custom Required Fields
     nameSurname: string;
-    email: string;
     phone: string;
-    dateOfBirth: string;
-    gender: string;
-    notes: string;
-    avatarUrl: string;
 }
