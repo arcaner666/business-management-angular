@@ -100,6 +100,7 @@
                         [(ngModel)]="selectedAccountExtDto.phone"
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.phone }"
+                        [readOnly]="selectedAccountExtDto.accountId != 0"
                         (change)="selectedAccountExtDtoErrors.phone = ''"
                         tabindex="4"
                     />
@@ -279,7 +280,7 @@
                 <!-- Bakiye -->
                 <div 
                     class="mt-3 mb-3"
-                    *ngIf="selectedAccountExtDto.accountId != 0"
+                    [hidden]="selectedAccountExtDto.accountId == 0"
                 >
                     <label class="form-label" for="balance">Bakiye</label>
                     <input
