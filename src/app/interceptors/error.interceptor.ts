@@ -19,15 +19,15 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       // Bu yapı API'ye yaptığımız isteklerin sonucunda dönen hataları yakalayarak 
       // arayüze geri döndürüyor.
-      catchError(err => {
-        console.log(err);
-        if (err.error?.message == "TokenInvalid" || err.error?.message == "CanNotGetPrincipal") {
+      catchError(error => {
+        //console.log(error);
+        if (error.error?.message == "TokenInvalid" || error.error?.message == "CanNotGetPrincipal") {
           this.authorizationService.clearAuthorizationDto();
           this.router.navigate(['public/not-authorized', 'public/login']);
         }
         // catchError backend'den dönen hatayı ekstra bir hata katmanıyla sarmalıyor.
         // Backend'den dönen yanıta erişmek için err.error dememiz gerekiyor.
-        return throwError(err.error);
+        return throwError(() => error.error);
       })
     );
   }

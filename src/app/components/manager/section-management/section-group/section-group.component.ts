@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Subscription, Observable, concatMap, tap } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ListDataResult } from 'src/app/models/results/list-data-result';
@@ -27,12 +27,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   public sectionGroupDtos$!: Observable<ListDataResult<SectionGroupDto>>;
   public selectedSectionGroupDto: SectionGroupDto;
   public selectedSectionGroupDtoErrors: SectionGroupDtoErrors;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
-  public sub3: Subscription = new Subscription();
-  public sub4: Subscription = new Subscription();
-  public sub5: Subscription = new Subscription();
-  public sub6: Subscription = new Subscription();
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private authorizationService: AuthorizationService,
@@ -58,14 +54,12 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.selectedSectionGroupDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-
-      this.sub1 = this.sectionGroupService.add(this.selectedSectionGroupDto).pipe(
+      this.sectionGroupService.add(this.selectedSectionGroupDto).pipe(
+        takeUntil(this.unsubscribeAll),
         concatMap((response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
           return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
@@ -88,33 +82,36 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedSectionGroupDto: SectionGroupDto): void {
-    this.sub2 = this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedSectionGroupDto = response.data;
-
+    this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      concatMap((response) => {
+        this.selectedSectionGroupDto = response.data;
+        return from(
           // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
           this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result.then((response) => {
-            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-            if (response == "ok") {
-              this.sub3 = this.sectionGroupService.delete(selectedSectionGroupDto.sectionGroupId).pipe(
-                tap((response) => {
-                  console.log(response);
-                  this.toastService.success(response.message);
-                  this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
-                })
-              ).subscribe({
-                error: (error) => {
-                  console.log(error);
-                  this.toastService.danger(error.message);
-                }
-              });
-            }
-          }).catch(() => {});
+          }).result);
+        }),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          return this.sectionGroupService.delete(selectedSectionGroupDto.sectionGroupId).pipe(
+            tap((response) => {
+              this.toastService.success(response.message);
+            })
+          );
         }
+        return EMPTY;
+      }),
+      concatMap(() => {
+        return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
         this.loading = false;
       }, error: (error) => {
         console.log(error);
@@ -128,18 +125,6 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(businessId);
   }
 
-  getSectionGroupById(id: number): void {
-    this.sub4 = this.sectionGroupService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.selectedSectionGroupDto = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
   save(selectedSectionGroupDto: SectionGroupDto): void {
     if (selectedSectionGroupDto.sectionGroupId == 0) {
       this.add();
@@ -150,7 +135,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
 
   select(selectedSectionGroupDto: SectionGroupDto): void {
     this.selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;
-    
+
     if (!selectedSectionGroupDto) {  
       selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;    
     } 
@@ -158,11 +143,12 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.setHeader(selectedSectionGroupDto.sectionGroupId);
 
     if (selectedSectionGroupDto.sectionGroupId != 0) {
-      this.sub5 = this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId).subscribe({
+      this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedSectionGroupDto = response.data;
-          }
+          this.selectedSectionGroupDto = response.data;
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -181,13 +167,15 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateSectionGroupDto(this.selectedSectionGroupDto, "update");
     this.selectedSectionGroupDtoErrors = errors;
     if (isModelValid) {
-      this.sub6 = this.sectionGroupService.update(this.selectedSectionGroupDto).subscribe({
+      this.loading = true;
+      this.sectionGroupService.update(this.selectedSectionGroupDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {
           console.log(error);
@@ -205,23 +193,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
-    if (this.sub5) {
-      this.sub5.unsubscribe();
-    }
-    if (this.sub6) {
-      this.sub6.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }
