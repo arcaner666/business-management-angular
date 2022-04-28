@@ -156,7 +156,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authorizationDto.phone = this.phoneForm.value.phone.toString();
     this.authorizationDto.password = this.phoneForm.value.password;
     //this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
-    this.authorizationDto.refreshTokenDuration = 15;
+    this.authorizationDto.refreshTokenDuration = 25;
 
     // Sunucuya giriş isteği gönderilir.
     this.authorizationService.loginWithPhone(this.authorizationDto)
