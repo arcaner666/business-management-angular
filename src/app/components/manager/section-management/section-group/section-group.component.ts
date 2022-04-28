@@ -87,12 +87,11 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribeAll),
       concatMap((response) => {
         this.selectedSectionGroupDto = response.data;
-        return from(
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          this.modalService.open(this.deleteModal, {
+        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+        return this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result);
+          }).result;
         }),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
@@ -115,7 +114,9 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
         this.loading = false;
       }, error: (error) => {
         console.log(error);
-        this.toastService.danger(error.message);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
         this.loading = false;
       }
     });
