@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 
@@ -16,6 +16,8 @@ export class AuthorizationGuard implements CanActivate {
   private canActivateSubject: BehaviorSubject<boolean>;
   private canActivate$: Observable<boolean>;
 
+  private unsubscribeAll: Subject<void> = new Subject<void>();
+  
   constructor(
     private authorizationService: AuthorizationService,
     private router: Router,
@@ -23,13 +25,16 @@ export class AuthorizationGuard implements CanActivate {
   ) {
     this.authorizationDto$ = this.authorizationService.authorizationDto$;
     this.authorizationDto = this.authorizationService.authorizationDto;
-    this.subscribeAutorizationDtoChanges();
+    this.onAuthorizationDtoChanges();
     this.canActivateSubject = new BehaviorSubject<boolean>(false);
     this.canActivate$ = this.canActivateSubject.asObservable();
   }
 
-  subscribeAutorizationDtoChanges(): void {
-    this.authorizationDto$.subscribe({
+  onAuthorizationDtoChanges(): void {
+    this.authorizationDto$
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
       next: (response) => {
         this.authorizationDto = response;
       }
@@ -37,7 +42,7 @@ export class AuthorizationGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    console.log("AuthGuard çalıştı.");
+    console.log("AuthorizationGuard çalıştı.");
     // Oturum açılmışsa;
     if (this.authorizationDto) {
       // Gidilmek istenen route için gerekli yetkiler varsa;

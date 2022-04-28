@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil} from 'rxjs';
 import { cloneDeep } from 'lodash';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
@@ -54,8 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   public submittedPhone: boolean = false;
   public submittedEmail: boolean = false;
 
-  private sub1: Subscription = new Subscription();
-  private sub2: Subscription = new Subscription();
+  private unsubscribeAll: Subject<void> = new Subject<void>();
 
   constructor(
     private authorizationService: AuthorizationService,
@@ -112,19 +111,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authorizationDto.password = this.emailForm.value.password;
     this.authorizationDto.refreshTokenDuration = this.emailForm.value.refreshTokenDuration;
 
-    this.sub1 = this.authorizationService.loginWithEmail(this.authorizationDto).subscribe({
+    this.authorizationService.loginWithEmail(this.authorizationDto)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
+      // Eğer giriş başarılıysa
       next: (response) => {      
-        // Eğer giriş başarılıysa
-        if(response.success) {
-          // Kullanıcı bilgilerini sakla.
-          this.authorizationService.authorizationDto = response.data;
+        // Kullanıcı bilgilerini sakla.
+        this.authorizationService.authorizationDto = response.data;
 
-          // Oturum açılma durumuna göre kullanıcıları yönlendir.
-          this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
+        // Oturum açılma durumuna göre kullanıcıları yönlendir.
+        this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
-          // Sidebar linklerini düzenle.
-          this.navigationService.loadSidebarLinksByRole();
-        }
+        // Sidebar linklerini düzenle.
+        this.navigationService.loadSidebarLinksByRole();
+
         this.loadingEmail = false;
       },
       error: (error) => {
@@ -154,25 +155,28 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Formdaki veriler sunucuya gönderilecek modele doldurulur.
     this.authorizationDto.phone = this.phoneForm.value.phone.toString();
     this.authorizationDto.password = this.phoneForm.value.password;
-    this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
+    //this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
+    this.authorizationDto.refreshTokenDuration = 15;
 
     // Sunucuya giriş isteği gönderilir.
-    this.sub2 = this.authorizationService.loginWithPhone(this.authorizationDto).subscribe({
+    this.authorizationService.loginWithPhone(this.authorizationDto)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      ).subscribe({
+      // Eğer giriş başarılıysa
         next: (response) => {      
-          // Eğer giriş başarılıysa
-          if(response.success) {
-            // Ekranda girişin başarılı olduğuna dair toast mesajı gösterir.
-            this.toastService.success(response.message);
+          // Ekranda girişin başarılı olduğuna dair toast mesajı gösterir.
+          this.toastService.success(response.message);
 
-            // Kullanıcı bilgilerini sakla.
-            this.authorizationService.authorizationDto = response.data;
+          // Kullanıcı bilgilerini sakla.
+          this.authorizationService.authorizationDto = response.data;
 
-            // Oturum açılma durumuna göre kullanıcıları yönlendir.
-            this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
+          // Oturum açılma durumuna göre kullanıcıları yönlendir.
+          this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
-            // Sidebar linklerini düzenle.
-            this.navigationService.loadSidebarLinksByRole();
-          }
+          // Sidebar linklerini düzenle.
+          this.navigationService.loadSidebarLinksByRole();
+
           this.loadingPhone = false;
         },
         error: (error) => {
@@ -207,11 +211,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if(this.sub2) {
-      this.sub2.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Subscription, Observable, concatMap, tap } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
@@ -47,14 +47,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   public selectedAccountExtDto: AccountExtDto;
   public selectedAccountExtDtoErrors: AccountExtDtoErrors;
   public selectedHouseOwnerExtDto: HouseOwnerExtDto;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
-  public sub3: Subscription = new Subscription();
-  public sub4: Subscription = new Subscription();
-  public sub5: Subscription = new Subscription();
-  public sub6: Subscription = new Subscription();
-  public sub7: Subscription = new Subscription();
-  public sub8: Subscription = new Subscription();
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private accountExtService: AccountExtService,
@@ -93,13 +87,13 @@ export class AccountComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.accountExtService.addExt(this.selectedAccountExtDto).pipe(
+      this.accountExtService.addExt(this.selectedAccountExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
         concatMap((response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
   
           this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
@@ -125,46 +119,50 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedAccountExtDto: AccountExtDto): void {
-    this.sub2 = this.accountExtService.getExtById(selectedAccountExtDto.accountId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedAccountExtDto = response.data;
-
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          this.modalService.open(this.deleteModal, {
+    this.accountExtService.getExtById(selectedAccountExtDto.accountId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      concatMap((response) => {
+        this.selectedAccountExtDto = response.data;
+        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+        return this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result.then((response) => {
-            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-            if (response == "ok") {
-              this.sub3 = this.accountExtService.deleteExt(selectedAccountExtDto.accountId).pipe(
-                tap((response) => {
-                  console.log(response);
-                  this.toastService.success(response.message);
-
-                  this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
-                  this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-                  this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
-                })
-              ).subscribe({
-                error: (error) => {
-                  console.log(error);
-                  this.toastService.danger(error.message);
-                }
-              });
-            }
-          }).catch(() => {});
+          }).result;
+        }),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          return this.accountExtService.deleteExt(selectedAccountExtDto.accountId)
+          .pipe(
+            tap((response) => {
+              this.toastService.success(response.message);
+            })
+          );
         }
+        return EMPTY;
+      }),
+      concatMap(() => {
+        this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
+        this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
+        return this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
         this.loading = false;
       }, error: (error) => {
         console.log(error);
-        this.toastService.danger(error.message);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
         this.loading = false;
       }
     });
   }
 
-  generateAccountCode(accountGroupId: number) {
+  generateAccountCode(accountGroupId: number): void {
     // Seçili hesap grubunun id'sinden hesap grubu kodu bulunur.
     const selectedAccountGroupDtos: AccountGroupDto[] = this.accountGroupDtos.filter(a => 
       a.accountGroupId == accountGroupId);
@@ -172,17 +170,19 @@ export class AccountComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateAccountExtDto(this.selectedAccountExtDto, "code");
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {      
-      this.sub4 = this.accountExtService.generateAccountCode(
+      this.accountExtService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.authorizationService.authorizationDto.branchId, 
-        selectedAccountGroupDtos[0].accountGroupCode).subscribe({
+        selectedAccountGroupDtos[0].accountGroupCode)
+        .pipe(
+          takeUntil(this.unsubscribeAll),
+        ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedAccountExtDto.accountOrder = response.data.accountOrder;
-            this.selectedAccountExtDto.accountCode = response.data.accountCode;
-          }
+          this.selectedAccountExtDto.accountOrder = response.data.accountOrder;
+          this.selectedAccountExtDto.accountCode = response.data.accountCode;
         }, error: (error) => {
           console.log(error);
+          this.toastService.danger(error.message);
         }
       });
     } else {
@@ -191,30 +191,20 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
   }
 
-  getAccountExtById(id: number): void {
-    this.sub5 = this.accountExtService.getExtById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.selectedAccountExtDto = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
   getAccountExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): void {
     this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto);
   }
 
   getAllAccountGroups(): void {
-    this.sub6 = this.accountGroupService.getAll().subscribe({
+    this.accountGroupService.getAll()
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.accountGroupDtos = response.data;
-        }
+        this.accountGroupDtos = response.data;
       }, error: (error) => {
         console.log(error);
+        this.toastService.danger(error.message);
       }
     });
   }
@@ -223,7 +213,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.branchDtos$ = this.branchService.getByBusinessId(businessId);
   }
 
-  resetModel() {
+  resetModel(): void {
     this.selectedAccountExtDto.accountId = 0;
     this.selectedAccountExtDto.businessId = 0;
     this.selectedAccountExtDto.branchId = 0;
@@ -276,11 +266,12 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.setHeader(selectedAccountExtDto.accountId);
 
     if (selectedAccountExtDto.accountId != 0) {
-      this.sub7 = this.accountExtService.getExtById(selectedAccountExtDto.accountId).subscribe({
+      this.accountExtService.getExtById(selectedAccountExtDto.accountId)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedAccountExtDto = response.data;
-          }
+          this.selectedAccountExtDto = response.data;
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -325,13 +316,14 @@ export class AccountComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateAccountExtDto(this.selectedAccountExtDto, "update");
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {
-      this.sub8 = this.accountExtService.updateExt(this.selectedAccountExtDto).subscribe({
+      this.accountExtService.updateExt(this.selectedAccountExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {
           console.log(error);
@@ -349,29 +341,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
-    if (this.sub5) {
-      this.sub5.unsubscribe();
-    }
-    if (this.sub6) {
-      this.sub6.unsubscribe();
-    }
-    if (this.sub7) {
-      this.sub7.unsubscribe();
-    }
-    if (this.sub8) {
-      this.sub8.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }

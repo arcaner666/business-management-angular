@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, takeUntil} from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -60,8 +60,8 @@ export class RegisterComponent implements OnInit {
   public sectionManagerForm: FormGroup;
   public submittedCompanyManagerForm: boolean = false;
   public submittedSectionManagerForm: boolean = false;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
 
   constructor(
     private authorizationService: AuthorizationService,
@@ -123,15 +123,15 @@ export class RegisterComponent implements OnInit {
 
     this.fillRegisterManagerDto(this.moduleForm.controls['module'].value);
 
-    this.sub1 = this.authorizationService.registerCompanyManager(this.registerSectionManagerDto).subscribe({
+    this.authorizationService.registerCompanyManager(this.registerSectionManagerDto)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.modalService.open(this.registrationModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result.then(() => {}).catch(() => {});
-        }
-
+        this.modalService.open(this.registrationModal, {
+          ariaLabelledBy: 'modal-basic-title',
+          centered: true
+        }).result.then(() => {}).catch(() => {});
         this.loadingCompanyManagerForm = false;
       }, error: (error) => {
         console.log(error);
@@ -158,15 +158,15 @@ export class RegisterComponent implements OnInit {
 
     this.fillRegisterManagerDto(this.moduleForm.controls['module'].value);
 
-    this.sub2 = this.authorizationService.registerSectionManager(this.registerSectionManagerDto).subscribe({
+    this.authorizationService.registerSectionManager(this.registerSectionManagerDto)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.modalService.open(this.registrationModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result.then(() => {}).catch(() => {});
-        }
-
+        this.modalService.open(this.registrationModal, {
+          ariaLabelledBy: 'modal-basic-title',
+          centered: true
+        }).result.then(() => {}).catch(() => {});
         this.loadingSectionManagerForm = false;
       }, error: (error) => {
         console.log(error);
@@ -228,11 +228,7 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }

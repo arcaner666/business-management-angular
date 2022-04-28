@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Subscription, Observable, concatMap, tap } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApartmentDto } from 'src/app/models/dtos/apartment-dto';
@@ -38,13 +38,9 @@ export class FlatComponent implements OnInit, OnDestroy {
   public sectionDtos$!: Observable<ListDataResult<SectionDto>>;
   public selectedFlatExtDto: FlatExtDto;
   public selectedFlatExtDtoErrors: FlatExtDtoErrors;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
-  public sub3: Subscription = new Subscription();
-  public sub4: Subscription = new Subscription();
-  public sub5: Subscription = new Subscription();
-  public sub6: Subscription = new Subscription();
   public tenantDtos$!: Observable<ListDataResult<TenantDto>>;
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private apartmentService: ApartmentService,
@@ -77,15 +73,15 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.selectedFlatExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-
-      this.sub1 = this.flatExtService.addExt(this.selectedFlatExtDto).pipe(
+      this.flatExtService.addExt(this.selectedFlatExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
         concatMap((response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
+
           return this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
@@ -107,37 +103,42 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedFlatExtDto: FlatExtDto): void {
-    this.sub2 = this.flatExtService.getExtById(selectedFlatExtDto.flatId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedFlatExtDto = response.data;
-
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          this.modalService.open(this.deleteModal, {
+    this.flatExtService.getExtById(selectedFlatExtDto.flatId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      concatMap((response) => {
+        this.selectedFlatExtDto = response.data;
+        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+        return this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result.then((response) => {
-            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-            if (response == "ok") {
-              this.sub3 = this.flatExtService.deleteExt(selectedFlatExtDto.flatId).pipe(
-                tap((response) => {
-                  console.log(response);
-                  this.toastService.success(response.message);
-                  this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-                })
-              ).subscribe({
-                error: (error) => {
-                  console.log(error);
-                  this.toastService.danger(error.message);
-                }
-              });
-            }
-          }).catch(() => {});
+          }).result;
+        }),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          return this.flatExtService.deleteExt(selectedFlatExtDto.flatId)
+          .pipe(
+            tap((response) => {
+              this.toastService.success(response.message);
+            })
+          );
         }
+        return EMPTY;
+      }),
+      concatMap(() => {
+        return this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
         this.loading = false;
       }, error: (error) => {
         console.log(error);
-        this.toastService.danger(error.message);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
         this.loading = false;
       }
     });
@@ -153,18 +154,6 @@ export class FlatComponent implements OnInit, OnDestroy {
 
   getSectionsByBusinessId(businessId: number): void {
     this.sectionDtos$ = this.sectionService.getByBusinessId(businessId);
-  }
-
-  getFlatExtById(id: number): void {
-    this.sub4 = this.flatExtService.getExtById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.selectedFlatExtDto = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
   }
 
   getFlatExtsByBusinessId(businessId: number): void {
@@ -193,12 +182,13 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.setHeader(selectedFlatExtDto.flatId);
 
     if (selectedFlatExtDto.flatId != 0) {
-      this.sub5 = this.flatExtService.getExtById(selectedFlatExtDto.flatId).subscribe({
+      this.flatExtService.getExtById(selectedFlatExtDto.flatId)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedFlatExtDto = response.data;
-            this.apartmentDtos$ = this.apartmentService.getBySectionId(response.data.sectionId);
-          }
+          this.selectedFlatExtDto = response.data;
+          this.apartmentDtos$ = this.apartmentService.getBySectionId(response.data.sectionId);
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -224,13 +214,14 @@ export class FlatComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateFlatExtDto(this.selectedFlatExtDto, "update");
     this.selectedFlatExtDtoErrors = errors;
     if (isModelValid) {
-      this.sub6 = this.flatExtService.updateExt(this.selectedFlatExtDto).subscribe({
+      this.flatExtService.updateExt(this.selectedFlatExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {
           console.log(error);
@@ -248,23 +239,7 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
-    if (this.sub5) {
-      this.sub5.unsubscribe();
-    }
-    if (this.sub6) {
-      this.sub6.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }

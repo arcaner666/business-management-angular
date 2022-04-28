@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ListDataResult } from 'src/app/models/results/list-data-result';
@@ -54,13 +54,15 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.selectedSectionGroupDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      this.sectionGroupService.add(this.selectedSectionGroupDto).pipe(
+      this.sectionGroupService.add(this.selectedSectionGroupDto)
+      .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
           this.toastService.success(response.message);
           this.activePage = "list";
           window.scroll(0,0);
           this.loading = false;
+          
           return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
@@ -96,7 +98,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.sectionGroupService.delete(selectedSectionGroupDto.sectionGroupId).pipe(
+          return this.sectionGroupService.delete(selectedSectionGroupDto.sectionGroupId)
+          .pipe(
             tap((response) => {
               this.toastService.success(response.message);
             })

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Subscription, Observable, concatMap, tap } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
@@ -34,13 +34,8 @@ export class BranchComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public selectedBranchExtDto: BranchExtDto;
   public selectedBranchExtDtoErrors: BranchExtDtoErrors;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
-  public sub3: Subscription = new Subscription();
-  public sub4: Subscription = new Subscription();
-  public sub5: Subscription = new Subscription();
-  public sub6: Subscription = new Subscription();
-  public sub7: Subscription = new Subscription();
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private authorizationService: AuthorizationService,
@@ -70,14 +65,15 @@ export class BranchComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.branchExtService.addExt(this.selectedBranchExtDto).pipe(
+      this.branchExtService.addExt(this.selectedBranchExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
         concatMap((response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
+
           return this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
@@ -99,45 +95,52 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedBranchExtDto: BranchExtDto): void {
-    this.sub2 = this.branchExtService.getExtById(selectedBranchExtDto.branchId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedBranchExtDto = response.data;
-          this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
-
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          this.modalService.open(this.deleteModal, {
+    this.branchExtService.getExtById(selectedBranchExtDto.branchId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      concatMap((response) => {
+        this.selectedBranchExtDto = response.data;
+        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+        return this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result.then((response) => {
-            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-            if (response == "ok") {
-              this.sub3 = this.branchExtService.deleteExt(selectedBranchExtDto.branchId).pipe(
-                tap((response) => {
-                  console.log(response);
-                  this.toastService.success(response.message);
-                  this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-                })
-              ).subscribe({
-                error: (error) => {
-                  console.log(error);
-                  this.toastService.danger(error.message);
-                }
-              });
-            }
-          }).catch(() => {});
+          }).result;
+        }),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          return this.branchExtService.deleteExt(selectedBranchExtDto.branchId)
+          .pipe(
+            tap((response) => {
+              this.toastService.success(response.message);
+            })
+          );
         }
+        return EMPTY;
+      }),
+      concatMap(() => {
+        return this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
         this.loading = false;
       }, error: (error) => {
         console.log(error);
-        this.toastService.danger(error.message);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
         this.loading = false;
       }
     });
   }
 
   generateBranchCode(): void {
-    this.sub4 = this.branchService.generateBranchCode(this.authorizationService.authorizationDto.businessId).subscribe({
+    this.branchService.generateBranchCode(this.authorizationService.authorizationDto.businessId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
       next: (response) => {
         if(response.success) {
           this.selectedBranchExtDto.branchOrder = response.data.branchOrder;
@@ -155,19 +158,6 @@ export class BranchComponent implements OnInit, OnDestroy {
 
   getBranchExtsByBusinessId(businessId: number): void {
     this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(businessId);
-  }
-
-  getBranchExtById(id: number): void {
-    this.sub5 = this.branchExtService.getExtById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.selectedBranchExtDto = response.data;
-          this.getDistrictsByCityId(response.data.cityId);
-        }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
   }
 
   getDistrictsByCityId(cityId: number): void {
@@ -192,13 +182,14 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.setHeader(selectedBranchExtDto.branchId);
 
     if (selectedBranchExtDto.branchId != 0) {
-      this.sub6 = this.branchExtService.getExtById(selectedBranchExtDto.branchId).subscribe({
+      this.branchExtService.getExtById(selectedBranchExtDto.branchId)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedBranchExtDto = response.data;
-            this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
-            this.toastService.success(response.message);
-          }
+          this.selectedBranchExtDto = response.data;
+          this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
+          this.toastService.success(response.message);
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -224,13 +215,14 @@ export class BranchComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateBranchExtDto(this.selectedBranchExtDto, "update");
     this.selectedBranchExtDtoErrors = errors;
     if (isModelValid) {
-      this.sub7 = this.branchExtService.updateExt(this.selectedBranchExtDto).subscribe({
+      this.branchExtService.updateExt(this.selectedBranchExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {
           console.log(error);
@@ -248,26 +240,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
-    if (this.sub5) {
-      this.sub5.unsubscribe();
-    }
-    if (this.sub6) {
-      this.sub6.unsubscribe();
-    }
-    if (this.sub7) {
-      this.sub7.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }

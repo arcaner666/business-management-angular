@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Subscription, Observable, concatMap, tap } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
@@ -33,12 +33,8 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   public sectionDtos$!: Observable<ListDataResult<SectionDto>>;
   public selectedApartmentExtDto: ApartmentExtDto;
   public selectedApartmentExtDtoErrors: ApartmentExtDtoErrors;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
-  public sub3: Subscription = new Subscription();
-  public sub4: Subscription = new Subscription();
-  public sub5: Subscription = new Subscription();
-  public sub6: Subscription = new Subscription();
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private apartmentExtService: ApartmentExtService,
@@ -68,15 +64,15 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.selectedApartmentExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-
-      this.sub1 = this.apartmentExtService.addExt(this.selectedApartmentExtDto).pipe(
+      this.apartmentExtService.addExt(this.selectedApartmentExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
         concatMap((response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
+
           return this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
         }
       )).subscribe({
@@ -98,37 +94,42 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.sub2 = this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedApartmentExtDto = response.data;
-
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          this.modalService.open(this.deleteModal, {
+    this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      concatMap((response) => {
+        this.selectedApartmentExtDto = response.data;
+        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+        return this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result.then((response) => {
-            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-            if (response == "ok") {
-              this.sub3 = this.apartmentExtService.deleteExt(selectedApartmentExtDto.apartmentId).pipe(
-                tap((response) => {
-                  console.log(response);
-                  this.toastService.success(response.message);
-                  this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-                })
-              ).subscribe({
-                error: (error) => {
-                  console.log(error);
-                  this.toastService.danger(error.message);
-                }
-              });
-            }
-          }).catch(() => {});
+          }).result;
+        }),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          return this.apartmentExtService.deleteExt(selectedApartmentExtDto.apartmentId)
+          .pipe(
+            tap((response) => {
+              this.toastService.success(response.message);
+            })
+          );
         }
+        return EMPTY;
+      }),
+      concatMap(() => {
+        return this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
         this.loading = false;
       }, error: (error) => {
         console.log(error);
-        this.toastService.danger(error.message);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
         this.loading = false;
       }
     });
@@ -144,18 +145,6 @@ export class ApartmentComponent implements OnInit, OnDestroy {
 
   getSectionsByBusinessId(businessId: number): void {
     this.sectionDtos$ = this.sectionService.getByBusinessId(businessId);
-  }
-
-  getApartmentExtById(id: number): void {
-    this.sub4 = this.apartmentExtService.getExtById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.selectedApartmentExtDto = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
   }
 
   save(selectedApartmentExtDto: ApartmentExtDto): void {
@@ -176,11 +165,12 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.setHeader(selectedApartmentExtDto.apartmentId);
 
     if (selectedApartmentExtDto.apartmentId != 0) {
-      this.sub5 = this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId).subscribe({
+      this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedApartmentExtDto = response.data;
-          }
+          this.selectedApartmentExtDto = response.data;
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -199,13 +189,14 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateApartmentExtDto(this.selectedApartmentExtDto, "update");
     this.selectedApartmentExtDtoErrors = errors;
     if (isModelValid) {
-      this.sub6 = this.apartmentExtService.updateExt(this.selectedApartmentExtDto).subscribe({
+      this.apartmentExtService.updateExt(this.selectedApartmentExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {
           console.log(error);
@@ -223,23 +214,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
-    if (this.sub5) {
-      this.sub5.unsubscribe();
-    }
-    if (this.sub6) {
-      this.sub6.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Subscription, Observable, concatMap, tap } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
@@ -33,15 +33,9 @@ export class TenantComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public selectedTenantExtDto: TenantExtDto;
   public selectedTenantExtDtoErrors: TenantExtDtoErrors;
-  public sub1: Subscription = new Subscription();
-  public sub2: Subscription = new Subscription();
-  public sub3: Subscription = new Subscription();
-  public sub4: Subscription = new Subscription();
-  public sub5: Subscription = new Subscription();
-  public sub6: Subscription = new Subscription();
-  public sub7: Subscription = new Subscription();
-  public sub8: Subscription = new Subscription();
   public tenantExtDtos$!: Observable<ListDataResult<TenantExtDto>>;
+
+  private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private accountExtService: AccountExtService,
@@ -74,13 +68,13 @@ export class TenantComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.sub1 = this.tenantExtService.addExt(this.selectedTenantExtDto).pipe(
+      this.tenantExtService.addExt(this.selectedTenantExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
         concatMap((response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
   
           return this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
@@ -104,55 +98,61 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedTenantExtDto: TenantExtDto): void {
-    this.sub2 = this.tenantExtService.getExtById(selectedTenantExtDto.tenantId).subscribe({
-      next: (response) => {
-        if(response.success) {
-          this.selectedTenantExtDto = response.data;
-
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          this.modalService.open(this.deleteModal, {
+    this.tenantExtService.getExtById(selectedTenantExtDto.tenantId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+      concatMap((response) => {
+        this.selectedTenantExtDto = response.data;
+        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
+        return this.modalService.open(this.deleteModal, {
             ariaLabelledBy: 'modal-basic-title',
             centered: true
-          }).result.then((response) => {
-            // Burada response modal'daki seçeneklere verilen yanıtı tutar. 
-            if (response == "ok") {
-              this.sub3 = this.tenantExtService.deleteExt(selectedTenantExtDto.tenantId).pipe(
-                tap((response) => {
-                  console.log(response);
-                  this.toastService.success(response.message);
-                  this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-                })
-              ).subscribe({
-                error: (error) => {
-                  console.log(error);
-                  this.toastService.danger(error.message);
-                }
-              });
-            }
-          }).catch(() => {});
+          }).result;
+        }),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          return this.tenantExtService.deleteExt(selectedTenantExtDto.tenantId)
+          .pipe(
+            tap((response) => {
+              this.toastService.success(response.message);
+            })
+          );
         }
+        return EMPTY;
+      }),
+      concatMap(() => {
+        return this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
         this.loading = false;
       }, error: (error) => {
         console.log(error);
-        this.toastService.danger(error.message);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
         this.loading = false;
       }
     });
   }
 
-  generateAccountCode() {
+  generateAccountCode(): void {
     let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "code");
     this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {      
-      this.sub4 = this.accountExtService.generateAccountCode(
+      this.accountExtService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedTenantExtDto.branchId, 
-        "120").subscribe({
+        "120")
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedTenantExtDto.accountOrder = response.data.accountOrder;
-            this.selectedTenantExtDto.accountCode = response.data.accountCode;
-          }
+          this.selectedTenantExtDto.accountOrder = response.data.accountOrder;
+          this.selectedTenantExtDto.accountCode = response.data.accountCode;
         }, error: (error) => {
           console.log(error);
         }
@@ -164,13 +164,15 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   getAllAccountGroups(): void {
-    this.sub5 = this.accountGroupService.getAll().subscribe({
+    this.accountGroupService.getAll()
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.accountGroupDtos = response.data;
-        }
+        this.accountGroupDtos = response.data;
       }, error: (error) => {
         console.log(error);
+        this.toastService.danger(error.message);
       }
     });
   }
@@ -179,20 +181,8 @@ export class TenantComponent implements OnInit, OnDestroy {
     this.branchDtos$ = this.branchService.getByBusinessId(businessId);
   }
 
-  getTenantExtById(id: number): void {
-    this.sub5 = this.tenantExtService.getExtById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.selectedTenantExtDto = response.data;
-        }
-      }, error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  getTenantExtsByBusinessId(id: number): void {
-    this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+  getTenantExtsByBusinessId(businessId: number): void {
+    this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(businessId);
   }
 
   save(selectedTenantExtDto: TenantExtDto): void {
@@ -202,7 +192,6 @@ export class TenantComponent implements OnInit, OnDestroy {
       this.updateExt();
     }
   }
-
 
   select(selectedTenantExtDto: TenantExtDto): void {
     this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;
@@ -214,11 +203,12 @@ export class TenantComponent implements OnInit, OnDestroy {
     this.setHeader(selectedTenantExtDto.tenantId);
 
     if (selectedTenantExtDto.tenantId != 0) {
-      this.sub7 = this.tenantExtService.getExtById(selectedTenantExtDto.tenantId).subscribe({
+      this.tenantExtService.getExtById(selectedTenantExtDto.tenantId)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.selectedTenantExtDto = response.data;
-          }
+          this.selectedTenantExtDto = response.data;
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -237,13 +227,14 @@ export class TenantComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "update");
     this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {
-      this.sub8 = this.tenantExtService.updateExt(this.selectedTenantExtDto).subscribe({
+      this.tenantExtService.updateExt(this.selectedTenantExtDto)
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
-          if(response.success) {
-            this.toastService.success(response.message);
-            this.activePage = "list";
-            window.scroll(0,0);
-          }
+          this.toastService.success(response.message);
+          this.activePage = "list";
+          window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {
           console.log(error);
@@ -261,29 +252,7 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub1) {
-      this.sub1.unsubscribe();
-    }
-    if (this.sub2) {
-      this.sub2.unsubscribe();
-    }
-    if (this.sub3) {
-      this.sub3.unsubscribe();
-    }
-    if (this.sub4) {
-      this.sub4.unsubscribe();
-    }
-    if (this.sub5) {
-      this.sub5.unsubscribe();
-    }
-    if (this.sub6) {
-      this.sub6.unsubscribe();
-    }
-    if (this.sub7) {
-      this.sub7.unsubscribe();
-    }
-    if (this.sub8) {
-      this.sub8.unsubscribe();
-    }
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 }
