@@ -52,8 +52,8 @@ export class BranchComponent implements OnInit, OnDestroy {
     this.selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;
     this.selectedBranchExtDtoErrors = this.branchExtService.emptyBranchExtDtoErrors;
 
-    this.getAllCities();
-    this.getBranchExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.cityDtos$ = this.getAllCities();
+    this.branchExtDtos$ = this.getBranchExtsByBusinessId();
   }
 
   addExt(): void {
@@ -74,7 +74,7 @@ export class BranchComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
 
-          return this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getBranchExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -119,7 +119,7 @@ export class BranchComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getBranchExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -152,16 +152,16 @@ export class BranchComponent implements OnInit, OnDestroy {
     });
   }
   
-  getAllCities(): void {
-    this.cityDtos$ = this.cityService.getAll();
+  getAllCities(): Observable<ListDataResult<CityDto>> {
+    return this.cityService.getAll();
   }
 
-  getBranchExtsByBusinessId(businessId: number): void {
-    this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(businessId);
+  getBranchExtsByBusinessId(): Observable<ListDataResult<BranchExtDto>> {
+    return this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getDistrictsByCityId(cityId: number): void {
-    this.districtDtos$ = this.districtService.getByCityId(cityId);
+  getDistrictsByCityId(cityId: number): Observable<ListDataResult<DistrictDto>> {
+    return this.districtService.getByCityId(cityId);
   }
 
   save(selectedBranchExtDto: BranchExtDto): void {
@@ -204,7 +204,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
     this.selectedBranchExtDto.districtId = 0;
 
-    this.getDistrictsByCityId(cityId);
+    this.districtDtos$ = this.getDistrictsByCityId(cityId);
   }
 
   setHeader(branchId: number): void {

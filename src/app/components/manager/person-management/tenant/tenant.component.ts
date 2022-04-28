@@ -53,10 +53,8 @@ export class TenantComponent implements OnInit, OnDestroy {
     this.selectedTenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;
 
     this.getAllAccountGroups();
-
-    this.getBranchsByBusinessId(this.authorizationService.authorizationDto.businessId);
-
-    this.getTenantExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.getBranchsByBusinessId();
+    this.tenantExtDtos$ = this.getTenantExtsByBusinessId();
   }
 
   addExt(): void {
@@ -77,7 +75,7 @@ export class TenantComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
   
-          return this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getTenantExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -122,7 +120,7 @@ export class TenantComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getTenantExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -177,12 +175,12 @@ export class TenantComponent implements OnInit, OnDestroy {
     });
   }
 
-  getBranchsByBusinessId(businessId: number): void {
-    this.branchDtos$ = this.branchService.getByBusinessId(businessId);
+  getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
+    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getTenantExtsByBusinessId(businessId: number): void {
-    this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(businessId);
+  getTenantExtsByBusinessId(): Observable<ListDataResult<TenantExtDto>> {
+    return this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   save(selectedTenantExtDto: TenantExtDto): void {

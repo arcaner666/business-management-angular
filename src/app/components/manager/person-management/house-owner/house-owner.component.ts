@@ -53,8 +53,8 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     this.selectedHouseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;
 
     this.getAllAccountGroups();
-    this.getBranchsByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getHouseOwnerExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.getBranchsByBusinessId();
+    this.houseOwnerExtDtos$ = this.getHouseOwnerExtsByBusinessId();
   }
 
   addExt(): void {
@@ -74,7 +74,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
 
-          return this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getHouseOwnerExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -119,7 +119,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getHouseOwnerExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -175,12 +175,12 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     });
   }
 
-  getBranchsByBusinessId(businessId: number): void {
-    this.branchDtos$ = this.branchService.getByBusinessId(businessId);
+  getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
+    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getHouseOwnerExtsByBusinessId(businessId: number): void {
-    this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(businessId);
+  getHouseOwnerExtsByBusinessId(): Observable<ListDataResult<HouseOwnerExtDto>> {
+    return this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {

@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Subject, takeUntil} from 'rxjs';
-import { cloneDeep } from 'lodash';
 
 import { AuthorizationDto } from 'src/app/models/dtos/authorization-dto';
 import { Result } from 'src/app/models/results/result';
@@ -12,30 +11,6 @@ import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
 
-const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
-  systemUserId: 0,
-  email: "",
-  phone: "",
-  role: "",
-  businessId: 0,
-  branchId: 0,
-  blocked: false,
-  refreshToken: "",
-  refreshTokenExpiryTime: new Date(),
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended
-  password: "",
-  refreshTokenDuration: 0,
-  accessToken: "",
-};
-
-const EMPTY_RESULT: Result = {
-  success: false, 
-  message: "",
-};
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -43,14 +18,23 @@ const EMPTY_RESULT: Result = {
 })
 export class LoginComponent implements OnInit, OnDestroy {
   
-  public authorizationDto: AuthorizationDto = cloneDeep(EMPTY_AUTHORIZATION_DTO);
+  public authorizationDto: AuthorizationDto;
   public emailForm: FormGroup;
   public loadingPhone: boolean = false;
   public loadingEmail: boolean = false;
   public passwordTextType: boolean = false;
   public phoneForm: FormGroup;
-  public refreshTokenDurationOptions = [{ id: 1, duration: '1 saat boyunca' }, { id: 24, duration: '1 gün boyunca' }, { id: 168, duration: '1 hafta boyunca' }, { id: 720, duration: '1 ay boyunca' }, { id: 999999, duration: 'Süresiz' }];
-  public result: Result = cloneDeep(EMPTY_RESULT);
+  public refreshTokenDurationOptions = [
+    { duration: 3600, text: '1 saat boyunca' }, 
+    { duration: 86400, text: '1 gün boyunca' }, 
+    { duration: 604800, text: '1 hafta boyunca' }, 
+    { duration: 18144000, text: '1 ay boyunca' }, 
+    { duration: 999999999, text: 'Süresiz' }
+  ];
+  public result: Result = {
+    success: false, 
+    message: "",
+  };
   public submittedPhone: boolean = false;
   public submittedEmail: boolean = false;
 
@@ -66,6 +50,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     console.log("LoginComponent constructor çalıştı.");
 
+    this.authorizationDto = this.authorizationService.emptyAuthorizationDto;
+    
     // Oturum açılma durumuna göre kullanıcıları yönlendir.
     this.navigationService.navigateByRole(this.authorizationService.authorizationDto?.role);
 
@@ -76,14 +62,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.phoneForm = this.formBuilder.group({
       phone: ["5554443322", [Validators.required]],
       password: ["123456", [Validators.required]],
-      refreshTokenDuration: [1, [Validators.required]],
+      refreshTokenDuration: [3600, [Validators.required]],
     });
 
     // E-postayla giriş formu oluşturulur.
     this.emailForm = this.formBuilder.group({
       email: ["caner@mail.com", [Validators.required]],
       password: ["123456", [Validators.required]],
-      refreshTokenDuration: [1, [Validators.required]],
+      refreshTokenDuration: [3600, [Validators.required]],
     });
   }
 
@@ -155,8 +141,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // Formdaki veriler sunucuya gönderilecek modele doldurulur.
     this.authorizationDto.phone = this.phoneForm.value.phone.toString();
     this.authorizationDto.password = this.phoneForm.value.password;
-    //this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
-    this.authorizationDto.refreshTokenDuration = 25;
+    this.authorizationDto.refreshTokenDuration = this.phoneForm.value.refreshTokenDuration;
 
     // Sunucuya giriş isteği gönderilir.
     this.authorizationService.loginWithPhone(this.authorizationDto)
@@ -191,18 +176,21 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Giriş tipleri arasında geçiş yapıldığında formları varsayılan hallerine getirir.
   resetForms(): void  {
-    this.result = cloneDeep(EMPTY_RESULT);
+    this.result = {
+      success: false, 
+      message: "",
+    };
 
     this.phoneForm.reset({
       phone: "5554443322",
       password: "123456",
-      refreshTokenDuration: 1,
+      refreshTokenDuration: 3600,
     });
 
     this.emailForm.reset({
       email: "caner@mail.com",
       password: "123456",
-      refreshTokenDuration: 1,
+      refreshTokenDuration: 3600,
     });
   }
 

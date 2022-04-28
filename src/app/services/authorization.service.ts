@@ -11,25 +11,6 @@ import { RegisterSectionManagerDto } from 'src/app/models/dtos/register-section-
 import { Result } from 'src/app/models/results/result';
 import { SingleDataResult } from 'src/app/models/results/single-data-result';
 
-const EMPTY_AUTHORIZATION_DTO: AuthorizationDto = {
-  systemUserId: 0,
-  email: "",
-  phone: "",
-  role: "",
-  businessId: 0,
-  branchId: 0,
-  blocked: false,
-  refreshToken: "",
-  refreshTokenExpiryTime: new Date(),
-  createdAt: new Date(),
-  updatedAt: new Date(),
-
-  // Extended
-  password: "",
-  refreshTokenDuration: 0,
-  accessToken: "",
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -37,6 +18,35 @@ export class AuthorizationService {
 
   private controllerUrl: string = "authorization";
   private authorizationDtoSubject: BehaviorSubject<AuthorizationDto>;
+  private _emptyAuthorizationDto: AuthorizationDto = {
+    systemUserId: 0,
+    email: "",
+    phone: "",
+    role: "",
+    businessId: 0,
+    branchId: 0,
+    blocked: false,
+    refreshToken: "",
+    refreshTokenExpiryTime: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  
+    // Extended
+    password: "",
+    refreshTokenDuration: 0,
+    accessToken: "",
+  };
+  private _emptyRegisterSectionManagerDto: RegisterSectionManagerDto = {
+    nameSurname: "",
+    phone: "",
+    businessName: "",
+    cityId: 0,
+    districtId: 0,
+    addressText: "",
+    taxOffice: "",
+    taxNumber: 0,
+    identityNumber: 0,
+  };
 
   public authorizationDto$: Observable<AuthorizationDto>;
 
@@ -50,18 +60,26 @@ export class AuthorizationService {
   // Kullanıcıyı localStorage'dan ve auth service'den silmek için kısayol.
   clearAuthorizationDto(): void {
     localStorage.removeItem('authorizationDto');
-    this.authorizationDtoSubject.next(cloneDeep(EMPTY_AUTHORIZATION_DTO));
+    this.authorizationDtoSubject.next(cloneDeep(this._emptyAuthorizationDto));
   }
 
   // Kullanıcıyı dış component'lerden almak için kısayol.
-  get authorizationDto(): AuthorizationDto {
+  public get authorizationDto(): AuthorizationDto {
     return this.authorizationDtoSubject.value;
   }
 
   // Kullanıcıyı değiştirmek için bir kısayol.
-  set authorizationDto(authorizationDto: AuthorizationDto){
+  public set authorizationDto(authorizationDto: AuthorizationDto){
     localStorage.setItem("authorizationDto", JSON.stringify(authorizationDto));
     this.authorizationDtoSubject.next(authorizationDto);
+  }
+
+  public get emptyAuthorizationDto(): AuthorizationDto {
+    return cloneDeep(this._emptyAuthorizationDto);
+  }
+
+  public get emptyRegisterSectionManagerDto(): RegisterSectionManagerDto {
+    return cloneDeep(this._emptyRegisterSectionManagerDto);
   }
 
   // API İstekleri

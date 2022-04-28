@@ -58,10 +58,10 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;
     this.selectedSectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;
 
-    this.getAllCities();
-    this.getManagersByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getSectionExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getSectionGroupsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.cityDtos$ = this.getAllCities();
+    this.managerDtos$ = this.getManagersByBusinessId();
+    this.sectionExtDtos$ = this.getSectionExtsByBusinessId();
+    this.sectionGroupDtos$ = this.getSectionGroupsByBusinessId();
   }
 
   addExt(): void {
@@ -82,7 +82,7 @@ export class SectionComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
 
-          return this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getSectionExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -127,7 +127,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getSectionExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -144,24 +144,24 @@ export class SectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  getAllCities(): void {
-    this.cityDtos$ = this.cityService.getAll();
+  getAllCities(): Observable<ListDataResult<CityDto>> {
+    return this.cityService.getAll();
   }
 
-  getDistrictsByCityId(cityId: number): void {
-    this.districtDtos$ = this.districtService.getByCityId(cityId);
+  getDistrictsByCityId(cityId: number): Observable<ListDataResult<DistrictDto>> {
+    return this.districtService.getByCityId(cityId);
   }
 
-  getManagersByBusinessId(businessId: number): void {
-    this.managerDtos$ = this.managerService.getByBusinessId(businessId);
+  getManagersByBusinessId(): Observable<ListDataResult<ManagerDto>> {
+    return this.managerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getSectionExtsByBusinessId(businessId: number): void {
-    this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(businessId);
+  getSectionExtsByBusinessId(): Observable<ListDataResult<SectionExtDto>> {
+    return this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getSectionGroupsByBusinessId(businessId: number): void {
-    this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(businessId);
+  getSectionGroupsByBusinessId(): Observable<ListDataResult<SectionGroupDto>> {
+    return this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   save(selectedSectionExtDto: SectionExtDto): void {
@@ -188,7 +188,7 @@ export class SectionComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           this.selectedSectionExtDto = response.data;
-          this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
+          this.districtDtos$ = this.getDistrictsByCityId(response.data.cityId);
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -203,7 +203,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     // Şehir listesi her yenilendiğinde ilçe listesi de sıfırlanmalı.
     this.selectedSectionExtDto.districtId = 0;
 
-    this.getDistrictsByCityId(cityId);
+    this.districtDtos$ = this.getDistrictsByCityId(cityId);
   }
 
   setHeader(sectionId: number): void {

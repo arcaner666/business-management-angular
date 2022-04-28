@@ -42,7 +42,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     this.selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;
     this.selectedSectionGroupDtoErrors = this.sectionGroupService.emptySectionGroupDtoErrors;
 
-    this.getSectionGroupsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionGroupDtos$ = this.getSectionGroupsByBusinessId();
   }
 
   add(): void {
@@ -63,7 +63,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
           
-          return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getSectionGroupsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -108,7 +108,7 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getSectionGroupsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -125,8 +125,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  getSectionGroupsByBusinessId(businessId: number): void {
-    this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(businessId);
+  getSectionGroupsByBusinessId(): Observable<ListDataResult<SectionGroupDto>> {
+    return this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   save(selectedSectionGroupDto: SectionGroupDto): void {

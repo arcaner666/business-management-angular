@@ -71,11 +71,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.getAllAccountGroups();
 
     // Sunucudan bazı cari hesapları getirir ve modellere doldurur.
-    this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
-    this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-    this.getAccountExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+    this.accountExtDtos$ = this.getAccountExtsByBusinessIdAndAccountGroupCodes();
 
-    this.getBranchsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.getBranchsByBusinessId();
   }
 
   addExt(): void {
@@ -86,7 +84,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-
       this.accountExtService.addExt(this.selectedAccountExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
@@ -96,9 +93,7 @@ export class AccountComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
   
-          this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
-          this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-          return this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+          return this.getAccountExtsByBusinessIdAndAccountGroupCodes();
         }
       )).subscribe({
         error: (error) => {
@@ -143,9 +138,7 @@ export class AccountComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
-        this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-        return this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+        return this.getAccountExtsByBusinessIdAndAccountGroupCodes();
       })
     ).subscribe({
       next: (response) => {
@@ -191,8 +184,10 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
   }
 
-  getAccountExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto): void {
-    this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(accountGetByAccountGroupCodesDto);
+  getAccountExtsByBusinessIdAndAccountGroupCodes(): Observable<ListDataResult<AccountExtDto>> {
+    this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
+    this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
+    return this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
   }
 
   getAllAccountGroups(): void {
@@ -209,8 +204,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  getBranchsByBusinessId(businessId: number): void {
-    this.branchDtos$ = this.branchService.getByBusinessId(businessId);
+  getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
+    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   resetModel(): void {

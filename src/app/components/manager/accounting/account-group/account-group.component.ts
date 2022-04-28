@@ -22,11 +22,11 @@ export class AccountGroupComponent implements OnInit, OnDestroy {
   ) { 
     console.log("AccountGroupComponent constructor çalıştı.");
 
-    this.getAccountGroups();
+    this.accountGroupDtos$ = this.getAccountGroups();
   }
 
-  getAccountGroups(): void {
-    this.accountGroupDtos$ = this.accountGroupService.getAll();
+  getAccountGroups(): Observable<ListDataResult<AccountGroupDto>> {
+    return this.accountGroupService.getAll();
   }
 
   ngOnInit(): void {

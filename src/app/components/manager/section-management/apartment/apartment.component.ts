@@ -50,9 +50,9 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;
     this.selectedApartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;
 
-    this.getApartmentExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getManagersByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getSectionsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.apartmentExtDtos$ = this.getApartmentExtsByBusinessId();
+    this.managerDtos$ = this.getManagersByBusinessId();
+    this.sectionDtos$ = this.getSectionsByBusinessId();
   }
 
   addExt(): void {
@@ -73,7 +73,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
 
-          return this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getApartmentExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -118,7 +118,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getApartmentExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -135,16 +135,16 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     });
   }
 
-  getApartmentExtsByBusinessId(businessId: number): void {
-    this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(businessId);
+  getApartmentExtsByBusinessId(): Observable<ListDataResult<ApartmentExtDto>> {
+    return this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getManagersByBusinessId(businessId: number): void {
-    this.managerDtos$ = this.managerService.getByBusinessId(businessId);
+  getManagersByBusinessId(): Observable<ListDataResult<ManagerDto>> {
+    return this.managerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getSectionsByBusinessId(businessId: number): void {
-    this.sectionDtos$ = this.sectionService.getByBusinessId(businessId);
+  getSectionsByBusinessId(): Observable<ListDataResult<SectionDto>> {
+    return this.sectionService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   save(selectedApartmentExtDto: ApartmentExtDto): void {

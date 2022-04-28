@@ -58,10 +58,10 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;
     this.selectedFlatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;
 
-    this.getFlatExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getHouseOwnersByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getSectionsByBusinessId(this.authorizationService.authorizationDto.businessId);
-    this.getTenantsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.flatExtDtos$ = this.getFlatExtsByBusinessId();
+    this.houseOwnerDtos$ = this.getHouseOwnersByBusinessId();
+    this.sectionDtos$ = this.getSectionsByBusinessId();
+    this.tenantDtos$ = this.getTenantsByBusinessId();
   }
 
   addExt(): void {
@@ -82,7 +82,7 @@ export class FlatComponent implements OnInit, OnDestroy {
           window.scroll(0,0);
           this.loading = false;
 
-          return this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+          return this.getFlatExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -127,7 +127,7 @@ export class FlatComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+        return this.getFlatExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
@@ -144,24 +144,24 @@ export class FlatComponent implements OnInit, OnDestroy {
     });
   }
 
-  getApartmentsBySectionId(sectionId: number): void {
-    this.apartmentDtos$ = this.apartmentService.getBySectionId(sectionId);
+  getApartmentsBySectionId(sectionId: number): Observable<ListDataResult<ApartmentDto>> {
+    return this.apartmentService.getBySectionId(sectionId);
   }
 
-  getHouseOwnersByBusinessId(businessId: number): void {
-    this.houseOwnerDtos$ = this.houseOwnerService.getByBusinessId(businessId);
+  getHouseOwnersByBusinessId(): Observable<ListDataResult<HouseOwnerDto>> {
+    return this.houseOwnerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getSectionsByBusinessId(businessId: number): void {
-    this.sectionDtos$ = this.sectionService.getByBusinessId(businessId);
+  getSectionsByBusinessId(): Observable<ListDataResult<SectionDto>> {
+    return this.sectionService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getFlatExtsByBusinessId(businessId: number): void {
-    this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(businessId);
+  getFlatExtsByBusinessId(): Observable<ListDataResult<FlatExtDto>> {
+    return this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  getTenantsByBusinessId(businessId: number): void {
-    this.tenantDtos$ = this.tenantService.getByBusinessId(businessId);
+  getTenantsByBusinessId(): Observable<ListDataResult<TenantDto>> {
+    return this.tenantService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   save(selectedFlatExtDto: FlatExtDto): void {
@@ -188,7 +188,7 @@ export class FlatComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           this.selectedFlatExtDto = response.data;
-          this.apartmentDtos$ = this.apartmentService.getBySectionId(response.data.sectionId);
+          this.apartmentDtos$ = this.getApartmentsBySectionId(response.data.sectionId);
         }, error: (error) => {
           console.log(error);
           this.toastService.danger(error.message);
@@ -203,7 +203,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     // Site listesi her yenilendiğinde apartman listesi de yenilenmeli.
     this.selectedFlatExtDto.apartmentId = 0;
 
-    this.getApartmentsBySectionId(sectionId);
+    this.apartmentDtos$ = this.getApartmentsBySectionId(sectionId);
   }
 
   setHeader(flatId: number): void {

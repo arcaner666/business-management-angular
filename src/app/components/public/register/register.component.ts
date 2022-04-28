@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Observable, Subject, takeUntil} from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CityDto } from 'src/app/models/dtos/city-dto';
@@ -16,23 +15,6 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BreakpointService } from 'src/app/services/breakpoint.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
-
-const EMPTY_RESULT: Result = {
-  success: false, 
-  message: "",
-};
-
-const EMPTY_REGISTER_SECTION_MANAGER_EXT_DTO: RegisterSectionManagerDto = {
-  nameSurname: "",
-  phone: "",
-  businessName: "",
-  cityId: 0,
-  districtId: 0,
-  addressText: "",
-  taxOffice: "",
-  taxNumber: 0,
-  identityNumber: 0,
-};
 
 @Component({
   selector: 'app-register',
@@ -48,7 +30,7 @@ export class RegisterComponent implements OnInit {
   public districtDtos$!: Observable<ListDataResult<DistrictDto>>;
   public loadingCompanyManagerForm: boolean = false;
   public loadingSectionManagerForm: boolean = false;
-  public registerSectionManagerDto: RegisterSectionManagerDto = cloneDeep(EMPTY_REGISTER_SECTION_MANAGER_EXT_DTO);
+  public registerSectionManagerDto: RegisterSectionManagerDto;
   public moduleForm: FormGroup;
   public moduleOptions: ModuleOption[] = [
     { id: 1, name: "Site Yönetimi" }, 
@@ -56,7 +38,10 @@ export class RegisterComponent implements OnInit {
     { id: 3, name: "Otel Yönetimi" },
   ];
   public modalResult: string = "";
-  public result: Result = cloneDeep(EMPTY_RESULT);
+  public result: Result = {
+    success: false, 
+    message: "",
+  };
   public sectionManagerForm: FormGroup;
   public submittedCompanyManagerForm: boolean = false;
   public submittedSectionManagerForm: boolean = false;
@@ -74,7 +59,9 @@ export class RegisterComponent implements OnInit {
     ) {
     console.log("RegisterComponent constructor çalıştı.");
 
-    this.getCities();
+    this.registerSectionManagerDto = this.authorizationService.emptyRegisterSectionManagerDto;
+    
+    this.cityDtos$ = this.getCities();
 
     // Modül formu oluşturulur.
     this.moduleForm = this.formBuilder.group({
@@ -127,7 +114,7 @@ export class RegisterComponent implements OnInit {
     .pipe(
       takeUntil(this.unsubscribeAll),
     ).subscribe({
-      next: (response) => {
+      next: () => {
         this.modalService.open(this.registrationModal, {
           ariaLabelledBy: 'modal-basic-title',
           centered: true
@@ -162,7 +149,7 @@ export class RegisterComponent implements OnInit {
     .pipe(
       takeUntil(this.unsubscribeAll),
     ).subscribe({
-      next: (response) => {
+      next: () => {
         this.modalService.open(this.registrationModal, {
           ariaLabelledBy: 'modal-basic-title',
           centered: true
@@ -207,12 +194,12 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  getCities(): void {
-    this.cityDtos$ = this.cityService.getAll();
+  getCities(): Observable<ListDataResult<CityDto>> {
+    return this.cityService.getAll();
   }
 
-  getDistrictsByCityId(cityId: number): void {
-    this.districtDtos$ = this.districtService.getByCityId(cityId);
+  getDistrictsByCityId(cityId: number): Observable<ListDataResult<DistrictDto>> {
+    return this.districtService.getByCityId(cityId);
   }
 
   selectCity(cityId: number): void {
@@ -220,7 +207,7 @@ export class RegisterComponent implements OnInit {
     this.registerSectionManagerDto.districtId = 0;
     this.sectionManagerForm.controls['districtId'].setValue(0);
 
-    this.getDistrictsByCityId(cityId);
+    this.districtDtos$ = this.getDistrictsByCityId(cityId);
   }
 
   ngOnInit(): void {
