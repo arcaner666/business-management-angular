@@ -26,7 +26,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.router.navigate(['public/not-authorized', 'public/login']);
         }
         // catchError backend'den dönen hatayı ekstra bir hata katmanıyla sarmalıyor.
-        // Backend'den dönen yanıta erişmek için err.error dememiz gerekiyor.
+        // Backend'den dönen yanıta erişmek için error.error dememiz gerekiyor.
         return throwError(() => error.error);
       })
     );
