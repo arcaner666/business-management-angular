@@ -12,7 +12,7 @@ export interface EmployeeDto {
     notes: string;
     avatarUrl: string;
     stillWorking: boolean;
-    startDate: Date;
+    startDate?: Date;
     quitDate?: Date;
     createdAt: Date;
     updatedAt: Date;

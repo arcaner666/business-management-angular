@@ -68,7 +68,7 @@
                 
                 <!-- Doğum Tarihi -->
                 <div class="mt-3 mb-3">
-                    <label class="form-label" for="dateOfBirth">Doğum Tarihi</label>
+                    <label class="form-label" for="date-of-birth">Doğum Tarihi</label>
                     <div class="input-group">
                         <input
                             id="date-of-birth"
@@ -88,9 +88,9 @@
                         <button class="btn btn-outline-color-2" (click)="dateOfBirth.toggle()" type="button">
                             <i class="far fa-calendar-alt fa-lg"></i>
                         </button>
-                    </div>
-                    <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.dateOfBirth">
-                        <div>{{selectedHouseOwnerExtDtoErrors.dateOfBirth}}</div>
+                        <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.dateOfBirth">
+                            <div>{{selectedHouseOwnerExtDtoErrors.dateOfBirth}}</div>
+                        </div>
                     </div>
                 </div>
                 <!-- /Doğum Tarihi -->

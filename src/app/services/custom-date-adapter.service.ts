@@ -10,8 +10,14 @@ export class CustomDateAdapter extends NgbDateAdapter<string>{
 
   readonly DELIMITER = '-';
 
-  fromModel(value: string | null): NgbDateStruct | null {
+  fromModel(value: any | null): NgbDateStruct | null {
     if (value) {
+      // Bazı component'lerden ISO Date String yerine Date nesnesi gelebiliyor. Sebebini henüz bulamadım.
+      // Fakat hata vermemesi için tekrar ISO Date String'e çeviriyorum.
+      if (typeof value === "object") {
+        value = (value as Date).toISOString();
+      }
+
       let fullDate: string = value.substring(0,10);
 
       let dateParts: string[] = fullDate.split(this.DELIMITER);
@@ -40,7 +46,7 @@ export class CustomDateAdapter extends NgbDateAdapter<string>{
 
       let dateString: string = `${year}${this.DELIMITER}${month}${this.DELIMITER}${day}`;
 
-      console.log(dateString);
+      //console.log(dateString);
 
       return dateString;
     }

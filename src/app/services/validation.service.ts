@@ -6,6 +6,8 @@ import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
 import { ApartmentExtDtoErrors } from 'src/app/models/validation-errors/apartment-ext-dto-errors';
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { BranchExtDtoErrors } from 'src/app/models/validation-errors/branch-ext-dto-errors';
+import { EmployeeExtDto } from 'src/app/models/dtos/employee-ext-dto';
+import { EmployeeExtDtoErrors } from 'src/app/models/validation-errors/employee-ext-dto-errors';
 import { FlatExtDto } from 'src/app/models/dtos/flat-ext-dto';
 import { FlatExtDtoErrors } from 'src/app/models/validation-errors/flat-ext-dto-errors';
 import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
@@ -20,6 +22,7 @@ import { TenantExtDtoErrors } from 'src/app/models/validation-errors/tenant-ext-
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
 import { BranchExtService } from 'src/app/services/branch-ext.service';
+import { EmployeeExtService } from 'src/app/services/employee-ext.service';
 import { FlatExtService } from 'src/app/services/flat-ext.service';
 import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
 import { SectionExtService } from 'src/app/services/section-ext.service';
@@ -35,6 +38,7 @@ export class ValidationService {
     private accountExtService: AccountExtService,
     private apartmentExtService: ApartmentExtService,
     private branchExtService: BranchExtService,
+    private employeeExtService: EmployeeExtService,
     private flatExtService: FlatExtService,
     private houseOwnerExtService: HouseOwnerExtService,
     private sectionExtService: SectionExtService,
@@ -60,6 +64,14 @@ export class ValidationService {
 
   stringPreciseLength(value: string | undefined | null, length: number): boolean {
     return (value == undefined || value == null || value.length != length ? false : true);
+  }
+
+  date(value: Date | undefined | null): boolean {
+    return (value == undefined || value == null ? false : true);
+  }
+
+  dateInPast(value: Date | undefined | null): boolean {
+    return (value == undefined || value == null || new Date(value).valueOf() > Date.now().valueOf() ? false : true);
   }
 
   // Kurallar
@@ -217,6 +229,88 @@ export class ValidationService {
     }
 
     return [isValid, branchExtDtoErrors];
+  }
+
+  validateEmployeeExtDto(employeeExtDto: EmployeeExtDto, validationType: string): [boolean, EmployeeExtDtoErrors] {
+    let employeeExtDtoErrors = this.employeeExtService.emptyEmployeeExtDtoErrors;  
+    let isValid: boolean = true;
+
+    const nameSurname: boolean = this.string(employeeExtDto.nameSurname);
+    if (!nameSurname && validationType == "add" || 
+    !nameSurname && validationType == "update")
+      employeeExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
+
+    const phone1: boolean = this.string(employeeExtDto.phone);
+    if (!phone1 && validationType == "add")
+      employeeExtDtoErrors.phone = "Lütfen telefon numarası giriniz.";
+
+    const phone2: boolean = this.stringPreciseLength(employeeExtDto.phone, 10);
+    if (!phone2 && validationType == "add")
+      employeeExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
+    
+    const employeeTypeId: boolean = this.number(employeeExtDto.employeeTypeId);
+    if (!employeeTypeId && validationType == "add" || 
+    !employeeTypeId && validationType == "update")
+      employeeExtDtoErrors.employeeTypeId = "Lütfen personel tipi seçiniz.";
+    
+    const startDate1: boolean = this.date(employeeExtDto.startDate);
+    if (!startDate1 && validationType == "update")
+      employeeExtDtoErrors.startDate = "Lütfen işe başlama tarihini seçiniz.";
+
+    const startDate2: boolean = this.dateInPast(employeeExtDto.startDate);
+    if (!startDate2 && validationType == "update")
+      employeeExtDtoErrors.startDate = "İşe başlama tarihi alanına geçmiş bir tarih girilmelidir.";
+
+    const branchId: boolean = this.number(employeeExtDto.branchId);
+    if (!branchId && validationType == "add" || 
+    !branchId && validationType == "code")
+      employeeExtDtoErrors.branchId = "Lütfen şube seçiniz.";
+
+    const accountName: boolean = this.string(employeeExtDto.accountName);
+    if (!accountName && validationType == "add" || 
+    !accountName && validationType == "update")
+      employeeExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
+
+    const accountCode: boolean = this.string(employeeExtDto.accountCode);
+    if (!accountCode && validationType == "add")
+      employeeExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
+    
+    const taxOffice: boolean = this.string(employeeExtDto.taxOffice);
+    if (!taxOffice && validationType == "add" || 
+    !taxOffice && validationType == "update")
+      employeeExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
+
+    const taxNumber: boolean = this.number(employeeExtDto.taxNumber);
+    if (!taxNumber && validationType == "add" || 
+    !taxNumber && validationType == "update")
+      employeeExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
+
+    const identityNumber1: boolean = this.number(employeeExtDto.identityNumber);
+    if (!identityNumber1 && validationType == "add" || 
+    !identityNumber1 && validationType == "update" )
+      employeeExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
+
+    const identityNumber2: boolean = this.numberPreciseLength(employeeExtDto.identityNumber, 11);
+    if (!identityNumber2 && validationType == "add" || 
+    !identityNumber2 && validationType == "update")
+      employeeExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
+
+    const limit: boolean = this.number(employeeExtDto.limit);
+    if (!limit && validationType == "add" || 
+    !limit && validationType == "update")
+      employeeExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
+    
+    const standartMaturity: boolean = this.number(employeeExtDto.standartMaturity);
+    if (!standartMaturity && validationType == "add" || 
+    !standartMaturity && validationType == "update")
+      employeeExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
+
+    for (const key in employeeExtDtoErrors) {
+      if (employeeExtDtoErrors[key as keyof EmployeeExtDtoErrors] != "")
+        isValid = false;
+    }
+
+    return [isValid, employeeExtDtoErrors];
   }
 
   validateFlatExtDto(flatExtDto: FlatExtDto, validationType: string): [boolean, FlatExtDtoErrors] {

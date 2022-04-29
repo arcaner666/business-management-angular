@@ -17,6 +17,17 @@ export interface EmployeeExtDto {
     createdAt: Date;
     updatedAt: Date;
 
+    // Extended With Account
+    accountGroupId: number;
+    accountOrder: number;
+    accountName: string;
+    accountCode: string;
+    taxOffice: string;
+    taxNumber: number;
+    identityNumber: number;
+    limit: number;
+    standartMaturity: number;
+    
     // Extended With EmployeeType
     employeeTypeName: string;
 }
