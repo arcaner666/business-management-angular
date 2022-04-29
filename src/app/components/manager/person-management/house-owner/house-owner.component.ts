@@ -176,11 +176,13 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
-    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.branchDtos$;
   }
 
   getHouseOwnerExtsByBusinessId(): Observable<ListDataResult<HouseOwnerExtDto>> {
-    return this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.houseOwnerExtDtos$;
   }
 
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {

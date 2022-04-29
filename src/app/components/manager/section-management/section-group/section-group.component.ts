@@ -126,7 +126,8 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   getSectionGroupsByBusinessId(): Observable<ListDataResult<SectionGroupDto>> {
-    return this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.sectionGroupDtos$;
   }
 
   save(selectedSectionGroupDto: SectionGroupDto): void {

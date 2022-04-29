@@ -187,7 +187,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   getAccountExtsByBusinessIdAndAccountGroupCodes(): Observable<ListDataResult<AccountExtDto>> {
     this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
     this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-    return this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+    this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+    return this.accountExtDtos$;
   }
 
   getAllAccountGroups(): void {
@@ -205,7 +206,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
-    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.branchDtos$;
   }
 
   resetModel(): void {

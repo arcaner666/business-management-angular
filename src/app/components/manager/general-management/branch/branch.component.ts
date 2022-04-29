@@ -153,15 +153,18 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
   
   getAllCities(): Observable<ListDataResult<CityDto>> {
-    return this.cityService.getAll();
+    this.cityDtos$ = this.cityService.getAll();
+    return this.cityDtos$;
   }
 
   getBranchExtsByBusinessId(): Observable<ListDataResult<BranchExtDto>> {
-    return this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchExtDtos$ = this.branchExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.branchExtDtos$;
   }
 
   getDistrictsByCityId(cityId: number): Observable<ListDataResult<DistrictDto>> {
-    return this.districtService.getByCityId(cityId);
+    this.districtDtos$ = this.districtService.getByCityId(cityId);
+    return this.districtDtos$;
   }
 
   save(selectedBranchExtDto: BranchExtDto): void {

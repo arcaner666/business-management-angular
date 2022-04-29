@@ -26,7 +26,8 @@ export class AccountGroupComponent implements OnInit, OnDestroy {
   }
 
   getAccountGroups(): Observable<ListDataResult<AccountGroupDto>> {
-    return this.accountGroupService.getAll();
+    this.accountGroupDtos$ = this.accountGroupService.getAll();
+    return this.accountGroupDtos$;
   }
 
   ngOnInit(): void {

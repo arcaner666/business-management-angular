@@ -136,15 +136,18 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   getApartmentExtsByBusinessId(): Observable<ListDataResult<ApartmentExtDto>> {
-    return this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.apartmentExtDtos$;
   }
 
   getManagersByBusinessId(): Observable<ListDataResult<ManagerDto>> {
-    return this.managerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.managerDtos$ = this.managerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.managerDtos$;
   }
 
   getSectionsByBusinessId(): Observable<ListDataResult<SectionDto>> {
-    return this.sectionService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionDtos$ = this.sectionService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.sectionDtos$;
   }
 
   save(selectedApartmentExtDto: ApartmentExtDto): void {

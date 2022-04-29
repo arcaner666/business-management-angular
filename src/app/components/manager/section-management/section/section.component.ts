@@ -145,23 +145,28 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   getAllCities(): Observable<ListDataResult<CityDto>> {
-    return this.cityService.getAll();
+    this.cityDtos$ = this.cityService.getAll();
+    return this.cityDtos$;
   }
 
   getDistrictsByCityId(cityId: number): Observable<ListDataResult<DistrictDto>> {
-    return this.districtService.getByCityId(cityId);
+    this.districtDtos$ = this.districtService.getByCityId(cityId);
+    return this.districtDtos$;
   }
 
   getManagersByBusinessId(): Observable<ListDataResult<ManagerDto>> {
-    return this.managerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.managerDtos$ = this.managerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.managerDtos$;
   }
 
   getSectionExtsByBusinessId(): Observable<ListDataResult<SectionExtDto>> {
-    return this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.sectionExtDtos$;
   }
 
   getSectionGroupsByBusinessId(): Observable<ListDataResult<SectionGroupDto>> {
-    return this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionGroupDtos$ = this.sectionGroupService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.sectionGroupDtos$;
   }
 
   save(selectedSectionExtDto: SectionExtDto): void {

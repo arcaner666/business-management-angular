@@ -145,23 +145,28 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   getApartmentsBySectionId(sectionId: number): Observable<ListDataResult<ApartmentDto>> {
-    return this.apartmentService.getBySectionId(sectionId);
+    this.apartmentDtos$ = this.apartmentService.getBySectionId(sectionId);
+    return this.apartmentDtos$;
   }
 
   getHouseOwnersByBusinessId(): Observable<ListDataResult<HouseOwnerDto>> {
-    return this.houseOwnerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.houseOwnerDtos$ = this.houseOwnerService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.houseOwnerDtos$;
   }
 
   getSectionsByBusinessId(): Observable<ListDataResult<SectionDto>> {
-    return this.sectionService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionDtos$ = this.sectionService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.sectionDtos$;
   }
 
   getFlatExtsByBusinessId(): Observable<ListDataResult<FlatExtDto>> {
-    return this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.flatExtDtos$;
   }
 
   getTenantsByBusinessId(): Observable<ListDataResult<TenantDto>> {
-    return this.tenantService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.tenantDtos$ = this.tenantService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.tenantDtos$;
   }
 
   save(selectedFlatExtDto: FlatExtDto): void {

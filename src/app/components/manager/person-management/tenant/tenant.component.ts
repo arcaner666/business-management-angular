@@ -176,11 +176,13 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
-    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.branchDtos$;
   }
 
   getTenantExtsByBusinessId(): Observable<ListDataResult<TenantExtDto>> {
-    return this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.tenantExtDtos$;
   }
 
   save(selectedTenantExtDto: TenantExtDto): void {
