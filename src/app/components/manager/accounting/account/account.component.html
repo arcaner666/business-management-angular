@@ -16,14 +16,14 @@
 
 <ng-template #accountDetail>
     <app-account-detail
-        [accountTypes]="sectionManagerAccountTypes"
+        [accountTypeDtos]="accountTypeDtos"
         [accountGroupDtos]="accountGroupDtos"
         [branchDtos]="(branchDtos$ | async)?.data || []"
         [cardHeader]="cardHeader"
         [loading]="loading"
         [selectedAccountExtDto]="selectedAccountExtDto"
         [selectedAccountExtDtoErrors]="selectedAccountExtDtoErrors"
-        (accountCodeGenerated)="generateAccountCode($event)"
+        (accountCodeGenerated)="generateAccountCode()"
         (accountGroupSelected)="selectAccountGroup()"
         (accountTypeSelected)="selectAccountType($event)"
         (cancelled)="cancel()"

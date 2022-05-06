@@ -100,7 +100,7 @@ export class AccountExtService {
   constructor(
     private http: HttpClient, 
   ) {}
-  
+
   public get emptyAccountExtDto(): AccountExtDto {
     return cloneDeep(this._emptyAccountExtDto);
   }

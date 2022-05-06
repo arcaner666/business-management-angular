@@ -14,26 +14,26 @@
                     class="mt-3 mb-3"
                     [hidden]="selectedAccountExtDto.accountId != 0"
                 >
-                    <label class="mb-2" for="account-type-name">Hesap Tipi</label>
+                    <label class="mb-2" for="account-type-id">Hesap Tipi</label>
                     <select 
-                        id="account-type-name"
-                        name="accountTypeName"
+                        id="account-type-id"
+                        name="accountTypeId"
                         class="form-select"
-                        [(ngModel)]="selectedAccountExtDto.accountTypeName"
-                        (change)="selectAccountType(selectedAccountExtDto.accountTypeName)"
-                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountTypeName }"
-                        (change)="selectedAccountExtDtoErrors.accountTypeName = ''"
+                        [(ngModel)]="selectedAccountExtDto.accountTypeId"
+                        (change)="selectAccountType(selectedAccountExtDto.accountTypeId)"
+                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountTypeId }"
+                        (change)="selectedAccountExtDtoErrors.accountTypeId = ''"
                         tabindex="1"
                     >
                         <option 
-                            *ngFor="let accountType of accountTypes"
-                            [value]="accountType.accountTypeName"
+                            *ngFor="let accountTypeDto of accountTypeDtos"
+                            [value]="accountTypeDto.accountTypeId"
                         >
-                            {{accountType.accountTypeName}}
+                            {{accountTypeDto.accountTypeName}}
                         </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountTypeName">
-                        <div>{{selectedAccountExtDtoErrors.accountTypeName}}</div>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountTypeId">
+                        <div>{{selectedAccountExtDtoErrors.accountTypeId}}</div>
                     </div>
                 </div>
                 <!-- /Hesap Tipi -->
@@ -161,7 +161,7 @@
                         <label class="form-label" for="account-code">Hesap Kodu</label>
 
                         <!-- Hesap Kodu Üretme Butonu -->
-                        <a class="code-link cursor-pointer" (click)="generateAccountCode(selectedAccountExtDto.accountGroupId)" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
+                        <a class="code-link cursor-pointer" (click)="generateAccountCode()" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
                         <!-- /Hesap Kodu Üretme Butonu -->
                     </div>
                     <input

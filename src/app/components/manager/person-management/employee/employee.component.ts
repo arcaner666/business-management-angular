@@ -145,7 +145,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   generateAccountCode(): void {
     let [isModelValid, errors] = this.validationService.validateEmployeeExtDto(this.selectedEmployeeExtDto, "code");
     this.selectedEmployeeExtDtoErrors = errors;
-    if (isModelValid) {      
+    if (isModelValid) {
       this.accountExtService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedEmployeeExtDto.branchId, 

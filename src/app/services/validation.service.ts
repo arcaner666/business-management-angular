@@ -79,6 +79,11 @@ export class ValidationService {
     let accountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;  
     let isValid: boolean = true;
 
+    const accountTypeId: boolean = this.number(accountExtDto.accountTypeId);
+    if (!accountTypeId && validationType == "add" || 
+    !accountTypeId && validationType == "code")
+      accountExtDtoErrors.accountTypeId = "Lütfen hesap tipi seçiniz.";
+
     const accountTypeName: boolean = this.string(accountExtDto.accountTypeName);
     if (!accountTypeName && validationType == "add" || 
     !accountTypeName && validationType == "code")
