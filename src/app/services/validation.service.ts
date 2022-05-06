@@ -93,7 +93,7 @@ export class ValidationService {
     if (!accountGroupId && validationType == "add" || 
     !accountGroupId && validationType == "code")
       accountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
-      
+    
     const nameSurname: boolean = this.string(accountExtDto.nameSurname);
     if (!nameSurname && validationType == "add" || 
     !nameSurname && validationType == "update")
