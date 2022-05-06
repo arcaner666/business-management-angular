@@ -69,7 +69,7 @@ export class ValidationService {
   date(value: Date | undefined | null): boolean {
     return (value == undefined || value == null ? false : true);
   }
-
+ 
   dateInPast(value: Date | undefined | null): boolean {
     return (value == undefined || value == null || new Date(value).valueOf() > Date.now().valueOf() ? false : true);
   }
