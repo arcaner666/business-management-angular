@@ -1,3 +1,4 @@
+import { AccountTypeNamesDto } from './../../../../models/dtos/account-type-names-dto';
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
@@ -34,6 +35,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   public accountExtDtos$!: Observable<ListDataResult<AccountExtDto>>;
   public accountGroupDtos: AccountGroupDto[] = [];
   public accountTypeDtos: AccountTypeDto[] = [];
+  public accountTypeNamesDto: AccountTypeNamesDto;
   public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto;
   public accountGroupCodesDto: AccountGroupCodesDto;
   public activePage: string = "list";
@@ -61,12 +63,13 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     this.accountGetByAccountGroupCodesDto = this.accountExtService.emptyAccountGetByAccountGroupCodesDto;
     this.accountGroupCodesDto = this.accountExtService.emptyAccountGroupCodesDto;
+    this.accountTypeNamesDto = this.accountTypeService.emptyAccountTypeNamesDto;
     this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
     this.selectedAccountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;
     this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
 
     this.getAllAccountGroups();
-    this.getAllAccountTypes();
+    this.getAccountTypesByAccountTypeNames();
 
     // Sunucudan bazı cari hesapları getirir ve modellere doldurur.
     this.accountExtDtos$ = this.getAccountExtsByBusinessIdAndAccountGroupCodes();
@@ -203,8 +206,11 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  getAllAccountTypes(): void {
-    this.accountTypeService.getAll()
+  getAccountTypesByAccountTypeNames(): void {
+    this.accountTypeNamesDto.accountTypeNames = [
+      "Diğer", "Kiracı", "Mülk Sahibi", "Personel"
+    ];
+    this.accountTypeService.getByAccountTypeNames(this.accountTypeNamesDto)
     .pipe(
       takeUntil(this.unsubscribeAll),
     ).subscribe({
