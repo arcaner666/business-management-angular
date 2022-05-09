@@ -10,6 +10,10 @@ export interface CustomerDto {
     gender: string;
     notes: string;
     avatarUrl: string;
+    taxOffice: string;
+    taxNumber?: number;
+    identityNumber?: number;
+    standartMaturity: number;
     appointmentsMade: number;
     productsPurchased: number;
     lastPurchaseDate?: Date;

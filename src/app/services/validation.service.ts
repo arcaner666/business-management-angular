@@ -279,16 +279,6 @@ export class ValidationService {
     const accountCode: boolean = this.string(employeeExtDto.accountCode);
     if (!accountCode && validationType == "add")
       employeeExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
-    
-    const taxOffice: boolean = this.string(employeeExtDto.taxOffice);
-    if (!taxOffice && validationType == "add" || 
-    !taxOffice && validationType == "update")
-      employeeExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
-
-    const taxNumber: boolean = this.number(employeeExtDto.taxNumber);
-    if (!taxNumber && validationType == "add" || 
-    !taxNumber && validationType == "update")
-      employeeExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
 
     const identityNumber1: boolean = this.number(employeeExtDto.identityNumber);
     if (!identityNumber1 && validationType == "add" || 
@@ -304,11 +294,6 @@ export class ValidationService {
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       employeeExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
-    
-    const standartMaturity: boolean = this.number(employeeExtDto.standartMaturity);
-    if (!standartMaturity && validationType == "add" || 
-    !standartMaturity && validationType == "update")
-      employeeExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
 
     for (const key in employeeExtDtoErrors) {
       if (employeeExtDtoErrors[key as keyof EmployeeExtDtoErrors] != "")

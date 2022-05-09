@@ -1,5 +1,5 @@
-import { AccountTypeNamesDto } from './../../../../models/dtos/account-type-names-dto';
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,7 @@ import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-ge
 import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { AccountTypeDto } from 'src/app/models/dtos/account-type-dto';
+import { AccountTypeNamesDto } from 'src/app/models/dtos/account-type-names-dto';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
@@ -20,6 +21,7 @@ import { AccountTypeService } from 'src/app/services/account-type.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
+import { HouseOwnerService } from 'src/app/services/house-owner.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
@@ -33,15 +35,16 @@ export class AccountComponent implements OnInit, OnDestroy {
   @ViewChild('deleteModal') deleteModal!: ElementRef;
   
   public accountExtDtos$!: Observable<ListDataResult<AccountExtDto>>;
+  public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto;
+  public accountGroupCodesDto: AccountGroupCodesDto;
   public accountGroupDtos: AccountGroupDto[] = [];
   public accountTypeDtos: AccountTypeDto[] = [];
   public accountTypeNamesDto: AccountTypeNamesDto;
-  public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto;
-  public accountGroupCodesDto: AccountGroupCodesDto;
   public activePage: string = "list";
   public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public cardHeader: string = "";
   public loading: boolean = false;
+  public processType: string = "";
   public selectedAccountExtDto: AccountExtDto;
   public selectedAccountExtDtoErrors: AccountExtDtoErrors;
   public selectedHouseOwnerExtDto: HouseOwnerExtDto;
@@ -55,7 +58,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
     private houseOwnerExtService: HouseOwnerExtService,
+    private houseOwnerService: HouseOwnerService,
     private modalService: NgbModal,
+    private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
@@ -74,6 +79,14 @@ export class AccountComponent implements OnInit, OnDestroy {
     // Sunucudan bazı cari hesapları getirir ve modellere doldurur.
     this.accountExtDtos$ = this.getAccountExtsByBusinessIdAndAccountGroupCodes();
     this.branchDtos$ = this.getBranchsByBusinessId();
+  }
+
+  add(): void {
+    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+
+    this.cardHeader = "Cari Hesap Ekle";
+
+    this.activePage = "detail";
   }
 
   addExt(): void {
@@ -237,14 +250,10 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDto.accountOrder = 0;
     this.selectedAccountExtDto.accountName = "";
     this.selectedAccountExtDto.accountCode = "";
-    this.selectedAccountExtDto.taxOffice = "";
-    this.selectedAccountExtDto.taxNumber = undefined;
-    this.selectedAccountExtDto.identityNumber = undefined;
     this.selectedAccountExtDto.debitBalance = 0;
     this.selectedAccountExtDto.creditBalance = 0;
     this.selectedAccountExtDto.balance = 0;
     this.selectedAccountExtDto.limit = 0;
-    this.selectedAccountExtDto.standartMaturity = 0;
     this.selectedAccountExtDto.createdAt = new Date();
     this.selectedAccountExtDto.updatedAt = new Date();
 
@@ -269,32 +278,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     } else {
       this.updateExt();
     }
-  }
-
-  select(selectedAccountExtDto: AccountExtDto): void {
-    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
-
-    if (!selectedAccountExtDto) {
-      selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
-    }
-
-    this.setHeader(selectedAccountExtDto.accountId);
-
-    if (selectedAccountExtDto.accountId != 0) {
-      this.accountExtService.getExtById(selectedAccountExtDto.accountId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedAccountExtDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
-    }
-
-    this.activePage = "detail";
   }
 
   selectAccountGroup() {
@@ -333,8 +316,21 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
   }
 
-  setHeader(accountId: number): void {
-    accountId == 0 ? this.cardHeader = "Cari Hesap Ekle" : this.cardHeader = "Cari Hesabı Düzenle";
+  update(selectedAccountExtDto: AccountExtDto): void {
+    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+
+    this.houseOwnerService.getByAccountId(selectedAccountExtDto.accountId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.router.navigate([`manager/person-management/house-owner/${response.data.houseOwnerId}`]);
+      }, error: (error) => {
+        console.log(error);
+        this.toastService.danger(error.message);
+      }
+    });
   }
 
   updateExt(): void {

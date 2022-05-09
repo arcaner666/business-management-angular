@@ -4,6 +4,7 @@ export interface BankDto {
     branchId: number;
     accountId: number;
     fullAddressId: number;
+    currencyId: number;
     bankName: string;
     bankBranchName: string;
     bankCode: string;
@@ -11,6 +12,7 @@ export interface BankDto {
     bankAccountCode: string;
     iban: string;
     officerName: string;
+    standartMaturity: number;
     createdAt: Date;
     updatedAt: Date;
 }

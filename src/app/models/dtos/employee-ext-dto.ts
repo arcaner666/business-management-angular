@@ -11,6 +11,7 @@ export interface EmployeeExtDto {
     gender: string;
     notes: string;
     avatarUrl: string;
+    identityNumber: number;
     stillWorking: boolean;
     startDate: Date;
     quitDate?: Date;
@@ -22,11 +23,7 @@ export interface EmployeeExtDto {
     accountOrder: number;
     accountName: string;
     accountCode: string;
-    taxOffice: string;
-    taxNumber: number;
-    identityNumber: number;
     limit: number;
-    standartMaturity: number;
     
     // Extended With EmployeeType
     employeeTypeName: string;

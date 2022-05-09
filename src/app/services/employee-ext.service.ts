@@ -31,6 +31,7 @@ export class EmployeeExtService {
     gender: "",
     notes: "",
     avatarUrl: "",
+    identityNumber: 0,
     stillWorking: false,
     startDate: new Date(),
     quitDate: undefined,
@@ -42,11 +43,7 @@ export class EmployeeExtService {
     accountOrder: 0,
     accountName: "",
     accountCode: "",
-    taxOffice: "",
-    taxNumber: 0,
-    identityNumber: 0,
     limit: 0,
-    standartMaturity: 0,
 
     // Extended With EmployeeType
     employeeTypeName: "",
@@ -64,6 +61,7 @@ export class EmployeeExtService {
     gender: "",
     notes: "",
     avatarUrl: "",
+    identityNumber: "",
     stillWorking: "",
     startDate: "",
     quitDate: "",
@@ -75,11 +73,7 @@ export class EmployeeExtService {
     accountOrder: "",
     accountName: "",
     accountCode: "",
-    taxOffice: "",
-    taxNumber: "",
-    identityNumber: "",
     limit: "",
-    standartMaturity: "",
 
     // Extended With EmployeeType
     employeeTypeName: "",

@@ -11,6 +11,7 @@ export interface EmployeeExtDtoErrors {
     gender: string;
     notes: string;
     avatarUrl: string;
+    identityNumber: string;
     stillWorking: string;
     startDate: string;
     quitDate?: string;
@@ -22,11 +23,7 @@ export interface EmployeeExtDtoErrors {
     accountOrder: string;
     accountName: string;
     accountCode: string;
-    taxOffice: string;
-    taxNumber: string;
-    identityNumber: string;
     limit: string;
-    standartMaturity: string;
 
     // Extended With EmployeeType
     employeeTypeName: string;

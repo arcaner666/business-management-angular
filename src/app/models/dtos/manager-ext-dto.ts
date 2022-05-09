@@ -9,6 +9,9 @@ export interface ManagerExtDto {
     gender: string;
     notes: string;
     avatarUrl: string;
+    taxOffice: string;
+    taxNumber?: number;
+    identityNumber?: number;
     createdAt: Date;
     updatedAt: Date;
 

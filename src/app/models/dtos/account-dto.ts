@@ -3,18 +3,14 @@ export interface AccountDto {
     businessId: number;
     branchId: number;
     accountGroupId: number;
-    currencyId: number;
+    accountTypeId: number;
     accountOrder: number;
     accountName: string;
     accountCode: string;
-    taxOffice: string;
-    taxNumber?: number; 
-    identityNumber?: number;
     debitBalance: number;
     creditBalance: number;
     balance: number;
     limit: number;
-    standartMaturity: number;
     createdAt: Date;
     updatedAt: Date;
 }

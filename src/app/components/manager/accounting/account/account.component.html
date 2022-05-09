@@ -9,8 +9,9 @@
 <ng-template #accountList>
     <app-account-list
         [accountExtDtos]="(accountExtDtos$ | async)?.data || []"
+        (added)="add()"
         (deleted)="delete($event)"
-        (selected)="select($event)"
+        (updated)="update($event)"
     ></app-account-list>
 </ng-template>
 

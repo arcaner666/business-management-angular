@@ -297,44 +297,6 @@
 
                 </div>
                 <!-- /Hesap Kodu -->
-                
-                <!-- Vergi Dairesi -->
-                <div class="mt-3 mb-3">
-                    <label class="form-label" for="tax-office">Vergi Dairesi</label>
-                    <input
-                        id="tax-office"
-                        type="text"
-                        name="taxOffice"
-                        [(ngModel)]="selectedEmployeeExtDto.taxOffice"
-                        class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && selectedEmployeeExtDtoErrors.taxOffice }"
-                        (change)="selectedEmployeeExtDtoErrors.taxOffice = ''"
-                        tabindex="13"
-                    />
-                    <div class="invalid-feedback" *ngIf="submitted && selectedEmployeeExtDtoErrors.taxOffice">
-                        <div>{{selectedEmployeeExtDtoErrors.taxOffice}}</div>
-                    </div>
-                </div>
-                <!-- /Vergi Dairesi -->
-
-                <!-- Vergi Numarası -->
-                <div class="mt-3 mb-3">
-                    <label class="form-label" for="tax-number">Vergi Numarası</label>
-                    <input
-                        id="tax-number"
-                        type="number"
-                        name="taxNumber"
-                        [(ngModel)]="selectedEmployeeExtDto.taxNumber"
-                        class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && selectedEmployeeExtDtoErrors.taxNumber }"
-                        (change)="selectedEmployeeExtDtoErrors.taxNumber = ''"
-                        tabindex="14"
-                    />
-                    <div class="invalid-feedback" *ngIf="submitted && selectedEmployeeExtDtoErrors.taxNumber">
-                        <div>{{selectedEmployeeExtDtoErrors.taxNumber}}</div>
-                    </div>
-                </div>
-                <!-- /Vergi Numarası -->
 
                 <!-- Kimlik Numarası -->
                 <div class="mt-3 mb-3">
@@ -373,25 +335,6 @@
                     </div>
                 </div>
                 <!-- /Limit -->
-
-                <!-- Standart Vade -->
-                <div class="mt-3 mb-3">
-                    <label class="form-label" for="standart-maturity">Standart Vade</label>
-                    <input
-                        id="standart-maturity"
-                        type="number"
-                        name="standartMaturity"
-                        [(ngModel)]="selectedEmployeeExtDto.standartMaturity"
-                        class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && selectedEmployeeExtDtoErrors.standartMaturity }"
-                        (change)="selectedEmployeeExtDtoErrors.standartMaturity = ''"
-                        tabindex="17"
-                    />
-                    <div class="invalid-feedback" *ngIf="submitted && selectedEmployeeExtDtoErrors.standartMaturity">
-                        <div>{{selectedEmployeeExtDtoErrors.standartMaturity}}</div>
-                    </div>
-                </div>
-                <!-- /Standart Vade -->
 
                 <!-- Butonlar -->
                 <div class="container-fluid m-0">

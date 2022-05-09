@@ -10,6 +10,10 @@ export interface TenantExtDto {
     gender: string;
     notes: string;
     avatarUrl: string;
+    taxOffice: string;
+    taxNumber?: number;
+    identityNumber?: number;
+    standartMaturity: number;
     createdAt: Date;
     updatedAt: Date;
     
@@ -18,9 +22,5 @@ export interface TenantExtDto {
     accountOrder: number;
     accountName: string;
     accountCode: string;
-    taxOffice: string;
-    taxNumber: number;
-    identityNumber: number;
     limit: number;
-    standartMaturity: number;
 }

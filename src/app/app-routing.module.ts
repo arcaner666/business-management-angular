@@ -28,9 +28,11 @@ import { ManagerDashboardComponent } from 'src/app/components/manager/manager-da
 import { EmployeeComponent } from 'src/app/components/manager/person-management/employee/employee.component';
 import { EmployeeListComponent } from 'src/app/components/manager/person-management/employee/employee-list/employee-list.component';
 import { EmployeeDetailComponent } from 'src/app/components/manager/person-management/employee/employee-detail/employee-detail.component';
+
 import { HouseOwnerComponent } from 'src/app/components/manager/person-management/house-owner/house-owner.component';
 import { HouseOwnerDetailComponent } from 'src/app/components/manager/person-management/house-owner/house-owner-detail/house-owner-detail.component';
 import { HouseOwnerListComponent } from 'src/app/components/manager/person-management/house-owner/house-owner-list/house-owner-list.component';
+
 import { TenantComponent } from 'src/app/components/manager/person-management/tenant/tenant.component';
 import { TenantListComponent } from 'src/app/components/manager/person-management/tenant/tenant-list/tenant-list.component';
 import { TenantDetailComponent } from 'src/app/components/manager/person-management/tenant/tenant-detail/tenant-detail.component';
@@ -104,7 +106,7 @@ const routes: Routes = [
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/person-management/house-owner', component: HouseOwnerComponent, 
+    path: 'manager/person-management/house-owner/:id', component: HouseOwnerComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {

@@ -121,7 +121,7 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
     ],
   },
   {
-    id: "persons",
+    id: "person-management",
     title: "Kişiler",
     url: "",
     type: "collapsible",
@@ -143,7 +143,7 @@ const SECTION_MANAGER_SIDEBAR_LINKS: NavGroup[] = [
       {
         id: "house-owner",
         title: "Mülk Sahipleri",
-        url: "manager/person-management/house-owner",
+        url: "manager/person-management/house-owner/0",
         type: "item",
         role: ["Manager"],
         icon: "",

@@ -7,14 +7,10 @@ export interface AccountExtDtoErrors {
     accountOrder: string;
     accountName: string;
     accountCode: string;
-    taxOffice: string;
-    taxNumber: string;
-    identityNumber: string;
     debitBalance: string;
     creditBalance: string;
     balance: string;
     limit: string;
-    standartMaturity: string;
     createdAt: string;
     updatedAt: string;
 
@@ -30,5 +26,14 @@ export interface AccountExtDtoErrors {
 
     // Added Custom Required Fields
     nameSurname: string;
+    email: string;
     phone: string;
+    dateOfBirth: string;
+    gender: string;
+    notes: string;
+    avatarUrl: string;
+    taxOffice: string;
+    taxNumber: string;
+    identityNumber: string;
+    standartMaturity: string;
 }

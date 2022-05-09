@@ -6,6 +6,10 @@ import { AccountExtDtoErrors } from 'src/app/models/validation-errors/account-ex
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { AccountTypeDto } from 'src/app/models/dtos/account-type-dto';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
+import { EmployeeExtDto } from 'src/app/models/dtos/employee-ext-dto';
+import { EmployeeExtDtoErrors } from 'src/app/models/validation-errors/employee-ext-dto-errors';
+import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
+import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-owner-ext-dto-errors';
 
 @Component({
   selector: 'app-account-detail',
@@ -21,8 +25,13 @@ export class AccountDetailComponent {
   @Input() branchDtos!: BranchDto[];
   @Input() cardHeader!: string;
   @Input() loading!: boolean;
+  @Input() processType!: string;
   @Input() selectedAccountExtDto!: AccountExtDto;
   @Input() selectedAccountExtDtoErrors!: AccountExtDtoErrors;
+  @Input() selectedEmployeeExtDto!: EmployeeExtDto;
+  @Input() selectedEmployeeExtDtoErrors!: EmployeeExtDtoErrors;
+  @Input() selectedHouseOwnerExtDto!: HouseOwnerExtDto;
+  @Input() selectedHouseOwnerExtDtoErrors!: HouseOwnerExtDtoErrors;
   
   @Output() accountCodeGenerated = new EventEmitter();
   @Output() accountGroupSelected = new EventEmitter();
@@ -32,6 +41,7 @@ export class AccountDetailComponent {
   @Output() saved = new EventEmitter<AccountExtDto>();
   
   public submitted: boolean = false;
+  public genders: string[] = ["Erkek", "Kadın", "Diğer"];
   
   constructor() {
     console.log("AccountDetailComponent constructor çalıştı.");

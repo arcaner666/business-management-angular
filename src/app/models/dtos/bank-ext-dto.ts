@@ -4,6 +4,7 @@ export interface BankExtDto {
     branchId: number;
     accountId: number;
     fullAddressId: number;
+    currencyId: number;
     bankName: string;
     bankBranchName: string;
     bankCode: string;
@@ -11,6 +12,7 @@ export interface BankExtDto {
     bankAccountCode: string;
     iban: string;
     officerName: string;
+    standartMaturity: number;
     createdAt: Date;
     updatedAt: Date;
 
@@ -19,19 +21,19 @@ export interface BankExtDto {
 
     // Extended With Account
     accountGroupId: number;
-    currencyId: number;
     accountOrder: number;
     accountName: string;
     accountCode: string;
+    limit: number;
 
     // Extended With Account + AccountGroup
     accountGroupName: string;
-
-    // Extended With Account + Currency
-    currencyName: string;
 
     // Extended With FullAddress
     cityId: number;
     districtId: number;
     addressText: string;
+
+    // Extended With Currency
+    currencyName: string;
 }

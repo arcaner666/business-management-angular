@@ -30,14 +30,10 @@ export class AccountExtService {
     accountOrder: 0,
     accountName: "",
     accountCode: "",
-    taxOffice: "",
-    taxNumber: undefined,
-    identityNumber: undefined,
     debitBalance: 0,
     creditBalance: 0,
     balance: 0,
     limit: 0,
-    standartMaturity: 0,
     createdAt: new Date(),
     updatedAt: new Date(),
   
@@ -53,7 +49,16 @@ export class AccountExtService {
   
     // Added Custom Required Fields
     nameSurname: "",
+    email: "",
     phone: "",
+    dateOfBirth: new Date(),
+    gender: "",
+    notes: "",
+    avatarUrl: "",
+    taxOffice: "",
+    taxNumber: 0,
+    identityNumber: 0,
+    standartMaturity: 0,
   };
   private _emptyAccountExtDtoErrors: AccountExtDtoErrors = {
     accountId: "",
@@ -64,14 +69,10 @@ export class AccountExtService {
     accountOrder: "",
     accountName: "",
     accountCode: "",
-    taxOffice: "",
-    taxNumber: "",
-    identityNumber: "",
     debitBalance: "",
     creditBalance: "",
     balance: "",
     limit: "",
-    standartMaturity: "",
     createdAt: "",
     updatedAt: "",
   
@@ -87,7 +88,16 @@ export class AccountExtService {
   
     // Added Custom Required Fields
     nameSurname: "",
+    email: "",
     phone: "",
+    dateOfBirth: "",
+    gender: "",
+    notes: "",
+    avatarUrl: "",
+    taxOffice: "",
+    taxNumber: "",
+    identityNumber: "",
+    standartMaturity: "",
   };
   private _emptyAccountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto = {
     businessId: 0,

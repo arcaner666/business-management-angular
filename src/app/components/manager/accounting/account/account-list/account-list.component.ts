@@ -13,17 +13,16 @@ export class AccountListComponent {
 
   @Input() accountExtDtos: AccountExtDto[] = [];
 
+  @Output() added = new EventEmitter();
   @Output() deleted = new EventEmitter<AccountExtDto>();
-  @Output() selected = new EventEmitter<AccountExtDto>();
+  @Output() updated = new EventEmitter<AccountExtDto>();
 
   public currentPage: number = 1;
   public elementIndex: number = 0;
   public itemsPerPage: number = 10;
   public pageSize: number = 0;
 
-  constructor(
-    
-  ) {
+  constructor() {
     console.log("AccountListComponent constructor çalıştı.");
   }
 
@@ -38,14 +37,14 @@ export class AccountListComponent {
   }
 
   openAddPage(): void {
-    this.selected.emit();
+    this.added.emit();
   }
   
   openDeleteModal(selectedAccountExtDto: AccountExtDto): void {
     this.deleted.emit(cloneDeep(selectedAccountExtDto));
   }
 
-  openEditPage(selectedAccountExtDto: AccountExtDto): void {
-    this.selected.emit(cloneDeep(selectedAccountExtDto));
+  openUpdatePage(selectedAccountExtDto: AccountExtDto): void {
+    this.updated.emit(cloneDeep(selectedAccountExtDto));
   }
 }

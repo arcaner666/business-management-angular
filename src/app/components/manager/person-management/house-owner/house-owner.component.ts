@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, pipe } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -34,16 +35,19 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public selectedHouseOwnerExtDto: HouseOwnerExtDto;
   public selectedHouseOwnerExtDtoErrors: HouseOwnerExtDtoErrors;
+  public selectedHouseOwnerId: number = 0;
 
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private accountExtService: AccountExtService,
     private accountGroupService: AccountGroupService,
+    private activatedRoute: ActivatedRoute,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
     private houseOwnerExtService: HouseOwnerExtService,
     private modalService: NgbModal,
+    private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
@@ -54,7 +58,15 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
 
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
-    this.houseOwnerExtDtos$ = this.getHouseOwnerExtsByBusinessId();
+
+    this.selectedHouseOwnerId = parseInt(this.activatedRoute.snapshot.paramMap.get("id") || "0");
+    console.log(this.selectedHouseOwnerId);
+    if (this.selectedHouseOwnerId != 0) {
+      this.selectedHouseOwnerExtDto.houseOwnerId = this.selectedHouseOwnerId;
+      this.select(this.selectedHouseOwnerExtDto);
+    } else {
+      this.houseOwnerExtDtos$ = this.getHouseOwnerExtsByBusinessId();
+    }
   }
 
   addExt(): void {

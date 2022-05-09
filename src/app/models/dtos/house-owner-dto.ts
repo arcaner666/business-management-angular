@@ -10,6 +10,10 @@ export interface HouseOwnerDto {
     gender: string;
     notes: string;
     avatarUrl: string;
+    taxOffice: string;
+    taxNumber?: number;
+    identityNumber?: number;
+    standartMaturity: number;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -11,8 +11,9 @@ export interface EmployeeDto {
     gender: string;
     notes: string;
     avatarUrl: string;
+    identityNumber: number;
     stillWorking: boolean;
-    startDate?: Date;
+    startDate: Date;
     quitDate?: Date;
     createdAt: Date;
     updatedAt: Date;
