@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -8,11 +9,13 @@ import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { TenantExtDto } from 'src/app/models/dtos/tenant-ext-dto';
 import { TenantExtDtoErrors } from 'src/app/models/validation-errors/tenant-ext-dto-errors';
+import { RouteHistory } from 'src/app/models/various/route-history';
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 import { TenantExtService } from 'src/app/services/tenant-ext.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
@@ -43,6 +46,8 @@ export class TenantComponent implements OnInit, OnDestroy {
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
     private modalService: NgbModal,
+    private navigationService: NavigationService,
+    private router: Router,
     private tenantExtService: TenantExtService,
     private toastService: ToastService,
     private validationService: ValidationService,
@@ -54,7 +59,8 @@ export class TenantComponent implements OnInit, OnDestroy {
 
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
-    this.tenantExtDtos$ = this.getTenantExtsByBusinessId();
+    
+    this.navigate(this.navigationService.routeHistory);
   }
 
   addExt(): void {
@@ -71,7 +77,7 @@ export class TenantComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
           this.toastService.success(response.message);
-          this.activePage = "list";
+          this.navigateOnCompletion(this.navigationService.routeHistory);
           window.scroll(0,0);
           this.loading = false;
   
@@ -91,7 +97,7 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.activePage = "list";
+    this.navigateOnCompletion(this.navigationService.routeHistory);
     window.scroll(0,0);
   }
 
@@ -185,6 +191,37 @@ export class TenantComponent implements OnInit, OnDestroy {
     return this.tenantExtDtos$;
   }
 
+  navigate(routeHistory: RouteHistory) {
+    if (routeHistory.previousRoute != "") {
+      if (routeHistory.accountId != 0) {
+        this.tenantExtService.getExtByAccountId(routeHistory.accountId)
+        .pipe(
+          takeUntil(this.unsubscribeAll),
+        ).subscribe({
+          next: (response) => {
+            this.selectedTenantExtDto = response.data;
+          }, error: (error) => {
+            console.log(error);
+            this.toastService.danger(error.message);
+          }
+        });
+      }
+
+      this.activePage = "detail";
+    } else {
+      this.tenantExtDtos$ = this.getTenantExtsByBusinessId();
+    }
+  }
+
+  navigateOnCompletion(routeHistory: RouteHistory) {
+    if (routeHistory.previousRoute) {
+      this.router.navigate([`${routeHistory.previousRoute}`]);
+      this.navigationService.routeHistory = this.navigationService.emptyRouteHistory;
+    } else {
+      this.activePage = "list";
+    }
+  }
+
   save(selectedTenantExtDto: TenantExtDto): void {
     if (selectedTenantExtDto.tenantId == 0) {
       this.addExt();
@@ -233,7 +270,7 @@ export class TenantComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           this.toastService.success(response.message);
-          this.activePage = "list";
+          this.navigateOnCompletion(this.navigationService.routeHistory);
           window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {

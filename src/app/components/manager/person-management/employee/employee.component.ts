@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,6 +10,7 @@ import { EmployeeExtDto } from 'src/app/models/dtos/employee-ext-dto';
 import { EmployeeExtDtoErrors } from 'src/app/models/validation-errors/employee-ext-dto-errors';
 import { EmployeeTypeDto } from 'src/app/models/dtos/employee-type-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
+import { RouteHistory } from 'src/app/models/various/route-history';
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
@@ -16,6 +18,7 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { EmployeeExtService } from 'src/app/services/employee-ext.service';
 import { EmployeeTypeService } from 'src/app/services/employee-type.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
@@ -48,6 +51,8 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     private employeeExtService: EmployeeExtService,
     private employeeTypeService: EmployeeTypeService,
     private modalService: NgbModal,
+    private navigationService: NavigationService,
+    private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
@@ -58,8 +63,9 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
-    this.employeeExtDtos$ = this.getEmployeeExtsByBusinessId();
     this.employeeTypeDtos$ = this.getAllEmployeeTypes();
+    
+    this.navigate(this.navigationService.routeHistory);
   }
 
   addExt(): void {
@@ -76,7 +82,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
           this.toastService.success(response.message);
-          this.activePage = "list";
+          this.navigateOnCompletion(this.navigationService.routeHistory);
           window.scroll(0,0);
           this.loading = false;
   
@@ -195,6 +201,37 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     return this.employeeExtDtos$;
   }
 
+  navigate(routeHistory: RouteHistory) {
+    if (routeHistory.previousRoute != "") {
+      if (routeHistory.accountId != 0) {
+        this.employeeExtService.getExtByAccountId(routeHistory.accountId)
+        .pipe(
+          takeUntil(this.unsubscribeAll),
+        ).subscribe({
+          next: (response) => {
+            this.selectedEmployeeExtDto = response.data;
+          }, error: (error) => {
+            console.log(error);
+            this.toastService.danger(error.message);
+          }
+        });
+      }
+
+      this.activePage = "detail";
+    } else {
+      this.employeeExtDtos$ = this.getEmployeeExtsByBusinessId();
+    }
+  }
+
+  navigateOnCompletion(routeHistory: RouteHistory) {
+    if (routeHistory.previousRoute) {
+      this.router.navigate([`${routeHistory.previousRoute}`]);
+      this.navigationService.routeHistory = this.navigationService.emptyRouteHistory;
+    } else {
+      this.activePage = "list";
+    }
+  }
+
   save(selectedEmployeeExtDto: EmployeeExtDto): void {
     if (selectedEmployeeExtDto.employeeId == 0) {
       this.addExt();
@@ -244,7 +281,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           this.toastService.success(response.message);
-          this.activePage = "list";
+          this.navigateOnCompletion(this.navigationService.routeHistory);
           window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {

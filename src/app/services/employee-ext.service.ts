@@ -100,6 +100,10 @@ export class EmployeeExtService {
     return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
+  getExtByAccountId(accountId: number): Observable<SingleDataResult<EmployeeExtDto>> {
+    return this.http.get<SingleDataResult<EmployeeExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyaccountid/${accountId}`);
+  }
+
   getExtById(id: number): Observable<SingleDataResult<EmployeeExtDto>> {
     return this.http.get<SingleDataResult<EmployeeExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
   }
