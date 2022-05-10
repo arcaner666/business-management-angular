@@ -1,0 +1,157 @@
+<div class="container-fluid g-0 p-3">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <!-- Card Başlığı -->
+            <h2 class="card-title text-center fs-4">{{cardHeader}}</h2>
+            <!-- /Card Başlığı -->
+
+            <!-- Kasa Ekleme/Düzenleme Formu -->
+            <form #form="ngForm" (ngSubmit)="save(selectedCashExtDto)">
+                <!-- Şube -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="branch-id">Şube</label>
+                    <select 
+                        id="branch-id"
+                        name="branchId"
+                        class="form-select"
+                        [(ngModel)]="selectedCashExtDto.branchId"
+                        [ngClass]="{ 'is-invalid': submitted && selectedCashExtDtoErrors.branchId }"
+                        [disabled]="selectedCashExtDto.accountId != 0"
+                        (change)="selectedCashExtDtoErrors.branchId = ''"
+                        tabindex="1"
+                    >
+                        <option 
+                            *ngFor="let branchDto of branchDtos"
+                            [value]="branchDto.branchId"
+                        >
+                            {{branchDto.branchName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedCashExtDtoErrors.branchId">
+                        <div>{{selectedCashExtDtoErrors.branchId}}</div>
+                    </div>
+                </div>
+                <!-- /Şube -->
+    
+                <!-- Hesap Adı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="account-name">Hesap Adı</label>
+                    <input
+                        id="account-name"
+                        type="text"
+                        name="accountName"
+                        [(ngModel)]="selectedCashExtDto.accountName"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedCashExtDtoErrors.accountName }"
+                        (change)="selectedCashExtDtoErrors.accountName = ''"
+                        tabindex="2"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedCashExtDtoErrors.accountName">
+                        <div>{{selectedCashExtDtoErrors.accountName}}</div>
+                    </div>
+                </div>
+                <!-- /Hesap Adı -->
+
+                <!-- Hesap Kodu -->
+                <div class="mt-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label" for="account-code">Hesap Kodu</label>
+
+                        <!-- Hesap Kodu Üretme Butonu -->
+                        <a class="code-link cursor-pointer" (click)="generateAccountCode()" *ngIf="selectedCashExtDto.accountId == 0"><small>Kod Üret</small></a>
+                        <!-- /Hesap Kodu Üretme Butonu -->
+                    </div>
+                    <input
+                        id="account-code"
+                        type="text"
+                        name="accountCode"
+                        [(ngModel)]="selectedCashExtDto.accountCode"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedCashExtDtoErrors.accountCode }"
+                        [readOnly]="selectedCashExtDto.accountId != 0"
+                        (change)="selectedCashExtDtoErrors.accountCode = ''"
+                        tabindex="3"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedCashExtDtoErrors.accountCode">
+                        <div>{{selectedCashExtDtoErrors.accountCode}}</div>
+                    </div>
+
+                </div>
+                <!-- /Hesap Kodu -->
+
+                <!-- Limit -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="limit">Limit</label>
+                    <input
+                        id="limit"
+                        type="number"
+                        name="limit"
+                        [(ngModel)]="selectedCashExtDto.limit"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedCashExtDtoErrors.limit }"
+                        (change)="selectedCashExtDtoErrors.limit = ''"
+                        tabindex="4"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedCashExtDtoErrors.limit">
+                        <div>{{selectedCashExtDtoErrors.limit}}</div>
+                    </div>
+                </div>
+                <!-- /Limit -->
+
+                <!-- Döviz Tipi -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="currency-id">Döviz Tipi</label>
+                    <select 
+                        id="currency-id"
+                        name="currencyId"
+                        class="form-select"
+                        [(ngModel)]="selectedCashExtDto.currencyId"
+                        [ngClass]="{ 'is-invalid': submitted && selectedCashExtDtoErrors.currencyId }"
+                        [disabled]="selectedCashExtDto.accountId != 0"
+                        (change)="selectedCashExtDtoErrors.currencyId = ''"
+                        tabindex="5"
+                    >
+                        <option 
+                            *ngFor="let currencyDto of currencyDtos"
+                            [value]="currencyDto.currencyId"
+                        >
+                            {{currencyDto.currencyName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedCashExtDtoErrors.currencyId">
+                        <div>{{selectedCashExtDtoErrors.currencyId}}</div>
+                    </div>
+                </div>
+                <!-- /Döviz Tipi -->
+                
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="6"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                                (click)="cancel()"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
+            </form>
+            <!-- /Kasa Ekleme/Düzenleme Formu -->
+        </div>
+    </div>
+</div>
+    

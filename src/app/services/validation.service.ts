@@ -6,6 +6,8 @@ import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
 import { ApartmentExtDtoErrors } from 'src/app/models/validation-errors/apartment-ext-dto-errors';
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { BranchExtDtoErrors } from 'src/app/models/validation-errors/branch-ext-dto-errors';
+import { CashExtDto } from 'src/app/models/dtos/cash-ext-dto';
+import { CashExtDtoErrors } from 'src/app/models/validation-errors/cash-ext-dto-errors';
 import { EmployeeExtDto } from 'src/app/models/dtos/employee-ext-dto';
 import { EmployeeExtDtoErrors } from 'src/app/models/validation-errors/employee-ext-dto-errors';
 import { FlatExtDto } from 'src/app/models/dtos/flat-ext-dto';
@@ -22,6 +24,7 @@ import { TenantExtDtoErrors } from 'src/app/models/validation-errors/tenant-ext-
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
 import { BranchExtService } from 'src/app/services/branch-ext.service';
+import { CashExtService } from 'src/app/services/cash-ext.service';
 import { EmployeeExtService } from 'src/app/services/employee-ext.service';
 import { FlatExtService } from 'src/app/services/flat-ext.service';
 import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
@@ -38,6 +41,7 @@ export class ValidationService {
     private accountExtService: AccountExtService,
     private apartmentExtService: ApartmentExtService,
     private branchExtService: BranchExtService,
+    private cashExtService: CashExtService,
     private employeeExtService: EmployeeExtService,
     private flatExtService: FlatExtService,
     private houseOwnerExtService: HouseOwnerExtService,
@@ -186,6 +190,41 @@ export class ValidationService {
     }
 
     return [isValid, branchExtDtoErrors];
+  }
+
+  validateCashExtDto(cashExtDto: CashExtDto, validationType: string): [boolean, CashExtDtoErrors] {
+    let cashExtDtoErrors = this.cashExtService.emptyCashExtDtoErrors;  
+    let isValid: boolean = true;
+
+    const branchId: boolean = this.number(cashExtDto.branchId);
+    if (!branchId && validationType == "add" || 
+    !branchId && validationType == "code")
+      cashExtDtoErrors.branchId = "Lütfen şube seçiniz.";
+
+    const accountName: boolean = this.string(cashExtDto.accountName);
+    if (!accountName && validationType == "add" || 
+    !accountName && validationType == "update")
+      cashExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
+
+    const accountCode: boolean = this.string(cashExtDto.accountCode);
+    if (!accountCode && validationType == "add")
+      cashExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
+
+    const limit: boolean = this.number(cashExtDto.limit);
+    if (!limit && validationType == "add" || 
+    !limit && validationType == "update")
+      cashExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
+
+    const currencyId: boolean = this.number(cashExtDto.currencyId);
+    if (!currencyId && validationType == "add")
+      cashExtDtoErrors.currencyId = "Lütfen döviz tipi seçiniz.";
+      
+    for (const key in cashExtDtoErrors) {
+      if (cashExtDtoErrors[key as keyof CashExtDtoErrors] != "")
+        isValid = false;
+    }
+
+    return [isValid, cashExtDtoErrors];
   }
 
   validateEmployeeExtDto(employeeExtDto: EmployeeExtDto, validationType: string): [boolean, EmployeeExtDtoErrors] {

@@ -16,6 +16,10 @@ import { AccountListComponent } from 'src/app/components/manager/accounting/acco
 import { AccountGroupComponent } from 'src/app/components/manager/accounting/account-group/account-group.component';
 import { AccountGroupListComponent } from 'src/app/components/manager/accounting/account-group/account-group-list/account-group-list.component';
 
+import { CashComponent } from 'src/app/components/manager/accounting/cash/cash.component';
+import { CashDetailComponent } from 'src/app/components/manager/accounting/cash/cash-detail/cash-detail.component';
+import { CashListComponent } from 'src/app/components/manager/accounting/cash/cash-list/cash-list.component';
+
 // Manager - General Management Components
 import { BranchComponent } from 'src/app/components/manager/general-management/branch/branch.component';
 import { BranchDetailComponent } from 'src/app/components/manager/general-management/branch/branch-detail/branch-detail.component';
@@ -199,6 +203,18 @@ const routes: Routes = [
   },
   {
     path: 'manager/accounting/account-detail', component: AccountDetailComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/accounting/cash', component: CashComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/accounting/cash-list', component: CashListComponent, 
+    canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
+  },
+  {
+    path: 'manager/accounting/cash-detail', component: CashDetailComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
 
