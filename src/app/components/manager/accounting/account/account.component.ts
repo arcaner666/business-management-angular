@@ -184,17 +184,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
       this.setHeader(selectedAccountExtDto.accountId);
       if (selectedAccountExtDto.accountId != 0) {
-        this.accountExtService.getExtById(selectedAccountExtDto.accountId)
-        .pipe(
-          takeUntil(this.unsubscribeAll),
-        ).subscribe({
-          next: (response) => {
-            this.selectedAccountExtDto = response.data;
-          }, error: (error) => {
-            console.log(error);
-            this.toastService.danger(error.message);
-          }
-        });
+        this.getAccountExtById(selectedAccountExtDto.accountId);
       }
       this.selectedAccountExtDto.accountTypeId = this.findAccountTypeId("Diğer");
       this.activePage = "detail";
@@ -234,6 +224,20 @@ export class AccountComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedAccountExtDtoErrors);
     }
+  }
+
+  getAccountExtById(accountId: number) {
+    this.accountExtService.getExtById(accountId)
+    .pipe(
+      takeUntil(this.unsubscribeAll),
+    ).subscribe({
+      next: (response) => {
+        this.selectedAccountExtDto = response.data;
+      }, error: (error) => {
+        console.log(error);
+        this.toastService.danger(error.message);
+      }
+    });
   }
 
   getAccountExtsByBusinessId(): Observable<ListDataResult<AccountExtDto>> {
