@@ -23,17 +23,4 @@ export interface AccountExtDtoErrors {
 
     // Extended With AccountType
     accountTypeName: string;
-
-    // Added Custom Required Fields
-    nameSurname: string;
-    email: string;
-    phone: string;
-    dateOfBirth: string;
-    gender: string;
-    notes: string;
-    avatarUrl: string;
-    taxOffice: string;
-    taxNumber: string;
-    identityNumber: string;
-    standartMaturity: string;
 }

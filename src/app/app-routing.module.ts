@@ -106,7 +106,7 @@ const routes: Routes = [
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {
-    path: 'manager/person-management/house-owner/:id', component: HouseOwnerComponent, 
+    path: 'manager/person-management/house-owner', component: HouseOwnerComponent, 
     canActivate: [AuthorizationGuard], data: { roles: ["Manager"] },
   },
   {

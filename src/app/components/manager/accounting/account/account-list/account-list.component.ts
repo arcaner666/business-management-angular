@@ -13,7 +13,7 @@ export class AccountListComponent {
 
   @Input() accountExtDtos: AccountExtDto[] = [];
 
-  @Output() added = new EventEmitter();
+  @Output() added = new EventEmitter<string>();
   @Output() deleted = new EventEmitter<AccountExtDto>();
   @Output() updated = new EventEmitter<AccountExtDto>();
 
@@ -36,10 +36,10 @@ export class AccountListComponent {
     }
   }
 
-  openAddPage(): void {
-    this.added.emit();
+  openAddPage(type: string): void {
+    this.added.emit(type);
   }
-  
+
   openDeleteModal(selectedAccountExtDto: AccountExtDto): void {
     this.deleted.emit(cloneDeep(selectedAccountExtDto));
   }

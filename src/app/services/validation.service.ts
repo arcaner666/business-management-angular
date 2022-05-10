@@ -79,34 +79,11 @@ export class ValidationService {
     let accountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;  
     let isValid: boolean = true;
 
-    const accountTypeId: boolean = this.number(accountExtDto.accountTypeId);
-    if (!accountTypeId && validationType == "add" || 
-    !accountTypeId && validationType == "code")
-      accountExtDtoErrors.accountTypeId = "Lütfen hesap tipi seçiniz.";
-
-    const accountTypeName: boolean = this.string(accountExtDto.accountTypeName);
-    if (!accountTypeName && validationType == "add" || 
-    !accountTypeName && validationType == "code")
-      accountExtDtoErrors.accountTypeName = "Lütfen hesap tipi seçiniz.";
-
     const accountGroupId: boolean = this.number(accountExtDto.accountGroupId);
     if (!accountGroupId && validationType == "add" || 
     !accountGroupId && validationType == "code")
       accountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
-    
-    const nameSurname: boolean = this.string(accountExtDto.nameSurname);
-    if (!nameSurname && validationType == "add" || 
-    !nameSurname && validationType == "update")
-      accountExtDtoErrors.nameSurname = "Lütfen hesap sahibinin adını ve soyadını giriniz.";
-
-    const phone1: boolean = this.string(accountExtDto.phone);
-    if (!phone1 && validationType == "add")
-      accountExtDtoErrors.phone = "Lütfen telefon numarası giriniz.";
-
-    const phone2: boolean = this.stringPreciseLength(accountExtDto.phone, 10);
-    if (!phone2 && validationType == "add")
-      accountExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
-    
+      
     const branchId: boolean = this.number(accountExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
@@ -120,36 +97,11 @@ export class ValidationService {
     const accountCode: boolean = this.string(accountExtDto.accountCode);
     if (!accountCode && validationType == "add")
       accountExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
-    
-    const taxOffice: boolean = this.string(accountExtDto.taxOffice);
-    if (!taxOffice && validationType == "add" || 
-    !taxOffice && validationType == "update")
-      accountExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
-
-    const taxNumber: boolean = this.number(accountExtDto.taxNumber);
-    if (!taxNumber && validationType == "add" || 
-    !taxNumber && validationType == "update")
-      accountExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
-
-    const identityNumber1: boolean = this.number(accountExtDto.identityNumber);
-    if (!identityNumber1 && validationType == "add" || 
-    !identityNumber1 && validationType == "update" )
-      accountExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
-
-    const identityNumber2: boolean = this.numberPreciseLength(accountExtDto.identityNumber, 11);
-    if (!identityNumber2 && validationType == "add" || 
-    !identityNumber2 && validationType == "update")
-      accountExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
 
     const limit: boolean = this.number(accountExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       accountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
-    
-    const standartMaturity: boolean = this.number(accountExtDto.standartMaturity);
-    if (!standartMaturity && validationType == "add" || 
-    !standartMaturity && validationType == "update")
-      accountExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
 
     for (const key in accountExtDtoErrors) {
       if (accountExtDtoErrors[key as keyof AccountExtDtoErrors] != "")

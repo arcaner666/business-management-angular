@@ -92,6 +92,10 @@ export class HouseOwnerExtService {
     return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
+  getExtByAccountId(accountId: number): Observable<SingleDataResult<HouseOwnerExtDto>> {
+    return this.http.get<SingleDataResult<HouseOwnerExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyaccountid/${accountId}`);
+  }
+
   getExtById(id: number): Observable<SingleDataResult<HouseOwnerExtDto>> {
     return this.http.get<SingleDataResult<HouseOwnerExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyid/${id}`);
   }

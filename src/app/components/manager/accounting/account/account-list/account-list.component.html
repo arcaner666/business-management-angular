@@ -15,12 +15,40 @@
                 </div>
             </ng-container>
             <div class="col-6 d-flex ms-auto justify-content-end">
-                <button class="btn btn-outline-primary d-flex flex-row justify-content-center align-items-center" (click)="openAddPage()">
-                    <div class="icon me-2">
-                        <i class="fas fa-plus fa-sm"></i>
+                <div ngbDropdown class="d-inline-block">
+                    <button type="button" class="btn btn-outline-primary" ngbDropdownToggle>
+                        <div class="icon me-2">
+                            <i class="fas fa-plus fa-sm"></i>
+                        </div>
+                        <span>Cari Hesap Ekle</span>
+                    </button>
+                    <div ngbDropdownMenu>
+                        <button ngbDropdownItem (click)="openAddPage('Personel')">
+                            <div class="icon me-2">
+                                <i class="fas fa-plus fa-sm"></i>
+                            </div>
+                            <span>Personel</span>
+                        </button>
+                        <button ngbDropdownItem (click)="openAddPage('Mülk Sahibi')">
+                            <div class="icon me-2">
+                                <i class="fas fa-plus fa-sm"></i>
+                            </div>
+                            <span>Mülk Sahibi</span>
+                        </button>
+                        <button ngbDropdownItem (click)="openAddPage('Kiracı')">
+                            <div class="icon me-2">
+                                <i class="fas fa-plus fa-sm"></i>
+                            </div>
+                            <span>Kiracı</span>
+                        </button>
+                        <button ngbDropdownItem (click)="openAddPage('Diğer')">
+                            <div class="icon me-2">
+                                <i class="fas fa-plus fa-sm"></i>
+                            </div>
+                            <span>Diğer</span>
+                        </button>
                     </div>
-                    <span>Cari Hesap Ekle</span>
-                </button>
+                </div>
             </div>
         </div>
         <!-- /Sayfa Başına Kayıt Menüsü -->

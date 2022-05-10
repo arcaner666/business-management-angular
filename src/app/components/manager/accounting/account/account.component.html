@@ -9,7 +9,7 @@
 <ng-template #accountList>
     <app-account-list
         [accountExtDtos]="(accountExtDtos$ | async)?.data || []"
-        (added)="add()"
+        (added)="add($event)"
         (deleted)="delete($event)"
         (updated)="update($event)"
     ></app-account-list>
@@ -17,18 +17,15 @@
 
 <ng-template #accountDetail>
     <app-account-detail
-        [accountTypeDtos]="accountTypeDtos"
-        [accountGroupDtos]="accountGroupDtos"
+        [accountGroupDtos]="accountGroupDtos || []"
         [branchDtos]="(branchDtos$ | async)?.data || []"
         [cardHeader]="cardHeader"
         [loading]="loading"
         [selectedAccountExtDto]="selectedAccountExtDto"
         [selectedAccountExtDtoErrors]="selectedAccountExtDtoErrors"
         (accountCodeGenerated)="generateAccountCode()"
-        (accountGroupSelected)="selectAccountGroup()"
-        (accountTypeSelected)="selectAccountType($event)"
+        (accountCodePropertiesReset)="resetAccountCodeProperties()"
         (cancelled)="cancel()"
-        (modelReset)="resetModel()"
         (saved)="save($event)"
     ></app-account-detail>
 </ng-template>

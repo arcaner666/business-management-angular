@@ -46,19 +46,6 @@ export class AccountExtService {
   
     // Extended With AccountType
     accountTypeName: "",
-  
-    // Added Custom Required Fields
-    nameSurname: "",
-    email: "",
-    phone: "",
-    dateOfBirth: new Date(),
-    gender: "",
-    notes: "",
-    avatarUrl: "",
-    taxOffice: "",
-    taxNumber: 0,
-    identityNumber: 0,
-    standartMaturity: 0,
   };
   private _emptyAccountExtDtoErrors: AccountExtDtoErrors = {
     accountId: "",
@@ -85,19 +72,6 @@ export class AccountExtService {
   
     // Extended With AccountType
     accountTypeName: "",
-  
-    // Added Custom Required Fields
-    nameSurname: "",
-    email: "",
-    phone: "",
-    dateOfBirth: "",
-    gender: "",
-    notes: "",
-    avatarUrl: "",
-    taxOffice: "",
-    taxNumber: "",
-    identityNumber: "",
-    standartMaturity: "",
   };
   private _emptyAccountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto = {
     businessId: 0,

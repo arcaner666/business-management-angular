@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, pipe } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,12 +9,14 @@ import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-owner-ext-dto-errors';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
+import { RouteHistory } from 'src/app/models/various/route-history';
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
@@ -35,18 +37,17 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public selectedHouseOwnerExtDto: HouseOwnerExtDto;
   public selectedHouseOwnerExtDtoErrors: HouseOwnerExtDtoErrors;
-  public selectedHouseOwnerId: number = 0;
 
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
     private accountExtService: AccountExtService,
     private accountGroupService: AccountGroupService,
-    private activatedRoute: ActivatedRoute,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
     private houseOwnerExtService: HouseOwnerExtService,
     private modalService: NgbModal,
+    private navigationService: NavigationService,
     private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
@@ -59,14 +60,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
 
-    this.selectedHouseOwnerId = parseInt(this.activatedRoute.snapshot.paramMap.get("id") || "0");
-    console.log(this.selectedHouseOwnerId);
-    if (this.selectedHouseOwnerId != 0) {
-      this.selectedHouseOwnerExtDto.houseOwnerId = this.selectedHouseOwnerId;
-      this.select(this.selectedHouseOwnerExtDto);
-    } else {
-      this.houseOwnerExtDtos$ = this.getHouseOwnerExtsByBusinessId();
-    }
+    this.navigate(this.navigationService.routeHistory);
   }
 
   addExt(): void {
@@ -82,7 +76,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
           this.toastService.success(response.message);
-          this.activePage = "list";
+          this.navigateOnCompletion(this.navigationService.routeHistory);
           window.scroll(0,0);
           this.loading = false;
 
@@ -102,7 +96,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.activePage = "list";
+    this.navigateOnCompletion(this.navigationService.routeHistory);
     window.scroll(0,0);
   }
 
@@ -197,6 +191,37 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     return this.houseOwnerExtDtos$;
   }
 
+  navigate(routeHistory: RouteHistory) {
+    if (routeHistory.previousRoute != "") {
+      if (routeHistory.accountId != 0) {
+        this.houseOwnerExtService.getExtByAccountId(routeHistory.accountId)
+        .pipe(
+          takeUntil(this.unsubscribeAll),
+        ).subscribe({
+          next: (response) => {
+            this.selectedHouseOwnerExtDto = response.data;
+          }, error: (error) => {
+            console.log(error);
+            this.toastService.danger(error.message);
+          }
+        });
+      }
+
+      this.activePage = "detail";
+    } else {
+      this.houseOwnerExtDtos$ = this.getHouseOwnerExtsByBusinessId();
+    }
+  }
+
+  navigateOnCompletion(routeHistory: RouteHistory) {
+    if (routeHistory.previousRoute) {
+      this.router.navigate([`${routeHistory.previousRoute}`]);
+      this.navigationService.routeHistory = this.navigationService.emptyRouteHistory;
+    } else {
+      this.activePage = "list";
+    }
+  }
+
   save(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
     if (selectedHouseOwnerExtDto.houseOwnerId == 0) {
       this.addExt();
@@ -245,7 +270,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           this.toastService.success(response.message);
-          this.activePage = "list";
+          this.navigateOnCompletion(this.navigationService.routeHistory);
           window.scroll(0,0);
           this.loading = false;
         }, error: (error) => {

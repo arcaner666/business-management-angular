@@ -10,18 +10,16 @@ import { AccountGetByAccountGroupCodesDto } from 'src/app/models/dtos/account-ge
 import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dto';
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { AccountTypeDto } from 'src/app/models/dtos/account-type-dto';
-import { AccountTypeNamesDto } from 'src/app/models/dtos/account-type-names-dto';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
-import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
+import { RouteHistory } from 'src/app/models/various/route-history';
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AccountTypeService } from 'src/app/services/account-type.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
-import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
-import { HouseOwnerService } from 'src/app/services/house-owner.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
@@ -35,19 +33,16 @@ export class AccountComponent implements OnInit, OnDestroy {
   @ViewChild('deleteModal') deleteModal!: ElementRef;
   
   public accountExtDtos$!: Observable<ListDataResult<AccountExtDto>>;
+  public accountGroupDtos!: AccountGroupDto[];
+  public accountTypeDtos!: AccountTypeDto[];
+  public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public accountGetByAccountGroupCodesDto: AccountGetByAccountGroupCodesDto;
   public accountGroupCodesDto: AccountGroupCodesDto;
-  public accountGroupDtos: AccountGroupDto[] = [];
-  public accountTypeDtos: AccountTypeDto[] = [];
-  public accountTypeNamesDto: AccountTypeNamesDto;
   public activePage: string = "list";
-  public branchDtos$!: Observable<ListDataResult<BranchDto>>;
   public cardHeader: string = "";
   public loading: boolean = false;
-  public processType: string = "";
   public selectedAccountExtDto: AccountExtDto;
   public selectedAccountExtDtoErrors: AccountExtDtoErrors;
-  public selectedHouseOwnerExtDto: HouseOwnerExtDto;
 
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
@@ -57,9 +52,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     private accountTypeService: AccountTypeService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
-    private houseOwnerExtService: HouseOwnerExtService,
-    private houseOwnerService: HouseOwnerService,
     private modalService: NgbModal,
+    private navigationService: NavigationService,
     private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
@@ -68,25 +62,23 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     this.accountGetByAccountGroupCodesDto = this.accountExtService.emptyAccountGetByAccountGroupCodesDto;
     this.accountGroupCodesDto = this.accountExtService.emptyAccountGroupCodesDto;
-    this.accountTypeNamesDto = this.accountTypeService.emptyAccountTypeNamesDto;
     this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
     this.selectedAccountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;
-    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
 
     this.getAllAccountGroups();
-    this.getAccountTypesByAccountTypeNames();
+    this.getAllAccountTypes();
+    this.branchDtos$ = this.getBranchesByBusinessId();
 
     // Sunucudan bazı cari hesapları getirir ve modellere doldurur.
-    this.accountExtDtos$ = this.getAccountExtsByBusinessIdAndAccountGroupCodes();
-    this.branchDtos$ = this.getBranchsByBusinessId();
+    //this.accountExtDtos$ = this.getAccountExtsByBusinessIdAndAccountGroupCodes();
+    // Geliştirme aşamasında tüm cari hesapları getimeliyim. 
+    this.accountExtDtos$ = this.getAccountExtsByBusinessId();
   }
 
-  add(): void {
+  add(type: string): void {
     this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
-
-    this.cardHeader = "Cari Hesap Ekle";
-
-    this.activePage = "detail";
+    this.selectedAccountExtDto.accountTypeName = type;
+    this.fillRouteHistoryAndNavigate(this.selectedAccountExtDto);
   }
 
   addExt(): void {
@@ -97,7 +89,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      console.log(this.selectedAccountExtDto);
       this.accountExtService.addExt(this.selectedAccountExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
@@ -106,8 +97,8 @@ export class AccountComponent implements OnInit, OnDestroy {
           this.activePage = "list";
           window.scroll(0,0);
           this.loading = false;
-  
-          return this.getAccountExtsByBusinessIdAndAccountGroupCodes();
+
+          return this.getAccountExtsByBusinessId();
         }
       )).subscribe({
         error: (error) => {
@@ -152,38 +143,85 @@ export class AccountComponent implements OnInit, OnDestroy {
         return EMPTY;
       }),
       concatMap(() => {
-        return this.getAccountExtsByBusinessIdAndAccountGroupCodes();
+        return this.getAccountExtsByBusinessId();
       })
     ).subscribe({
       next: (response) => {
         console.log(response);
         this.toastService.success(response.message);
-        this.loading = false;
       }, error: (error) => {
         console.log(error);
         if (error != "cancel") {
           this.toastService.danger(error.message);
         }
-        this.loading = false;
       }
     });
   }
 
-  generateAccountCode(): void {
-    // Seçili hesap grubunun id'sinden hesap grubu kodu bulunur.
-    const selectedAccountGroupDtos: AccountGroupDto[] = this.accountGroupDtos.filter(a => 
-      a.accountGroupId == this.selectedAccountExtDto.accountGroupId);
-
-    let [isModelValid, errors] = this.validationService.validateAccountExtDto(this.selectedAccountExtDto, "code");
-    this.selectedAccountExtDtoErrors = errors;
-    if (isModelValid) {      
-      this.accountExtService.generateAccountCode(
-        this.authorizationService.authorizationDto.businessId, 
-        this.selectedAccountExtDto.branchId, 
-        selectedAccountGroupDtos[0].accountGroupCode)
+  fillRouteHistoryAndNavigate(selectedAccountExtDto: AccountExtDto): void {
+    if (selectedAccountExtDto.accountTypeName == "Personel") {
+      const routeHistory: RouteHistory = {
+        previousRoute: "manager/accounting/account",
+        accountId: selectedAccountExtDto.accountId,
+      };
+      this.navigationService.routeHistory = routeHistory;
+      this.router.navigate(["manager/person-management/employee"]);
+    } else if (selectedAccountExtDto.accountTypeName == "Mülk Sahibi") {
+      const routeHistory: RouteHistory = {
+        previousRoute: "manager/accounting/account",
+        accountId: selectedAccountExtDto.accountId,
+      };
+      this.navigationService.routeHistory = routeHistory;
+      this.router.navigate(["manager/person-management/house-owner"]);
+    } else if (selectedAccountExtDto.accountTypeName == "Kiracı") {
+      const routeHistory: RouteHistory = {
+        previousRoute: "manager/accounting/account",
+        accountId: selectedAccountExtDto.accountId,
+      };
+      this.navigationService.routeHistory = routeHistory;
+      this.router.navigate(["manager/person-management/tenant"]);
+    } else if (selectedAccountExtDto.accountTypeName == "Diğer") {
+      this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+      this.setHeader(selectedAccountExtDto.accountId);
+      if (selectedAccountExtDto.accountId != 0) {
+        this.accountExtService.getExtById(selectedAccountExtDto.accountId)
         .pipe(
           takeUntil(this.unsubscribeAll),
         ).subscribe({
+          next: (response) => {
+            this.selectedAccountExtDto = response.data;
+          }, error: (error) => {
+            console.log(error);
+            this.toastService.danger(error.message);
+          }
+        });
+      }
+      this.selectedAccountExtDto.accountTypeId = this.findAccountTypeId("Diğer");
+      this.activePage = "detail";
+    }
+  }
+
+  findAccountGroupCode(accountGroupId: number): string {
+    const searchedAccountGroupInArray = this.accountGroupDtos.filter(a => a.accountGroupId == accountGroupId);
+    return searchedAccountGroupInArray[0].accountGroupCode;
+  }
+
+  findAccountTypeId(accountTypeName: string): number {
+    const searchedAccountTypeInArray = this.accountTypeDtos.filter(a => a.accountTypeName == accountTypeName);
+    return searchedAccountTypeInArray[0].accountTypeId;
+  }
+
+  generateAccountCode(): void {
+    let [isModelValid, errors] = this.validationService.validateAccountExtDto(this.selectedAccountExtDto, "code");
+    this.selectedAccountExtDtoErrors = errors;
+    if (isModelValid) {
+      this.accountExtService.generateAccountCode(
+        this.authorizationService.authorizationDto.businessId,
+        this.selectedAccountExtDto.branchId,
+        this.findAccountGroupCode(this.selectedAccountExtDto.accountGroupId))
+      .pipe(
+        takeUntil(this.unsubscribeAll),
+      ).subscribe({
         next: (response) => {
           this.selectedAccountExtDto.accountOrder = response.data.accountOrder;
           this.selectedAccountExtDto.accountCode = response.data.accountCode;
@@ -196,6 +234,10 @@ export class AccountComponent implements OnInit, OnDestroy {
       console.log("Form geçersiz.");
       console.log(this.selectedAccountExtDtoErrors);
     }
+  }
+
+  getAccountExtsByBusinessId(): Observable<ListDataResult<AccountExtDto>> {
+    return this.accountExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
   getAccountExtsByBusinessIdAndAccountGroupCodes(): Observable<ListDataResult<AccountExtDto>> {
@@ -219,11 +261,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  getAccountTypesByAccountTypeNames(): void {
-    this.accountTypeNamesDto.accountTypeNames = [
-      "Diğer", "Kiracı", "Mülk Sahibi", "Personel"
-    ];
-    this.accountTypeService.getByAccountTypeNames(this.accountTypeNamesDto)
+  getAllAccountTypes(): void {
+    this.accountTypeService.getAll()
     .pipe(
       takeUntil(this.unsubscribeAll),
     ).subscribe({
@@ -236,40 +275,13 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  getBranchsByBusinessId(): Observable<ListDataResult<BranchDto>> {
-    this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
-    return this.branchDtos$;
+  getBranchesByBusinessId(): Observable<ListDataResult<BranchDto>> {
+    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
   }
 
-  resetModel(): void {
-    this.selectedAccountExtDto.accountId = 0;
-    this.selectedAccountExtDto.businessId = 0;
-    this.selectedAccountExtDto.branchId = 0;
-    this.selectedAccountExtDto.accountGroupId = 0;
-    this.selectedAccountExtDto.accountTypeId = 0;
+  resetAccountCodeProperties(): void{
     this.selectedAccountExtDto.accountOrder = 0;
-    this.selectedAccountExtDto.accountName = "";
     this.selectedAccountExtDto.accountCode = "";
-    this.selectedAccountExtDto.debitBalance = 0;
-    this.selectedAccountExtDto.creditBalance = 0;
-    this.selectedAccountExtDto.balance = 0;
-    this.selectedAccountExtDto.limit = 0;
-    this.selectedAccountExtDto.createdAt = new Date();
-    this.selectedAccountExtDto.updatedAt = new Date();
-
-    // Extended With Branch
-    this.selectedAccountExtDto.branchName = "";
-
-    // Extended With AccountGroup
-    this.selectedAccountExtDto.accountGroupName = "";
-    this.selectedAccountExtDto.accountGroupCode = "";
-
-    // Extended With AccountType
-    this.selectedAccountExtDto.accountTypeName = "";
-
-    // Added Custom Required Fields
-    this.selectedAccountExtDto.nameSurname = "";
-    this.selectedAccountExtDto.phone = "";
   }
 
   save(selectedAccountExtDto: AccountExtDto): void {
@@ -280,57 +292,12 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectAccountGroup() {
-    this.selectedAccountExtDto.accountCode = "";
-    this.selectedAccountExtDto.accountOrder = 0;
-  }
-
-  selectAccountType(accountTypeId: number) {
-    this.resetModel();
-
-    // Bu işlem gerekli çünkü üstteki resetleme işlemi sonucunda tüm model varsayılan haline dönüyor.
-    this.selectedAccountExtDto.accountTypeId = accountTypeId;
-
-    let selectedAccountGroupDtoInArray = [];
-    let selectedAccountTypeDtoArray = this.accountTypeDtos.filter(a => a.accountTypeId == accountTypeId);
-
-    if (selectedAccountTypeDtoArray[0]) {
-      let selectedAccountTypeDto = selectedAccountTypeDtoArray[0];
-
-      if (selectedAccountTypeDto.accountTypeName == "Mülk Sahibi") {
-        selectedAccountGroupDtoInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
-        this.selectedAccountExtDto.accountGroupId = selectedAccountGroupDtoInArray[0].accountGroupId;
-        this.selectedAccountExtDto.accountTypeName = "Mülk Sahibi";
-      } else if (selectedAccountTypeDto.accountTypeName == "Kiracı") {
-        selectedAccountGroupDtoInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "120");
-        this.selectedAccountExtDto.accountGroupId = selectedAccountGroupDtoInArray[0].accountGroupId;
-        this.selectedAccountExtDto.accountTypeName = "Kiracı";
-      } else if (selectedAccountTypeDto.accountTypeName == "Personel") {
-        selectedAccountGroupDtoInArray = this.accountGroupDtos.filter(a => a.accountGroupCode == "335");
-        this.selectedAccountExtDto.accountGroupId = selectedAccountGroupDtoInArray[0].accountGroupId;
-        this.selectedAccountExtDto.accountTypeName = "Personel";
-      } else if (selectedAccountTypeDto.accountTypeName == "Diğer") {
-        this.selectedAccountExtDto.accountGroupId = 0;
-        this.selectedAccountExtDto.accountTypeName = "Diğer";
-      }
-    }
+  setHeader(accountId: number): void {
+    accountId == 0 ? this.cardHeader = "Cari Hesap Ekle" : this.cardHeader = "Cari Hesabı Düzenle";
   }
 
   update(selectedAccountExtDto: AccountExtDto): void {
-    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
-
-    this.houseOwnerService.getByAccountId(selectedAccountExtDto.accountId)
-    .pipe(
-      takeUntil(this.unsubscribeAll),
-    ).subscribe({
-      next: (response) => {
-        console.log(response);
-        this.router.navigate([`manager/person-management/house-owner/${response.data.houseOwnerId}`]);
-      }, error: (error) => {
-        console.log(error);
-        this.toastService.danger(error.message);
-      }
-    });
+    this.fillRouteHistoryAndNavigate(selectedAccountExtDto);
   }
 
   updateExt(): void {

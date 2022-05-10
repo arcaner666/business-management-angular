@@ -150,7 +150,7 @@
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.branchId }"
                         [disabled]="selectedHouseOwnerExtDto.accountId != 0"
                         (change)="selectedHouseOwnerExtDtoErrors.branchId = ''"
-                        tabindex="5"
+                        tabindex="7"
                     >
                         <option 
                             *ngFor="let branchDto of branchDtos"
@@ -176,7 +176,7 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.accountName }"
                         (change)="selectedHouseOwnerExtDtoErrors.accountName = ''"
-                        tabindex="6"
+                        tabindex="8"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.accountName">
                         <div>{{selectedHouseOwnerExtDtoErrors.accountName}}</div>
@@ -202,7 +202,7 @@
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.accountCode }"
                         [readOnly]="selectedHouseOwnerExtDto.accountId != 0"
                         (change)="selectedHouseOwnerExtDtoErrors.accountCode = ''"
-                        tabindex="7"
+                        tabindex="9"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.accountCode">
                         <div>{{selectedHouseOwnerExtDtoErrors.accountCode}}</div>
@@ -222,7 +222,7 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.taxOffice }"
                         (change)="selectedHouseOwnerExtDtoErrors.taxOffice = ''"
-                        tabindex="8"
+                        tabindex="10"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.taxOffice">
                         <div>{{selectedHouseOwnerExtDtoErrors.taxOffice}}</div>
@@ -241,7 +241,7 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.taxNumber }"
                         (change)="selectedHouseOwnerExtDtoErrors.taxNumber = ''"
-                        tabindex="9"
+                        tabindex="11"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.taxNumber">
                         <div>{{selectedHouseOwnerExtDtoErrors.taxNumber}}</div>
@@ -260,7 +260,7 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.identityNumber }"
                         (change)="selectedHouseOwnerExtDtoErrors.identityNumber = ''"
-                        tabindex="10"
+                        tabindex="12"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.identityNumber">
                         <div>{{selectedHouseOwnerExtDtoErrors.identityNumber}}</div>
@@ -279,7 +279,7 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.limit }"
                         (change)="selectedHouseOwnerExtDtoErrors.limit = ''"
-                        tabindex="11"
+                        tabindex="13"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.limit">
                         <div>{{selectedHouseOwnerExtDtoErrors.limit}}</div>
@@ -298,7 +298,7 @@
                         class="form-control"
                         [ngClass]="{ 'is-invalid': submitted && selectedHouseOwnerExtDtoErrors.standartMaturity }"
                         (change)="selectedHouseOwnerExtDtoErrors.standartMaturity = ''"
-                        tabindex="12"
+                        tabindex="14"
                     />
                     <div class="invalid-feedback" *ngIf="submitted && selectedHouseOwnerExtDtoErrors.standartMaturity">
                         <div>{{selectedHouseOwnerExtDtoErrors.standartMaturity}}</div>
@@ -314,7 +314,7 @@
                                 type="submit" 
                                 class="btn btn-success w-100" 
                                 [disabled]="loading"
-                                tabindex="7"
+                                tabindex="15"
                             >
                                 <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
                             </button>

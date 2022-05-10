@@ -7,35 +7,7 @@
             <!-- /Card Başlığı -->
 
             <!-- Cari Hesap Türü Seçim Formu -->
-            <form #form="ngForm">
-                <div 
-                    class="mt-3 mb-3"
-                    [hidden]="selectedAccountExtDto.accountId != 0"
-                >
-                    <label class="mb-2" for="account-type-id">Hesap Tipi</label>
-                    <select 
-                        id="account-type-id"
-                        name="accountTypeId"
-                        class="form-select"
-                        [(ngModel)]="selectedAccountExtDto.accountTypeId"
-                        (change)="selectAccountType(selectedAccountExtDto.accountTypeId)"
-                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountTypeId }"
-                        (change)="selectedAccountExtDtoErrors.accountTypeId = ''"
-                        tabindex="1"
-                    >
-                        <option 
-                            *ngFor="let accountTypeDto of accountTypeDtos"
-                            [value]="accountTypeDto.accountTypeId"
-                        >
-                            {{accountTypeDto.accountTypeName}}
-                        </option>
-                    </select>
-                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountTypeId">
-                        <div>{{selectedAccountExtDtoErrors.accountTypeId}}</div>
-                    </div>
-                </div>
-                <!-- /Hesap Tipi -->
-
+            <form #form="ngForm" (ngSubmit)="save(selectedAccountExtDto)">
                 <!-- Hesap Grubu -->
                 <div class="mt-3 mb-3">
                     <label class="mb-2" for="account-group-id">Hesap Grubu</label>
@@ -45,10 +17,10 @@
                         class="form-select"
                         [(ngModel)]="selectedAccountExtDto.accountGroupId"
                         [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountGroupId }"
-                        (change)="selectAccountGroup()"
-                        [disabled]="selectedAccountExtDto.accountTypeName != 'Diğer' || selectedAccountExtDto.accountId != 0"
+                        [disabled]="selectedAccountExtDto.accountId != 0"
+                        (change)="resetAccountCodeProperties()"
                         (change)="selectedAccountExtDtoErrors.accountGroupId = ''"
-                        tabindex="2"
+                        tabindex="1"
                     >
                         <option 
                             *ngFor="let accountGroupDto of accountGroupDtos"
@@ -62,6 +34,123 @@
                     </div>
                 </div>
                 <!-- /Hesap Grubu -->
+
+                <!-- Şube -->
+                <div class="mt-3 mb-3">
+                    <label class="mb-2" for="branch-id">Şube</label>
+                    <select 
+                        id="branch-id"
+                        name="branchId"
+                        class="form-select"
+                        [(ngModel)]="selectedAccountExtDto.branchId"
+                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.branchId }"
+                        [disabled]="selectedAccountExtDto.accountId != 0"
+                        (change)="resetAccountCodeProperties()"
+                        (change)="selectedAccountExtDtoErrors.branchId = ''"
+                        tabindex="2"
+                    >
+                        <option 
+                            *ngFor="let branchDto of branchDtos"
+                            [value]="branchDto.branchId"
+                        >
+                            {{branchDto.branchName}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.branchId">
+                        <div>{{selectedAccountExtDtoErrors.branchId}}</div>
+                    </div>
+                </div>
+                <!-- /Şube -->
+    
+                <!-- Hesap Adı -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="account-name">Hesap Adı</label>
+                    <input
+                        id="account-name"
+                        type="text"
+                        name="accountName"
+                        [(ngModel)]="selectedAccountExtDto.accountName"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountName }"
+                        (change)="selectedAccountExtDtoErrors.accountName = ''"
+                        tabindex="3"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountName">
+                        <div>{{selectedAccountExtDtoErrors.accountName}}</div>
+                    </div>
+                </div>
+                <!-- /Hesap Adı -->
+
+                <!-- Hesap Kodu -->
+                <div class="mt-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label" for="account-code">Hesap Kodu</label>
+
+                        <!-- Hesap Kodu Üretme Butonu -->
+                        <a class="code-link cursor-pointer" (click)="generateAccountCode()" *ngIf="selectedAccountExtDto.accountId == 0"><small>Kod Üret</small></a>
+                        <!-- /Hesap Kodu Üretme Butonu -->
+                    </div>
+                    <input
+                        id="account-code"
+                        type="text"
+                        name="accountCode"
+                        [(ngModel)]="selectedAccountExtDto.accountCode"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.accountCode }"
+                        [readOnly]="selectedAccountExtDto.accountId != 0"
+                        (change)="selectedAccountExtDtoErrors.accountCode = ''"
+                        tabindex="4"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.accountCode">
+                        <div>{{selectedAccountExtDtoErrors.accountCode}}</div>
+                    </div>
+
+                </div>
+                <!-- /Hesap Kodu -->
+
+                <!-- Limit -->
+                <div class="mt-3 mb-3">
+                    <label class="form-label" for="limit">Limit</label>
+                    <input
+                        id="limit"
+                        type="number"
+                        name="limit"
+                        [(ngModel)]="selectedAccountExtDto.limit"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && selectedAccountExtDtoErrors.limit }"
+                        (change)="selectedAccountExtDtoErrors.limit = ''"
+                        tabindex="5"
+                    />
+                    <div class="invalid-feedback" *ngIf="submitted && selectedAccountExtDtoErrors.limit">
+                        <div>{{selectedAccountExtDtoErrors.limit}}</div>
+                    </div>
+                </div>
+                <!-- /Limit -->
+
+                <!-- Butonlar -->
+                <div class="container-fluid m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button 
+                                type="submit" 
+                                class="btn btn-success w-100" 
+                                [disabled]="loading"
+                                tabindex="6"
+                            >
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>Kaydet
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary w-100"
+                                (click)="cancel()"
+                            >İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Butonlar -->
             </form>
             <!-- /Cari Hesap Türü Seçim Formu -->
             
