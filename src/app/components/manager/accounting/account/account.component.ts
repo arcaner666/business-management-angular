@@ -71,7 +71,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     // Sunucudan bazı cari hesapları getirir ve modellere doldurur.
     //this.accountExtDtos$ = this.getAccountExtsByBusinessIdAndAccountGroupCodes();
-    // Geliştirme aşamasında tüm cari hesapları getimeliyim. 
+    // Geliştirme aşamasında tüm cari hesapları getirmeliyim. 
     this.accountExtDtos$ = this.getAccountExtsByBusinessId();
   }
 
