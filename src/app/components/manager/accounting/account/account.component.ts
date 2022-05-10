@@ -149,11 +149,13 @@ export class AccountComponent implements OnInit, OnDestroy {
       next: (response) => {
         console.log(response);
         this.toastService.success(response.message);
+        this.loading = false;
       }, error: (error) => {
         console.log(error);
         if (error != "cancel") {
           this.toastService.danger(error.message);
         }
+        this.loading = false;
       }
     });
   }
@@ -241,7 +243,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getAccountExtsByBusinessId(): Observable<ListDataResult<AccountExtDto>> {
-    return this.accountExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.accountExtDtos$ = this.accountExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.accountExtDtos$;
   }
 
   getAccountExtsByBusinessIdAndAccountGroupCodes(): Observable<ListDataResult<AccountExtDto>> {
@@ -280,7 +283,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getBranchesByBusinessId(): Observable<ListDataResult<BranchDto>> {
-    return this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.branchDtos$ = this.branchService.getByBusinessId(this.authorizationService.authorizationDto.businessId);
+    return this.branchDtos$;
   }
 
   resetAccountCodeProperties(): void{
