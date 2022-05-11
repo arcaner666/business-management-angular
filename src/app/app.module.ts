@@ -41,6 +41,10 @@ import { AccountListComponent } from 'src/app/components/manager/accounting/acco
 import { AccountGroupComponent } from 'src/app/components/manager/accounting/account-group/account-group.component';
 import { AccountGroupListComponent } from 'src/app/components/manager/accounting/account-group/account-group-list/account-group-list.component';
 
+import { BankComponent } from 'src/app/components/manager/accounting/bank/bank.component';
+import { BankDetailComponent } from 'src/app/components/manager/accounting/bank/bank-detail/bank-detail.component';
+import { BankListComponent } from 'src/app/components/manager/accounting/bank/bank-list/bank-list.component';
+
 import { CashComponent } from 'src/app/components/manager/accounting/cash/cash.component';
 import { CashDetailComponent } from 'src/app/components/manager/accounting/cash/cash-detail/cash-detail.component';
 import { CashListComponent } from 'src/app/components/manager/accounting/cash/cash-list/cash-list.component';
@@ -131,6 +135,9 @@ import { CustomDateParserFormatter } from 'src/app/services/custom-date-parser-f
     AccountListComponent,
     AccountGroupComponent,
     AccountGroupListComponent,
+    BankComponent,
+    BankDetailComponent,
+    BankListComponent,
     CashComponent,
     CashDetailComponent,
     CashListComponent,

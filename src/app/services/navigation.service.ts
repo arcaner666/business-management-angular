@@ -318,6 +318,16 @@ export class NavigationService {
           disabled: false,
           hidden: false,
         },
+        {
+          id: "bank",
+          title: "Banka",
+          url: "manager/accounting/bank",
+          type: "item",
+          role: ["Manager"],
+          icon: "",
+          disabled: false,
+          hidden: false,
+        },
       ],
     },
   ];

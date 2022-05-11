@@ -4,6 +4,8 @@ import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
 import { AccountExtDtoErrors } from 'src/app/models/validation-errors/account-ext-dto-errors';
 import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
 import { ApartmentExtDtoErrors } from 'src/app/models/validation-errors/apartment-ext-dto-errors';
+import { BankExtDto } from 'src/app/models/dtos/bank-ext-dto';
+import { BankExtDtoErrors } from 'src/app/models/validation-errors/bank-ext-dto-errors';
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
 import { BranchExtDtoErrors } from 'src/app/models/validation-errors/branch-ext-dto-errors';
 import { CashExtDto } from 'src/app/models/dtos/cash-ext-dto';
@@ -23,6 +25,7 @@ import { TenantExtDtoErrors } from 'src/app/models/validation-errors/tenant-ext-
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
+import { BankExtService } from 'src/app/services/bank-ext.service';
 import { BranchExtService } from 'src/app/services/branch-ext.service';
 import { CashExtService } from 'src/app/services/cash-ext.service';
 import { EmployeeExtService } from 'src/app/services/employee-ext.service';
@@ -40,6 +43,7 @@ export class ValidationService {
   constructor(
     private accountExtService: AccountExtService,
     private apartmentExtService: ApartmentExtService,
+    private bankExtService: BankExtService,
     private branchExtService: BranchExtService,
     private cashExtService: CashExtService,
     private employeeExtService: EmployeeExtService,
@@ -144,6 +148,96 @@ export class ValidationService {
     }
 
     return [isValid, apartmentExtDtoErrors];
+  }
+
+  validateBankExtDto(bankExtDto: BankExtDto, validationType: string): [boolean, BankExtDtoErrors] {
+    let bankExtDtoErrors = this.bankExtService.emptyBankExtDtoErrors;  
+    let isValid: boolean = true;
+
+    const branchId: boolean = this.number(bankExtDto.branchId);
+    if (!branchId && validationType == "add" || 
+    !branchId && validationType == "code")
+      bankExtDtoErrors.branchId = "Lütfen şube seçiniz.";
+
+    const accountName: boolean = this.string(bankExtDto.accountName);
+    if (!accountName && validationType == "add" || 
+    !accountName && validationType == "update")
+      bankExtDtoErrors.accountName = "Lütfen hesap adı giriniz.";
+
+    const accountCode: boolean = this.string(bankExtDto.accountCode);
+    if (!accountCode && validationType == "add")
+      bankExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
+
+    const limit: boolean = this.number(bankExtDto.limit);
+    if (!limit && validationType == "add" || 
+    !limit && validationType == "update")
+      bankExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
+
+    const standartMaturity: boolean = this.number(bankExtDto.standartMaturity);
+    if (!standartMaturity && validationType == "add" || 
+    !standartMaturity && validationType == "update")
+      bankExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
+      
+    const currencyId: boolean = this.number(bankExtDto.currencyId);
+    if (!currencyId && validationType == "add")
+      bankExtDtoErrors.currencyId = "Lütfen döviz tipi seçiniz.";
+    
+    const bankName: boolean = this.string(bankExtDto.bankName);
+    if (!bankName && validationType == "add" || 
+    !bankName && validationType == "update")
+      bankExtDtoErrors.bankName = "Lütfen banka adı giriniz.";
+
+    const bankBranchName: boolean = this.string(bankExtDto.bankBranchName);
+    if (!bankBranchName && validationType == "add" || 
+    !bankBranchName && validationType == "update")
+      bankExtDtoErrors.bankBranchName = "Lütfen banka şube adı giriniz.";
+
+    const bankCode: boolean = this.string(bankExtDto.bankCode);
+    if (!bankCode && validationType == "add" || 
+    !bankCode && validationType == "update")
+      bankExtDtoErrors.bankCode = "Lütfen banka kodu giriniz.";
+
+    const bankBranchCode: boolean = this.string(bankExtDto.bankBranchCode);
+    if (!bankBranchCode && validationType == "add" || 
+    !bankBranchCode && validationType == "update")
+      bankExtDtoErrors.bankBranchCode = "Lütfen banka şube kodu giriniz.";
+
+    const bankAccountCode: boolean = this.string(bankExtDto.bankAccountCode);
+    if (!bankAccountCode && validationType == "add" || 
+    !bankAccountCode && validationType == "update")
+      bankExtDtoErrors.bankAccountCode = "Lütfen banka hesap numarası giriniz.";
+
+    const iban: boolean = this.string(bankExtDto.iban);
+    if (!iban && validationType == "add" || 
+    !iban && validationType == "update")
+      bankExtDtoErrors.iban = "Lütfen IBAN giriniz.";
+
+    const officerName: boolean = this.string(bankExtDto.officerName);
+    if (!officerName && validationType == "add" || 
+    !officerName && validationType == "update")
+      bankExtDtoErrors.officerName = "Lütfen yetkili adı giriniz.";
+    
+    const cityId: boolean = this.number(bankExtDto.cityId);
+    if (!cityId && validationType == "add" || 
+    !cityId && validationType == "update")
+      bankExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
+
+    const districtId: boolean = this.number(bankExtDto.districtId);
+    if (!districtId && validationType == "add" || 
+    !districtId && validationType == "update")
+      bankExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
+
+    const addressText: boolean = this.string(bankExtDto.addressText);
+    if (!addressText && validationType == "add" || 
+    !addressText && validationType == "update")
+      bankExtDtoErrors.addressText = "Lütfen adres giriniz.";
+      
+    for (const key in bankExtDtoErrors) {
+      if (bankExtDtoErrors[key as keyof BankExtDtoErrors] != "")
+        isValid = false;
+    }
+
+    return [isValid, bankExtDtoErrors];
   }
 
   validateBranchExtDto(branchExtDto: BranchExtDto, validationType: string): [boolean, BranchExtDtoErrors] {
