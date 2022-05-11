@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
@@ -102,17 +102,13 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedTenantExtDto: TenantExtDto): void {
-    this.tenantExtService.getExtById(selectedTenantExtDto.tenantId)
+    this.selectedTenantExtDto = selectedTenantExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedTenantExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -231,28 +227,12 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   select(selectedTenantExtDto: TenantExtDto): void {
-    this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;
-    
-    if (!selectedTenantExtDto) {  
-      selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;    
-    } 
-
-    this.setHeader(selectedTenantExtDto.tenantId);
-
-    if (selectedTenantExtDto.tenantId != 0) {
-      this.tenantExtService.getExtById(selectedTenantExtDto.tenantId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedTenantExtDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedTenantExtDto) {
+      this.selectedTenantExtDto = selectedTenantExtDto;
+    } else {
+      this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;  
     }
-
+    this.setHeader(this.selectedTenantExtDto.tenantId);
     this.activePage = "detail";
   }
 

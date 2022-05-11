@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ListDataResult } from 'src/app/models/results/list-data-result';
@@ -84,17 +84,13 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedSectionGroupDto: SectionGroupDto): void {
-    this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId)
+    this.selectedSectionGroupDto = selectedSectionGroupDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedSectionGroupDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -139,28 +135,12 @@ export class SectionGroupComponent implements OnInit, OnDestroy {
   }
 
   select(selectedSectionGroupDto: SectionGroupDto): void {
-    this.selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;
-
-    if (!selectedSectionGroupDto) {  
-      selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;    
-    } 
-
-    this.setHeader(selectedSectionGroupDto.sectionGroupId);
-
-    if (selectedSectionGroupDto.sectionGroupId != 0) {
-      this.sectionGroupService.getById(selectedSectionGroupDto.sectionGroupId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedSectionGroupDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedSectionGroupDto) {
+      this.selectedSectionGroupDto = selectedSectionGroupDto;
+    } else {
+      this.selectedSectionGroupDto = this.sectionGroupService.emptySectionGroupDto;  
     }
-
+    this.setHeader(this.selectedSectionGroupDto.sectionGroupId);
     this.activePage = "detail";
   }
 

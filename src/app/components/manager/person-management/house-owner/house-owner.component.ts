@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, pipe } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
@@ -101,17 +101,13 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    this.houseOwnerExtService.getExtById(selectedHouseOwnerExtDto.houseOwnerId)
+    this.selectedHouseOwnerExtDto = selectedHouseOwnerExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedHouseOwnerExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -231,28 +227,12 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   select(selectedHouseOwnerExtDto: HouseOwnerExtDto): void {
-    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
-    
-    if (!selectedHouseOwnerExtDto) {  
-      selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;    
-    } 
-
-    this.setHeader(selectedHouseOwnerExtDto.houseOwnerId);
-
-    if (selectedHouseOwnerExtDto.houseOwnerId != 0) {
-      this.houseOwnerExtService.getExtById(selectedHouseOwnerExtDto.houseOwnerId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedHouseOwnerExtDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedHouseOwnerExtDto) {
+      this.selectedHouseOwnerExtDto = selectedHouseOwnerExtDto;
+    } else {
+      this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;  
     }
-
+    this.setHeader(this.selectedHouseOwnerExtDto.houseOwnerId);
     this.activePage = "detail";
   }
 

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { BranchExtDto } from 'src/app/models/dtos/branch-ext-dto';
@@ -95,17 +95,13 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedBranchExtDto: BranchExtDto): void {
-    this.branchExtService.getExtById(selectedBranchExtDto.branchId)
+    this.selectedBranchExtDto = selectedBranchExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedBranchExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -176,30 +172,13 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   select(selectedBranchExtDto: BranchExtDto): void {
-    this.selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;
-
-    if (!selectedBranchExtDto) {  
-      selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;    
+    if (selectedBranchExtDto) {
+      this.selectedBranchExtDto = selectedBranchExtDto;
+      this.districtDtos$ = this.districtService.getByCityId(selectedBranchExtDto.cityId);
+    } else {
+      this.selectedBranchExtDto = this.branchExtService.emptyBranchExtDto;  
     }
-
-    this.setHeader(selectedBranchExtDto.branchId);
-
-    if (selectedBranchExtDto.branchId != 0) {
-      this.branchExtService.getExtById(selectedBranchExtDto.branchId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedBranchExtDto = response.data;
-          this.districtDtos$ = this.districtService.getByCityId(response.data.cityId);
-          this.toastService.success(response.message);
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
-    }
-
+    this.setHeader(this.selectedBranchExtDto.branchId);
     this.activePage = "detail";
   }
 

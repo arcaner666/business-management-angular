@@ -131,9 +131,10 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedAccountExtDto: AccountExtDto): void {
-    this.selectedAccountExtDto = selectedAccountExtDto;
+    // test
     console.log(selectedAccountExtDto.accountTypeName);
-
+    
+    this.selectedAccountExtDto = selectedAccountExtDto;
     from(this.modalService.open(this.deleteEmployeeModal, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApartmentExtDto } from 'src/app/models/dtos/apartment-ext-dto';
@@ -94,17 +94,13 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId)
+    this.selectedApartmentExtDto = selectedApartmentExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedApartmentExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -159,28 +155,12 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   select(selectedApartmentExtDto: ApartmentExtDto): void {
-    this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;
-    
-    if (!selectedApartmentExtDto) {  
-      selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;    
-    } 
-
-    this.setHeader(selectedApartmentExtDto.apartmentId);
-
-    if (selectedApartmentExtDto.apartmentId != 0) {
-      this.apartmentExtService.getExtById(selectedApartmentExtDto.apartmentId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedApartmentExtDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedApartmentExtDto) {
+      this.selectedApartmentExtDto = selectedApartmentExtDto;
+    } else {
+      this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;  
     }
-
+    this.setHeader(this.selectedApartmentExtDto.apartmentId);
     this.activePage = "detail";
   }
 

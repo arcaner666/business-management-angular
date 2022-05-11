@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
@@ -107,17 +107,13 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedEmployeeExtDto: EmployeeExtDto): void {
-    this.employeeExtService.getExtById(selectedEmployeeExtDto.employeeId)
+    this.selectedEmployeeExtDto = selectedEmployeeExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedEmployeeExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -241,28 +237,12 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   select(selectedEmployeeExtDto: EmployeeExtDto): void {
-    this.selectedEmployeeExtDto = this.employeeExtService.emptyEmployeeExtDto;
-    
-    if (!selectedEmployeeExtDto) {  
-      selectedEmployeeExtDto = this.employeeExtService.emptyEmployeeExtDto;    
-    } 
-
-    this.setHeader(selectedEmployeeExtDto.employeeId);
-
-    if (selectedEmployeeExtDto.employeeId != 0) {
-      this.employeeExtService.getExtById(selectedEmployeeExtDto.employeeId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedEmployeeExtDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedEmployeeExtDto) {
+      this.selectedEmployeeExtDto = selectedEmployeeExtDto;
+    } else {
+      this.selectedEmployeeExtDto = this.employeeExtService.emptyEmployeeExtDto;  
     }
-
+    this.setHeader(this.selectedEmployeeExtDto.employeeId);
     this.activePage = "detail";
   }
 

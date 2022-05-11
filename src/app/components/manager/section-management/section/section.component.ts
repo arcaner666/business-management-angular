@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CityDto } from 'src/app/models/dtos/city-dto';
@@ -103,17 +103,13 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedSectionExtDto: SectionExtDto): void {
-    this.sectionExtService.getExtById(selectedSectionExtDto.sectionId)
+    this.selectedSectionExtDto = selectedSectionExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedSectionExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -178,29 +174,13 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   select(selectedSectionExtDto: SectionExtDto): void {
-    this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;
-    
-    if (!selectedSectionExtDto) {  
-      selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;    
-    } 
-
-    this.setHeader(selectedSectionExtDto.sectionId);
-
-    if (selectedSectionExtDto.sectionId != 0) {
-      this.sectionExtService.getExtById(selectedSectionExtDto.sectionId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedSectionExtDto = response.data;
-          this.districtDtos$ = this.getDistrictsByCityId(response.data.cityId);
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedSectionExtDto) {
+      this.selectedSectionExtDto = selectedSectionExtDto;
+      this.districtDtos$ = this.getDistrictsByCityId(selectedSectionExtDto.cityId);
+    } else {
+      this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;  
     }
-
+    this.setHeader(this.selectedSectionExtDto.sectionId);
     this.activePage = "detail";
   }
 

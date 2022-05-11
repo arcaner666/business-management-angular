@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
@@ -102,17 +102,13 @@ export class CashComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedCashExtDto: CashExtDto): void {
-    this.cashExtService.getExtById(selectedCashExtDto.cashId)
+    this.selectedCashExtDto = selectedCashExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedCashExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -222,28 +218,12 @@ export class CashComponent implements OnInit, OnDestroy {
   }
 
   select(selectedCashExtDto: CashExtDto): void {
-    this.selectedCashExtDto = this.cashExtService.emptyCashExtDto;
-    
-    if (!selectedCashExtDto) {  
-      selectedCashExtDto = this.cashExtService.emptyCashExtDto;    
-    } 
-
-    this.setHeader(selectedCashExtDto.cashId);
-
-    if (selectedCashExtDto.cashId != 0) {
-      this.cashExtService.getExtById(selectedCashExtDto.cashId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedCashExtDto = response.data;
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedCashExtDto) {
+      this.selectedCashExtDto = selectedCashExtDto;
+    } else {
+      this.selectedCashExtDto = this.cashExtService.emptyCashExtDto;  
     }
-
+    this.setHeader(this.selectedCashExtDto.cashId);
     this.activePage = "detail";
   }
 

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApartmentDto } from 'src/app/models/dtos/apartment-dto';
@@ -103,17 +103,13 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedFlatExtDto: FlatExtDto): void {
-    this.flatExtService.getExtById(selectedFlatExtDto.flatId)
+    this.selectedFlatExtDto = selectedFlatExtDto;
+    from(this.modalService.open(this.deleteModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
     .pipe(
-      takeUntil(this.unsubscribeAll),
-      concatMap((response) => {
-        this.selectedFlatExtDto = response.data;
-        // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-        return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
+      take(1),
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
@@ -178,29 +174,13 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   select(selectedFlatExtDto: FlatExtDto): void {
-    this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;
-    
-    if (!selectedFlatExtDto) {  
-      selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;    
-    } 
-
-    this.setHeader(selectedFlatExtDto.flatId);
-
-    if (selectedFlatExtDto.flatId != 0) {
-      this.flatExtService.getExtById(selectedFlatExtDto.flatId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-      ).subscribe({
-        next: (response) => {
-          this.selectedFlatExtDto = response.data;
-          this.apartmentDtos$ = this.getApartmentsBySectionId(response.data.sectionId);
-        }, error: (error) => {
-          console.log(error);
-          this.toastService.danger(error.message);
-        }
-      });
+    if (selectedFlatExtDto) {
+      this.selectedFlatExtDto = selectedFlatExtDto;
+      this.apartmentDtos$ = this.getApartmentsBySectionId(selectedFlatExtDto.sectionId);
+    } else {
+      this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;  
     }
-
+    this.setHeader(this.selectedFlatExtDto.flatId);
     this.activePage = "detail";
   }
 
