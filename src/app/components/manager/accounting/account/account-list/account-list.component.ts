@@ -36,8 +36,8 @@ export class AccountListComponent {
     }
   }
 
-  openAddPage(type: string): void {
-    this.added.emit(type);
+  openAddPage(accountTypeName: string): void {
+    this.added.emit(accountTypeName);
   }
 
   openDeleteModal(selectedAccountExtDto: AccountExtDto): void {

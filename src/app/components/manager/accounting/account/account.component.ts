@@ -87,9 +87,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.accountExtDtos$ = this.getAccountExtsByBusinessId();
   }
 
-  add(type: string): void {
+  add(accountTypeName: string): void {
     this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
-    this.selectedAccountExtDto.accountTypeName = type;
+    this.selectedAccountExtDto.accountTypeName = accountTypeName;
     this.fillRouteHistoryAndNavigate(this.selectedAccountExtDto);
   }
 
