@@ -11,17 +11,15 @@ import { AccountGroupCodesDto } from 'src/app/models/dtos/account-group-codes-dt
 import { AccountGroupDto } from 'src/app/models/dtos/account-group-dto';
 import { AccountTypeDto } from 'src/app/models/dtos/account-type-dto';
 import { BranchDto } from 'src/app/models/dtos/branch-dto';
-import { EmployeeExtDto } from 'src/app/models/dtos/employee-ext-dto';
-import { HouseOwnerExtDto } from 'src/app/models/dtos/house-owner-ext-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
-import { TenantExtDto } from 'src/app/models/dtos/tenant-ext-dto';
 
 import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AccountTypeService } from 'src/app/services/account-type.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
+import { CashExtService } from 'src/app/services/cash-ext.service';
 import { EmployeeExtService } from 'src/app/services/employee-ext.service';
 import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -36,6 +34,7 @@ import { ValidationService } from 'src/app/services/validation.service';
 })
 export class AccountComponent implements OnInit, OnDestroy {
 
+  @ViewChild('deleteCashModal') deleteCashModal!: ElementRef;
   @ViewChild('deleteEmployeeModal') deleteEmployeeModal!: ElementRef;
   @ViewChild('deleteHouseOwnerModal') deleteHouseOwnerModal!: ElementRef;
   @ViewChild('deleteTenantModal') deleteTenantModal!: ElementRef;
@@ -52,9 +51,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   public selectedAccountExtDto: AccountExtDto;
   public selectedAccountExtDtoErrors: AccountExtDtoErrors;
-  public selectedEmployeeExtDto: EmployeeExtDto;
-  public selectedHouseOwnerExtDto: HouseOwnerExtDto;
-  public selectedTenantExtDto: TenantExtDto;
 
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
@@ -64,6 +60,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     private accountTypeService: AccountTypeService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
+    private cashExtService: CashExtService,
     private employeeExtService: EmployeeExtService,
     private houseOwnerExtService: HouseOwnerExtService,
     private modalService: NgbModal,
@@ -79,9 +76,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.accountGroupCodesDto = this.accountExtService.emptyAccountGroupCodesDto;
     this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
     this.selectedAccountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;
-    this.selectedEmployeeExtDto = this.employeeExtService.emptyEmployeeExtDto;
-    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
-    this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;
 
     this.getAllAccountGroups();
     this.getAllAccountTypes();
@@ -149,7 +143,14 @@ export class AccountComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          if (selectedAccountExtDto.accountTypeName == "Personel") {
+          if (selectedAccountExtDto.accountTypeName == "Kasa") {
+            return this.cashExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
+            .pipe(
+              tap((response) => {
+                this.toastService.success(response.message);
+              })
+            );
+          } else if (selectedAccountExtDto.accountTypeName == "Personel") {
             return this.employeeExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
@@ -200,7 +201,14 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   fillRouteHistoryAndNavigate(selectedAccountExtDto: AccountExtDto): void {
-    if (selectedAccountExtDto.accountTypeName == "Personel") {
+    if (selectedAccountExtDto.accountTypeName == "Kasa") {
+      const routeHistory: RouteHistory = {
+        previousRoute: "manager/accounting/account",
+        accountId: selectedAccountExtDto.accountId,
+      };
+      this.navigationService.routeHistory = routeHistory;
+      this.router.navigate(["manager/accounting/cash"]);
+    } else if (selectedAccountExtDto.accountTypeName == "Personel") {
       const routeHistory: RouteHistory = {
         previousRoute: "manager/accounting/account",
         accountId: selectedAccountExtDto.accountId,
