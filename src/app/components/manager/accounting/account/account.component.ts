@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable, concatMap, Subject, takeUntil, tap, EMPTY } from 'rxjs';
+import { Observable, concatMap, Subject, takeUntil, tap, EMPTY, from, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AccountExtDto } from 'src/app/models/dtos/account-ext-dto';
@@ -36,7 +36,10 @@ import { ValidationService } from 'src/app/services/validation.service';
 })
 export class AccountComponent implements OnInit, OnDestroy {
 
-  @ViewChild('deleteModal') deleteModal!: ElementRef;
+  @ViewChild('deleteEmployeeModal') deleteEmployeeModal!: ElementRef;
+  @ViewChild('deleteHouseOwnerModal') deleteHouseOwnerModal!: ElementRef;
+  @ViewChild('deleteTenantModal') deleteTenantModal!: ElementRef;
+  @ViewChild('deleteAccountModal') deleteAccountModal!: ElementRef;
   
   public accountExtDtos$!: Observable<ListDataResult<AccountExtDto>>;
   public accountGroupDtos!: AccountGroupDto[];
@@ -134,143 +137,40 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   delete(selectedAccountExtDto: AccountExtDto): void {
-    console.log(selectedAccountExtDto);
+    this.selectedAccountExtDto = selectedAccountExtDto;
+    console.log(selectedAccountExtDto.accountTypeName);
 
-    if (selectedAccountExtDto.accountTypeName == "Personel") {
-      this.employeeExtService.getExtByAccountId(selectedAccountExtDto.accountId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-        concatMap((response) => {
-          this.selectedEmployeeExtDto = response.data;
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
-        // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
-        concatMap((response) => {
-          if (response == "ok") {
-            return this.employeeExtService.deleteExt(selectedAccountExtDto.accountId)
+    from(this.modalService.open(this.deleteEmployeeModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    }).result)
+    .pipe(
+      take(1),
+      // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
+      concatMap((response) => {
+        if (response == "ok") {
+          if (selectedAccountExtDto.accountTypeName == "Personel") {
+            return this.employeeExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
-          }
-          return EMPTY;
-        }),
-        concatMap(() => {
-          return this.getAccountExtsByBusinessId();
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.toastService.success(response.message);
-          this.loading = false;
-        }, error: (error) => {
-          console.log(error);
-          if (error != "cancel") {
-            this.toastService.danger(error.message);
-          }
-          this.loading = false;
-        }
-      });
-    } else if (selectedAccountExtDto.accountTypeName == "Mülk Sahibi") {
-      this.houseOwnerExtService.getExtByAccountId(selectedAccountExtDto.accountId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-        concatMap((response) => {
-          this.selectedHouseOwnerExtDto = response.data;
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
-        // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
-        concatMap((response) => {
-          if (response == "ok") {
-            return this.houseOwnerExtService.deleteExt(selectedAccountExtDto.accountId)
+          } else if (selectedAccountExtDto.accountTypeName == "Mülk Sahibi") {
+            return this.houseOwnerExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
-          }
-          return EMPTY;
-        }),
-        concatMap(() => {
-          return this.getAccountExtsByBusinessId();
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.toastService.success(response.message);
-          this.loading = false;
-        }, error: (error) => {
-          console.log(error);
-          if (error != "cancel") {
-            this.toastService.danger(error.message);
-          }
-          this.loading = false;
-        }
-      });
-    } else if (selectedAccountExtDto.accountTypeName == "Kiracı") {
-      this.tenantExtService.getExtByAccountId(selectedAccountExtDto.accountId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-        concatMap((response) => {
-          this.selectedTenantExtDto = response.data;
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
-        // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
-        concatMap((response) => {
-          if (response == "ok") {
-            return this.tenantExtService.deleteExt(selectedAccountExtDto.accountId)
+          } else if (selectedAccountExtDto.accountTypeName == "Kiracı") {
+            return this.tenantExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
-          }
-          return EMPTY;
-        }),
-        concatMap(() => {
-          return this.getAccountExtsByBusinessId();
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.toastService.success(response.message);
-          this.loading = false;
-        }, error: (error) => {
-          console.log(error);
-          if (error != "cancel") {
-            this.toastService.danger(error.message);
-          }
-          this.loading = false;
-        }
-      });
-    } else if (selectedAccountExtDto.accountTypeName == "Diğer") {
-      this.accountExtService.getExtById(selectedAccountExtDto.accountId)
-      .pipe(
-        takeUntil(this.unsubscribeAll),
-        concatMap((response) => {
-          this.selectedAccountExtDto = response.data;
-          // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-          return this.modalService.open(this.deleteModal, {
-            ariaLabelledBy: 'modal-basic-title',
-            centered: true
-          }).result;
-        }),
-        // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
-        concatMap((response) => {
-          if (response == "ok") {
+          } else if (selectedAccountExtDto.accountTypeName == "Diğer") {
             return this.accountExtService.deleteExt(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
@@ -278,89 +178,25 @@ export class AccountComponent implements OnInit, OnDestroy {
               })
             );
           }
-          return EMPTY;
-        }),
-        concatMap(() => {
-          return this.getAccountExtsByBusinessId();
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.toastService.success(response.message);
-          this.loading = false;
-        }, error: (error) => {
-          console.log(error);
-          if (error != "cancel") {
-            this.toastService.danger(error.message);
-          }
-          this.loading = false;
         }
-      });
-    }
-    
-
-    // this.accountExtService.getExtById(selectedAccountExtDto.accountId)
-    // .pipe(
-    //   takeUntil(this.unsubscribeAll),
-    //   concatMap((response) => {
-    //     this.selectedAccountExtDto = response.data;
-    //     // Silinecek kayıt sunucudan tekrar getirildikten sonra silme modal'ı açılır.
-    //     return this.modalService.open(this.deleteModal, {
-    //         ariaLabelledBy: 'modal-basic-title',
-    //         centered: true
-    //       }).result;
-    //     }),
-    //   // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
-    //   concatMap((response) => {
-    //     if (response == "ok") {
-    //       if (this.selectedAccountExtDto.accountTypeName == "Personel") {
-    //         return this.employeeExtService.deleteExt(selectedAccountExtDto.accountId)
-    //         .pipe(
-    //           tap((response) => {
-    //             this.toastService.success(response.message);
-    //           })
-    //         );
-    //       } else if (this.selectedAccountExtDto.accountTypeName == "Mülk Sahibi") {
-    //         return this.accountExtService.deleteExt(selectedAccountExtDto.accountId)
-    //         .pipe(
-    //           tap((response) => {
-    //             this.toastService.success(response.message);
-    //           })
-    //         );
-    //       } else if (this.selectedAccountExtDto.accountTypeName == "Kiracı") {
-    //         return this.accountExtService.deleteExt(selectedAccountExtDto.accountId)
-    //         .pipe(
-    //           tap((response) => {
-    //             this.toastService.success(response.message);
-    //           })
-    //         );
-    //       } else if (this.selectedAccountExtDto.accountTypeName == "Diğer") {
-    //         return this.accountExtService.deleteExt(selectedAccountExtDto.accountId)
-    //         .pipe(
-    //           tap((response) => {
-    //             this.toastService.success(response.message);
-    //           })
-    //         );
-    //       }
-    //     }
-    //     return EMPTY;
-    //   }),
-    //   concatMap(() => {
-    //     return this.getAccountExtsByBusinessId();
-    //   })
-    // ).subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-    //     this.toastService.success(response.message);
-    //     this.loading = false;
-    //   }, error: (error) => {
-    //     console.log(error);
-    //     if (error != "cancel") {
-    //       this.toastService.danger(error.message);
-    //     }
-    //     this.loading = false;
-    //   }
-    // });
+        return EMPTY;
+      }),
+      concatMap(() => {
+        return this.getAccountExtsByBusinessId();
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.toastService.success(response.message);
+        this.loading = false;
+      }, error: (error) => {
+        console.log(error);
+        if (error != "cancel") {
+          this.toastService.danger(error.message);
+        }
+        this.loading = false;
+      }
+    });
   }
 
   fillRouteHistoryAndNavigate(selectedAccountExtDto: AccountExtDto): void {

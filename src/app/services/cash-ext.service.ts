@@ -78,6 +78,10 @@ export class CashExtService {
     return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
   }
 
+  deleteExtByAccountId(accountId: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteextbyaccountid/${accountId}`);
+  }
+
   getExtByAccountId(accountId: number): Observable<SingleDataResult<CashExtDto>> {
     return this.http.get<SingleDataResult<CashExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextbyaccountid/${accountId}`);
   }

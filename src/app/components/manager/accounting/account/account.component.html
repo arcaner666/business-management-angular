@@ -30,71 +30,17 @@
     ></app-account-detail>
 </ng-template>
 
-<!-- Silme Onay Modal'ı -->
-<ng-template #deleteModal let-modal>
-    <ng-container *ngIf="selectedAccountExtDto.accountTypeName == 'Personel'">
-        <ng-container *ngTemplateOutlet="employee"></ng-container>
-    </ng-container>
+<!-- Silme Onay Modal'ları -->
+<ng-template #deleteEmployeeModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Personel Silme</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+    </div>
 
-    <ng-container *ngIf="selectedAccountExtDto.accountTypeName == 'Mülk Sahibi'">
-        <ng-container *ngTemplateOutlet="houseOwner"></ng-container>
-    </ng-container>
-
-    <ng-container *ngIf="selectedAccountExtDto.accountTypeName == 'Kiracı'">
-        <ng-container *ngTemplateOutlet="tenant"></ng-container>
-    </ng-container>
-
-    <ng-container *ngIf="selectedAccountExtDto.accountTypeName == 'Diğer'">
-        <ng-container *ngTemplateOutlet="account"></ng-container>
-    </ng-container>
-
-    <ng-template #employee>
-        <div class="modal-header justify-content-between">
-            <img class="opacity-0" src="#" width="24" height="24">
-            <h4 class="modal-title" id="modal-basic-title">Personel Silme</h4>
-            <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
-        </div>
-
-        <div class="modal-body">
-            <p class="text-center m-0">"{{selectedEmployeeExtDto.nameSurname}}" adlı personel silinecektir. Onaylıyor musunuz?</p>
-        </div>
-    </ng-template>
-
-    <ng-template #houseOwner>
-        <div class="modal-header justify-content-between">
-            <img class="opacity-0" src="#" width="24" height="24">
-            <h4 class="modal-title" id="modal-basic-title">Mülk Sahibi Silme</h4>
-            <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
-        </div>
-
-        <div class="modal-body">
-            <p class="text-center m-0">"{{selectedHouseOwnerExtDto.nameSurname}}" adlı mülk sahibi silinecektir. Onaylıyor musunuz?</p>
-        </div>
-    </ng-template>
-
-    <ng-template #tenant>
-        <div class="modal-header justify-content-between">
-            <img class="opacity-0" src="#" width="24" height="24">
-            <h4 class="modal-title" id="modal-basic-title">Kiracı Silme</h4>
-            <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
-        </div>
-
-        <div class="modal-body">
-            <p class="text-center m-0">"{{selectedTenantExtDto.nameSurname}}" adlı kiracı silinecektir. Onaylıyor musunuz?</p>
-        </div>
-    </ng-template>
-
-    <ng-template #account>
-        <div class="modal-header justify-content-between">
-            <img class="opacity-0" src="#" width="24" height="24">
-            <h4 class="modal-title" id="modal-basic-title">Cari Hesap Silme</h4>
-            <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
-        </div>
-        
-        <div class="modal-body">
-            <p class="text-center m-0">"{{selectedAccountExtDto.accountName}}" adlı cari hesap silinecektir. Onaylıyor musunuz?</p>
-        </div>
-    </ng-template>
+    <div class="modal-body">
+        <p class="text-center m-0">"{{selectedAccountExtDto.accountName}}" adlı personel silinecektir. Onaylıyor musunuz?</p>
+    </div>
 
     <div class="modal-footer w-100">
         <div class="container-fluid m-0">
@@ -109,4 +55,79 @@
         </div>
     </div>
 </ng-template>
-<!-- /Silme Onay Modal'ı -->
+
+<ng-template #deleteHouseOwnerModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Mülk Sahibi Silme</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-center m-0">"{{selectedAccountExtDto.accountName}}" adlı mülk sahibi silinecektir. Onaylıyor musunuz?</p>
+    </div>
+
+    <div class="modal-footer w-100">
+        <div class="container-fluid m-0">
+            <div class="row">
+                <div class="col-6">
+                    <button type="button" class="btn btn-danger w-100" (click)="modal.close('ok')">Sil</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-secondary w-100" (click)="modal.dismiss('cancel')">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #deleteTenantModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Kiracı Silme</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-center m-0">"{{selectedAccountExtDto.accountName}}" adlı kiracı silinecektir. Onaylıyor musunuz?</p>
+    </div>
+
+    <div class="modal-footer w-100">
+        <div class="container-fluid m-0">
+            <div class="row">
+                <div class="col-6">
+                    <button type="button" class="btn btn-danger w-100" (click)="modal.close('ok')">Sil</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-secondary w-100" (click)="modal.dismiss('cancel')">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #deleteAccountModal let-modal>
+    <div class="modal-header justify-content-between">
+        <img class="opacity-0" src="#" width="24" height="24">
+        <h4 class="modal-title" id="modal-basic-title">Cari Hesap Silme</h4>
+        <button type="button" class="btn-close m-0" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+    </div>
+    
+    <div class="modal-body">
+        <p class="text-center m-0">"{{selectedAccountExtDto.accountName}}" adlı cari hesap silinecektir. Onaylıyor musunuz?</p>
+    </div>
+
+    <div class="modal-footer w-100">
+        <div class="container-fluid m-0">
+            <div class="row">
+                <div class="col-6">
+                    <button type="button" class="btn btn-danger w-100" (click)="modal.close('ok')">Sil</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-secondary w-100" (click)="modal.dismiss('cancel')">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- /Silme Onay Modal'ları -->
