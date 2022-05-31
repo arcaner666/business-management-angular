@@ -58,12 +58,62 @@ export class ValidationService {
   // Validasyon başarılıysa true, başarısız olursa false dönmeli.
 
   // Validasyon Tipleri
-  number(value: number | undefined | null): boolean {
-    return (value == undefined || value == null || value <= 0 ? false : true);
+  bigint(value: number | undefined | null): boolean {
+    // Bu metotta verilen aralık .NET'teki bigint tipi için değil Javascript'teki number tipi içindir. 
+    // Çünkü .NET'teki bigint tipinin aralığı daha geniştir.
+    return (value == undefined || value == null || value < -9007199254740991 || value > 9007199254740991 ? false : true);
   }
+  
+  bigintPositive(value: number | undefined | null): boolean {
+    // Bu metotta verilen aralık .NET'teki bigint tipi için değil Javascript'teki number tipi içindir. 
+    // Çünkü .NET'teki bigint tipinin aralığı daha geniştir.
+    return (value == undefined || value == null || value <= 0 || value > 9007199254740991 ? false : true);
+  }
+
+  date(value: Date | undefined | null): boolean {
+    return (value == undefined || value == null ? false : true);
+  }
+
+  dateInPast(value: Date | undefined | null): boolean {
+    return (value == undefined || value == null || new Date(value).valueOf() > Date.now().valueOf() ? false : true);
+  }
+
+  int(value: number | undefined | null): boolean {
+    return (value == undefined || value == null || value < -2147483648 || value > 2147483647 ? false : true);
+  }
+
+  intPositive(value: number | undefined | null): boolean {
+    return (value == undefined || value == null || value <= 0 || value > 2147483647 ? false : true);
+  }
+
+  money(value: number | undefined | null): boolean {
+    // Bu metotta verilen aralık .NET'teki money tipi için değil Javascript'teki number tipi içindir. 
+    // Javascript'teki number tipi virgül ve sonrası dahil maksimum 16 karakterden oluşabiliyor. 
+    // Alttaki sayıdan daha büyük her sayıyı yuvarlamaya başlıyor. Ondalık kısım da money tipi sebebiyle maksimum 4 karakter olabiliyor.
+    return (value == undefined || value == null || value <= 0 || value > 99999999999.9999 ? false : true);
+  }                                                                      
 
   numberPreciseLength(value: number | undefined | null, length: number): boolean {
     return (value == undefined || value == null || value.toString().length != length ? false : true);
+  }
+
+  range(value: number | undefined | null, minValue: number, maxValue: number): boolean {
+    return (value == undefined || value == null || value < minValue || value > maxValue ? false : true);
+  }
+
+  smallint(value: number | undefined | null): boolean {
+    return (value == undefined || value == null || value < -32768 || value > 32767 ? false : true);
+  }
+
+  smallintPositive(value: number | undefined | null): boolean {
+    return (value == undefined || value == null || value <= 0 || value > 32767 ? false : true);
+  }
+
+  smallmoney(value: number | undefined | null): boolean {
+    // Bu metotta verilen aralık .NET'teki smallmoney tipi için değil Javascript'teki number tipi içindir. 
+    // Javascript'teki number tipi virgül ve sonrası dahil maksimum 16 karakterden oluşabiliyor. 
+    // Alttaki sayıdan daha büyük her sayıyı yuvarlamaya başlıyor. Ondalık kısım da smallmoney tipi sebebiyle maksimum 4 karakter olabiliyor.
+    return (value == undefined || value == null || value <= 0 || value > 214748.3647 ? false : true);
   }
 
   string(value: string | undefined | null): boolean {
@@ -74,12 +124,8 @@ export class ValidationService {
     return (value == undefined || value == null || value.length != length ? false : true);
   }
 
-  date(value: Date | undefined | null): boolean {
-    return (value == undefined || value == null ? false : true);
-  }
- 
-  dateInPast(value: Date | undefined | null): boolean {
-    return (value == undefined || value == null || new Date(value).valueOf() > Date.now().valueOf() ? false : true);
+  tinyint(value: number | undefined | null): boolean {
+    return (value == undefined || value == null || value <= 0 || value > 255 ? false : true);
   }
 
   // Kurallar
@@ -87,12 +133,12 @@ export class ValidationService {
     let accountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;  
     let isValid: boolean = true;
 
-    const accountGroupId: boolean = this.number(accountExtDto.accountGroupId);
+    const accountGroupId: boolean = this.smallintPositive(accountExtDto.accountGroupId);
     if (!accountGroupId && validationType == "add" || 
     !accountGroupId && validationType == "code")
       accountExtDtoErrors.accountGroupId = "Lütfen hesap grubu seçiniz.";
-      
-    const branchId: boolean = this.number(accountExtDto.branchId);
+    
+    const branchId: boolean = this.bigintPositive(accountExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
       accountExtDtoErrors.branchId = "Lütfen şube seçiniz.";
@@ -106,7 +152,7 @@ export class ValidationService {
     if (!accountCode && validationType == "add")
       accountExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
 
-    const limit: boolean = this.number(accountExtDto.limit);
+    const limit: boolean = this.money(accountExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       accountExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
@@ -123,11 +169,11 @@ export class ValidationService {
     let apartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;  
     let isValid: boolean = true;
 
-    const sectionId: boolean = this.number(apartmentExtDto.sectionId);
+    const sectionId: boolean = this.intPositive(apartmentExtDto.sectionId);
     if (!sectionId && validationType == "add")
       apartmentExtDtoErrors.sectionId = "Lütfen site seçiniz.";
 
-    const managerId: boolean = this.number(apartmentExtDto.managerId);
+    const managerId: boolean = this.bigintPositive(apartmentExtDto.managerId);
     if (!managerId && validationType == "add" || 
     !managerId && validationType == "update")
       apartmentExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
@@ -137,7 +183,7 @@ export class ValidationService {
     !apartmentName && validationType == "update")
       apartmentExtDtoErrors.apartmentName = "Lütfen apartman adı giriniz.";
 
-    const blockNumber: boolean = this.number(apartmentExtDto.blockNumber);
+    const blockNumber: boolean = this.intPositive(apartmentExtDto.blockNumber);
     if (!blockNumber && validationType == "add" || 
     !blockNumber && validationType == "update")
       apartmentExtDtoErrors.blockNumber = "Lütfen blok numarası giriniz.";
@@ -154,7 +200,7 @@ export class ValidationService {
     let bankExtDtoErrors = this.bankExtService.emptyBankExtDtoErrors;  
     let isValid: boolean = true;
 
-    const branchId: boolean = this.number(bankExtDto.branchId);
+    const branchId: boolean = this.bigintPositive(bankExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
       bankExtDtoErrors.branchId = "Lütfen şube seçiniz.";
@@ -168,17 +214,17 @@ export class ValidationService {
     if (!accountCode && validationType == "add")
       bankExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
 
-    const limit: boolean = this.number(bankExtDto.limit);
+    const limit: boolean = this.money(bankExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       bankExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
 
-    const standartMaturity: boolean = this.number(bankExtDto.standartMaturity);
+    const standartMaturity: boolean = this.smallintPositive(bankExtDto.standartMaturity);
     if (!standartMaturity && validationType == "add" || 
     !standartMaturity && validationType == "update")
       bankExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
-      
-    const currencyId: boolean = this.number(bankExtDto.currencyId);
+    
+    const currencyId: boolean = this.tinyint(bankExtDto.currencyId);
     if (!currencyId && validationType == "add")
       bankExtDtoErrors.currencyId = "Lütfen döviz tipi seçiniz.";
     
@@ -217,12 +263,12 @@ export class ValidationService {
     !officerName && validationType == "update")
       bankExtDtoErrors.officerName = "Lütfen yetkili adı giriniz.";
     
-    const cityId: boolean = this.number(bankExtDto.cityId);
+    const cityId: boolean = this.smallintPositive(bankExtDto.cityId);
     if (!cityId && validationType == "add" || 
     !cityId && validationType == "update")
       bankExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
 
-    const districtId: boolean = this.number(bankExtDto.districtId);
+    const districtId: boolean = this.intPositive(bankExtDto.districtId);
     if (!districtId && validationType == "add" || 
     !districtId && validationType == "update")
       bankExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
@@ -253,12 +299,12 @@ export class ValidationService {
     if (!branchCode && validationType == "add")
       branchExtDtoErrors.branchCode = "Lütfen şube kodu oluşturunuz.";
       
-    const cityId: boolean = this.number(branchExtDto.cityId);
+    const cityId: boolean = this.smallintPositive(branchExtDto.cityId);
     if (!cityId && validationType == "add" || 
     !cityId && validationType == "update")
       branchExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
 
-    const districtId: boolean = this.number(branchExtDto.districtId);
+    const districtId: boolean = this.intPositive(branchExtDto.districtId);
     if (!districtId && validationType == "add" || 
     !districtId && validationType == "update")
       branchExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
@@ -268,7 +314,7 @@ export class ValidationService {
     !addressTitle && validationType == "update")
       branchExtDtoErrors.addressTitle = "Lütfen adres başlığı giriniz.";
     
-    const postalCode: boolean = this.number(branchExtDto.postalCode);
+    const postalCode: boolean = this.intPositive(branchExtDto.postalCode);
     if (!postalCode && validationType == "add" || 
     !postalCode && validationType == "update")
       branchExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
@@ -290,7 +336,7 @@ export class ValidationService {
     let cashExtDtoErrors = this.cashExtService.emptyCashExtDtoErrors;  
     let isValid: boolean = true;
 
-    const branchId: boolean = this.number(cashExtDto.branchId);
+    const branchId: boolean = this.bigintPositive(cashExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
       cashExtDtoErrors.branchId = "Lütfen şube seçiniz.";
@@ -304,12 +350,12 @@ export class ValidationService {
     if (!accountCode && validationType == "add")
       cashExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
 
-    const limit: boolean = this.number(cashExtDto.limit);
+    const limit: boolean = this.money(cashExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       cashExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
 
-    const currencyId: boolean = this.number(cashExtDto.currencyId);
+    const currencyId: boolean = this.tinyint(cashExtDto.currencyId);
     if (!currencyId && validationType == "add")
       cashExtDtoErrors.currencyId = "Lütfen döviz tipi seçiniz.";
       
@@ -338,7 +384,7 @@ export class ValidationService {
     if (!phone2 && validationType == "add")
       employeeExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
     
-    const employeeTypeId: boolean = this.number(employeeExtDto.employeeTypeId);
+    const employeeTypeId: boolean = this.smallintPositive(employeeExtDto.employeeTypeId);
     if (!employeeTypeId && validationType == "add" || 
     !employeeTypeId && validationType == "update")
       employeeExtDtoErrors.employeeTypeId = "Lütfen personel tipi seçiniz.";
@@ -351,7 +397,7 @@ export class ValidationService {
     if (!startDate2 && validationType == "update")
       employeeExtDtoErrors.startDate = "İşe başlama tarihi alanına geçmiş bir tarih girilmelidir.";
 
-    const branchId: boolean = this.number(employeeExtDto.branchId);
+    const branchId: boolean = this.bigintPositive(employeeExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
       employeeExtDtoErrors.branchId = "Lütfen şube seçiniz.";
@@ -365,7 +411,7 @@ export class ValidationService {
     if (!accountCode && validationType == "add")
       employeeExtDtoErrors.accountCode = "Lütfen hesap kodu üretiniz.";
 
-    const identityNumber1: boolean = this.number(employeeExtDto.identityNumber);
+    const identityNumber1: boolean = this.bigintPositive(employeeExtDto.identityNumber);
     if (!identityNumber1 && validationType == "add" || 
     !identityNumber1 && validationType == "update" )
       employeeExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
@@ -375,7 +421,7 @@ export class ValidationService {
     !identityNumber2 && validationType == "update")
       employeeExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
 
-    const limit: boolean = this.number(employeeExtDto.limit);
+    const limit: boolean = this.money(employeeExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       employeeExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
@@ -392,15 +438,15 @@ export class ValidationService {
     let flatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;  
     let isValid: boolean = true;
 
-    const sectionId: boolean = this.number(flatExtDto.sectionId);
+    const sectionId: boolean = this.intPositive(flatExtDto.sectionId);
     if (!sectionId && validationType == "add")
       flatExtDtoErrors.sectionId = "Lütfen site seçiniz.";
 
-    const apartmentId: boolean = this.number(flatExtDto.apartmentId);
+    const apartmentId: boolean = this.bigintPositive(flatExtDto.apartmentId);
     if (!apartmentId && validationType == "add")
       flatExtDtoErrors.apartmentId = "Lütfen apartman seçiniz.";
 
-    const doorNumber: boolean = this.number(flatExtDto.doorNumber);
+    const doorNumber: boolean = this.intPositive(flatExtDto.doorNumber);
     if (!doorNumber && validationType == "add" || 
     !doorNumber && validationType == "update")
       flatExtDtoErrors.doorNumber = "Lütfen kapı numarası giriniz.";
@@ -430,7 +476,7 @@ export class ValidationService {
     if (!phone2 && validationType == "add")
       houseOwnerExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
     
-    const branchId: boolean = this.number(houseOwnerExtDto.branchId);
+    const branchId: boolean = this.bigintPositive(houseOwnerExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
       houseOwnerExtDtoErrors.branchId = "Lütfen şube seçiniz.";
@@ -449,12 +495,12 @@ export class ValidationService {
     !taxOffice && validationType == "update")
       houseOwnerExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
 
-    const taxNumber: boolean = this.number(houseOwnerExtDto.taxNumber);
+    const taxNumber: boolean = this.bigintPositive(houseOwnerExtDto.taxNumber);
     if (!taxNumber && validationType == "add" || 
     !taxNumber && validationType == "update")
       houseOwnerExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
 
-    const identityNumber1: boolean = this.number(houseOwnerExtDto.identityNumber);
+    const identityNumber1: boolean = this.bigintPositive(houseOwnerExtDto.identityNumber);
     if (!identityNumber1 && validationType == "add" || 
     !identityNumber1 && validationType == "update" )
       houseOwnerExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
@@ -464,12 +510,12 @@ export class ValidationService {
     !identityNumber2 && validationType == "update")
       houseOwnerExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
 
-    const limit: boolean = this.number(houseOwnerExtDto.limit);
+    const limit: boolean = this.money(houseOwnerExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       houseOwnerExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
     
-    const standartMaturity: boolean = this.number(houseOwnerExtDto.standartMaturity);
+    const standartMaturity: boolean = this.smallintPositive(houseOwnerExtDto.standartMaturity);
     if (!standartMaturity && validationType == "add" || 
     !standartMaturity && validationType == "update")
       houseOwnerExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
@@ -491,27 +537,27 @@ export class ValidationService {
     !sectionName && validationType == "update")
       sectionExtDtoErrors.sectionName = "Lütfen site adı giriniz.";
 
-    const sectionGroupId: boolean = this.number(sectionExtDto.sectionGroupId);
+    const sectionGroupId: boolean = this.bigintPositive(sectionExtDto.sectionGroupId);
     if (!sectionGroupId && validationType == "add" || 
     !sectionGroupId && validationType == "update")
       sectionExtDtoErrors.sectionGroupId = "Lütfen site grubu seçiniz.";
       
-    const managerId: boolean = this.number(sectionExtDto.managerId);
+    const managerId: boolean = this.bigintPositive(sectionExtDto.managerId);
     if (!managerId && validationType == "add" || 
     !managerId && validationType == "update")
       sectionExtDtoErrors.managerId = "Lütfen yönetici seçiniz.";
 
-    const cityId: boolean = this.number(sectionExtDto.cityId);
+    const cityId: boolean = this.smallintPositive(sectionExtDto.cityId);
     if (!cityId && validationType == "add" || 
     !cityId && validationType == "update")
       sectionExtDtoErrors.cityId = "Lütfen şehir seçiniz.";
 
-    const districtId: boolean = this.number(sectionExtDto.districtId);
+    const districtId: boolean = this.intPositive(sectionExtDto.districtId);
     if (!districtId && validationType == "add" || 
     !districtId && validationType == "update")
       sectionExtDtoErrors.districtId = "Lütfen ilçe seçiniz.";
 
-    const postalCode: boolean = this.number(sectionExtDto.postalCode);
+    const postalCode: boolean = this.intPositive(sectionExtDto.postalCode);
     if (!postalCode && validationType == "add" || 
     !postalCode && validationType == "update")
       sectionExtDtoErrors.postalCode = "Lütfen posta kodu giriniz.";
@@ -563,7 +609,7 @@ export class ValidationService {
     if (!phone2 && validationType == "add")
       tenantExtDtoErrors.phone = "Telefon numarası 10 haneden oluşmalıdır. Örneğin; 5554443322";
     
-    const branchId: boolean = this.number(tenantExtDto.branchId);
+    const branchId: boolean = this.bigintPositive(tenantExtDto.branchId);
     if (!branchId && validationType == "add" || 
     !branchId && validationType == "code")
       tenantExtDtoErrors.branchId = "Lütfen şube seçiniz.";
@@ -582,12 +628,12 @@ export class ValidationService {
     !taxOffice && validationType == "update")
       tenantExtDtoErrors.taxOffice = "Lütfen vergi dairesi giriniz.";
 
-    const taxNumber: boolean = this.number(tenantExtDto.taxNumber);
+    const taxNumber: boolean = this.bigintPositive(tenantExtDto.taxNumber);
     if (!taxNumber && validationType == "add" || 
     !taxNumber && validationType == "update")
       tenantExtDtoErrors.taxNumber = "Lütfen vergi numarası giriniz.";
 
-    const identityNumber1: boolean = this.number(tenantExtDto.identityNumber);
+    const identityNumber1: boolean = this.bigintPositive(tenantExtDto.identityNumber);
     if (!identityNumber1 && validationType == "add" || 
     !identityNumber1 && validationType == "update" )
       tenantExtDtoErrors.identityNumber = "Lütfen kimlik numarası giriniz.";
@@ -597,12 +643,12 @@ export class ValidationService {
     !identityNumber2 && validationType == "update")
       tenantExtDtoErrors.identityNumber = "Kimlik numarası 11 haneden oluşmalıdır.";
 
-    const limit: boolean = this.number(tenantExtDto.limit);
+    const limit: boolean = this.money(tenantExtDto.limit);
     if (!limit && validationType == "add" || 
     !limit && validationType == "update")
       tenantExtDtoErrors.limit = "Lütfen hesap limiti giriniz.";
     
-    const standartMaturity: boolean = this.number(tenantExtDto.standartMaturity);
+    const standartMaturity: boolean = this.smallintPositive(tenantExtDto.standartMaturity);
     if (!standartMaturity && validationType == "add" || 
     !standartMaturity && validationType == "update")
       tenantExtDtoErrors.standartMaturity = "Lütfen standart vade giriniz.";
