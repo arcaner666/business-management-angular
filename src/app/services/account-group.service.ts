@@ -22,7 +22,7 @@ export class AccountGroupService {
 
   // API İstekleri
   getAll(): Observable<ListDataResult<AccountGroupDto>> {
-    return this.http.get<ListDataResult<AccountGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}/getall`);
+    return this.http.get<ListDataResult<AccountGroupDto>>(`${environment.apiUrl}/${this.controllerUrl}`);
   }
 
   getByAccountGroupCodes(accountGroupCodesDto: AccountGroupCodesDto): Observable<ListDataResult<AccountGroupDto>> {

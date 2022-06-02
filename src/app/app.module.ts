@@ -217,7 +217,8 @@ import { CustomDateParserFormatter } from 'src/app/services/custom-date-parser-f
     NgSelectModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    // BACKENDDEKİ ERROR HANDLINGI AYARLAMAK İÇİN BURAYI GEÇİCİ OLARAK KAPATTIM İŞİM BİTİNCE AÇMALIYIM. !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //{ provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: NgbDateAdapter, useClass: CustomDateAdapter},
     { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter}
   ],
