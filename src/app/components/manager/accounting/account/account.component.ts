@@ -14,16 +14,16 @@ import { BranchDto } from 'src/app/models/dtos/branch-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
+import { AccountService } from 'src/app/services/account.service';
 import { AccountTypeService } from 'src/app/services/account-type.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
-import { CashExtService } from 'src/app/services/cash-ext.service';
-import { EmployeeExtService } from 'src/app/services/employee-ext.service';
-import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
+import { CashService } from 'src/app/services/cash.service';
+import { EmployeeService } from 'src/app/services/employee.service';
+import { HouseOwnerService } from 'src/app/services/house-owner.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { TenantExtService } from 'src/app/services/tenant-ext.service';
+import { TenantService } from 'src/app/services/tenant.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
@@ -55,27 +55,27 @@ export class AccountComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private accountExtService: AccountExtService,
+    private accountService: AccountService,
     private accountGroupService: AccountGroupService,
     private accountTypeService: AccountTypeService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
-    private cashExtService: CashExtService,
-    private employeeExtService: EmployeeExtService,
-    private houseOwnerExtService: HouseOwnerExtService,
+    private cashService: CashService,
+    private employeeService: EmployeeService,
+    private houseOwnerService: HouseOwnerService,
     private modalService: NgbModal,
     private navigationService: NavigationService,
     private router: Router,
-    private tenantExtService: TenantExtService,
+    private tenantService: TenantService,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
     console.log("AccountComponent constructor çalıştı.");
 
-    this.accountGetByAccountGroupCodesDto = this.accountExtService.emptyAccountGetByAccountGroupCodesDto;
-    this.accountGroupCodesDto = this.accountExtService.emptyAccountGroupCodesDto;
-    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
-    this.selectedAccountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;
+    this.accountGetByAccountGroupCodesDto = this.accountService.emptyAccountGetByAccountGroupCodesDto;
+    this.accountGroupCodesDto = this.accountService.emptyAccountGroupCodesDto;
+    this.selectedAccountExtDto = this.accountService.emptyAccountExtDto;
+    this.selectedAccountExtDtoErrors = this.accountService.emptyAccountExtDtoErrors;
 
     this.getAllAccountGroups();
     this.getAllAccountTypes();
@@ -88,7 +88,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   add(accountTypeName: string): void {
-    this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+    this.selectedAccountExtDto = this.accountService.emptyAccountExtDto;
     this.selectedAccountExtDto.accountTypeName = accountTypeName;
     this.fillRouteHistoryAndNavigate(this.selectedAccountExtDto);
   }
@@ -101,7 +101,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      this.accountExtService.addExt(this.selectedAccountExtDto)
+      this.accountService.add(this.selectedAccountExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -145,35 +145,35 @@ export class AccountComponent implements OnInit, OnDestroy {
       concatMap((response) => {
         if (response == "ok") {
           if (selectedAccountExtDto.accountTypeName == "Kasa") {
-            return this.cashExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
+            return this.cashService.deleteByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
           } else if (selectedAccountExtDto.accountTypeName == "Personel") {
-            return this.employeeExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
+            return this.employeeService.deleteByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
           } else if (selectedAccountExtDto.accountTypeName == "Mülk Sahibi") {
-            return this.houseOwnerExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
+            return this.houseOwnerService.deleteExtByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
           } else if (selectedAccountExtDto.accountTypeName == "Kiracı") {
-            return this.tenantExtService.deleteExtByAccountId(selectedAccountExtDto.accountId)
+            return this.tenantService.deleteByAccountId(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
               })
             );
           } else if (selectedAccountExtDto.accountTypeName == "Diğer") {
-            return this.accountExtService.deleteExt(selectedAccountExtDto.accountId)
+            return this.accountService.delete(selectedAccountExtDto.accountId)
             .pipe(
               tap((response) => {
                 this.toastService.success(response.message);
@@ -231,7 +231,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       this.navigationService.routeHistory = routeHistory;
       this.router.navigate(["manager/person-management/tenant"]);
     } else if (selectedAccountExtDto.accountTypeName == "Diğer") {
-      this.selectedAccountExtDto = this.accountExtService.emptyAccountExtDto;
+      this.selectedAccountExtDto = this.accountService.emptyAccountExtDto;
       this.setHeader(selectedAccountExtDto.accountId);
       if (selectedAccountExtDto.accountId != 0) {
         this.getAccountExtById(selectedAccountExtDto.accountId);
@@ -255,7 +255,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateAccountExtDto(this.selectedAccountExtDto, "code");
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {
-      this.accountExtService.generateAccountCode(
+      this.accountService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId,
         this.selectedAccountExtDto.branchId,
         this.findAccountGroupCode(this.selectedAccountExtDto.accountGroupId))
@@ -277,7 +277,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getAccountExtById(accountId: number) {
-    this.accountExtService.getExtById(accountId)
+    this.accountService.getExtById(accountId)
     .pipe(
       takeUntil(this.unsubscribeAll),
     ).subscribe({
@@ -291,14 +291,14 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getAccountExtsByBusinessId(): Observable<ListDataResult<AccountExtDto>> {
-    this.accountExtDtos$ = this.accountExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.accountExtDtos$ = this.accountService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.accountExtDtos$;
   }
 
   getAccountExtsByBusinessIdAndAccountGroupCodes(): Observable<ListDataResult<AccountExtDto>> {
     this.accountGetByAccountGroupCodesDto.businessId = this.authorizationService.authorizationDto.businessId;
     this.accountGetByAccountGroupCodesDto.accountGroupCodes = ["120", "320", "335"];
-    this.accountExtDtos$ = this.accountExtService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
+    this.accountExtDtos$ = this.accountService.getExtsByBusinessIdAndAccountGroupCodes(this.accountGetByAccountGroupCodesDto);
     return this.accountExtDtos$;
   }
 
@@ -360,7 +360,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateAccountExtDto(this.selectedAccountExtDto, "update");
     this.selectedAccountExtDtoErrors = errors;
     if (isModelValid) {
-      this.accountExtService.updateExt(this.selectedAccountExtDto)
+      this.accountService.update(this.selectedAccountExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

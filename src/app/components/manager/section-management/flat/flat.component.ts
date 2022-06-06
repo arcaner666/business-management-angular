@@ -13,7 +13,7 @@ import { TenantDto } from 'src/app/models/dtos/tenant-dto';
 
 import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
-import { FlatExtService } from 'src/app/services/flat-ext.service';
+import { FlatExtService } from 'src/app/services/flat.service';
 import { HouseOwnerService } from 'src/app/services/house-owner.service';
 import { SectionService } from 'src/app/services/section.service';
 import { TenantService } from 'src/app/services/tenant.service';

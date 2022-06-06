@@ -15,9 +15,9 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 @Injectable({
   providedIn: 'root'
 })
-export class CashExtService {
+export class CashService {
 
-  private controllerUrl: string = "cashexts";
+  private controllerUrl: string = "cash";
   private _emptyCashExtDto: CashExtDto = {
     cashId: 0,
     businessId: 0,
@@ -69,17 +69,16 @@ export class CashExtService {
     return cloneDeep(this._emptyCashExtDtoErrors);
   }
 
-  // API İstekleri
-  addExt(cashExtDto: CashExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, cashExtDto);
+  add(cashExtDto: CashExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, cashExtDto);
   }
 
-  deleteExt(id: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+  delete(id: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
 
-  deleteExtByAccountId(accountId: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteextbyaccountid/${accountId}`);
+  deleteByAccountId(accountId: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deletebyaccountid/${accountId}`);
   }
 
   getExtByAccountId(accountId: number): Observable<SingleDataResult<CashExtDto>> {
@@ -94,7 +93,7 @@ export class CashExtService {
     return this.http.get<ListDataResult<CashExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
   }
 
-  updateExt(cashExtDto: CashExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, cashExtDto);
+  update(cashExtDto: CashExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/update`, cashExtDto);
   }
 }

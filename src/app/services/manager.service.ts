@@ -19,7 +19,6 @@ export class ManagerService {
     private http: HttpClient,
   ) {}
 
-  // API İstekleri
   getByBusinessId(businessId: number): Observable<ListDataResult<ManagerDto>> {
     return this.http.get<ListDataResult<ManagerDto>>(`${environment.apiUrl}/${this.controllerUrl}/getbybusinessid/${businessId}`);
   }

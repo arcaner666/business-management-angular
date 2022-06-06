@@ -15,9 +15,9 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 @Injectable({
   providedIn: 'root'
 })
-export class FlatExtService {
+export class FlatService {
 
-  private controllerUrl: string = "flatexts";
+  private controllerUrl: string = "flats";
   private _emptyFlatExtDto: FlatExtDto = {
     flatId: 0,
     sectionId: 0,
@@ -81,13 +81,12 @@ export class FlatExtService {
     return cloneDeep(this._emptyFlatExtDtoErrors);
   }
   
-  // API İstekleri
-  addExt(flatExtDto: FlatExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, flatExtDto);
+  add(flatExtDto: FlatExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, flatExtDto);
   }
 
-  deleteExt(id: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+  delete(id: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
 
   getExtById(id: number): Observable<SingleDataResult<FlatExtDto>> {
@@ -98,7 +97,7 @@ export class FlatExtService {
     return this.http.get<ListDataResult<FlatExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
   }
 
-  updateExt(flatExtDto: FlatExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, flatExtDto);
+  update(flatExtDto: FlatExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/update`, flatExtDto);
   }
 }

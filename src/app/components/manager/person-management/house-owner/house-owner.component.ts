@@ -11,11 +11,11 @@ import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-o
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
+import { AccountExtService } from 'src/app/services/account.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
-import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
+import { HouseOwnerExtService } from 'src/app/services/house-owner.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';

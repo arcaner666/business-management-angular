@@ -12,11 +12,11 @@ import { EmployeeTypeDto } from 'src/app/models/dtos/employee-type-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
+import { AccountService } from 'src/app/services/account.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
-import { EmployeeExtService } from 'src/app/services/employee-ext.service';
+import { EmployeeService } from 'src/app/services/employee.service';
 import { EmployeeTypeService } from 'src/app/services/employee-type.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -44,11 +44,11 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private accountExtService: AccountExtService,
     private accountGroupService: AccountGroupService,
+    private accountService: AccountService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
-    private employeeExtService: EmployeeExtService,
+    private employeeService: EmployeeService,
     private employeeTypeService: EmployeeTypeService,
     private modalService: NgbModal,
     private navigationService: NavigationService,
@@ -58,8 +58,8 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   ) { 
     console.log("EmployeeComponent constructor çalıştı.");
 
-    this.selectedEmployeeExtDto = this.employeeExtService.emptyEmployeeExtDto;
-    this.selectedEmployeeExtDtoErrors = this.employeeExtService.emptyEmployeeExtDtoErrors;
+    this.selectedEmployeeExtDto = this.employeeService.emptyEmployeeExtDto;
+    this.selectedEmployeeExtDtoErrors = this.employeeService.emptyEmployeeExtDtoErrors;
 
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
@@ -77,7 +77,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.employeeExtService.addExt(this.selectedEmployeeExtDto)
+      this.employeeService.add(this.selectedEmployeeExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -117,7 +117,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.employeeExtService.deleteExt(selectedEmployeeExtDto.employeeId)
+          return this.employeeService.delete(selectedEmployeeExtDto.employeeId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -148,7 +148,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateEmployeeExtDto(this.selectedEmployeeExtDto, "code");
     this.selectedEmployeeExtDtoErrors = errors;
     if (isModelValid) {
-      this.accountExtService.generateAccountCode(
+      this.accountService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedEmployeeExtDto.branchId, 
         "335")
@@ -193,14 +193,14 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   getEmployeeExtsByBusinessId(): Observable<ListDataResult<EmployeeExtDto>> {
-    this.employeeExtDtos$ = this.employeeExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.employeeExtDtos$ = this.employeeService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.employeeExtDtos$;
   }
 
   navigate(routeHistory: RouteHistory) {
     if (routeHistory.previousRoute != "") {
       if (routeHistory.accountId != 0) {
-        this.employeeExtService.getExtByAccountId(routeHistory.accountId)
+        this.employeeService.getExtByAccountId(routeHistory.accountId)
         .pipe(
           takeUntil(this.unsubscribeAll),
         ).subscribe({
@@ -240,7 +240,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     if (selectedEmployeeExtDto) {
       this.selectedEmployeeExtDto = selectedEmployeeExtDto;
     } else {
-      this.selectedEmployeeExtDto = this.employeeExtService.emptyEmployeeExtDto;  
+      this.selectedEmployeeExtDto = this.employeeService.emptyEmployeeExtDto;  
     }
     this.setHeader(this.selectedEmployeeExtDto.employeeId);
     this.activePage = "detail";
@@ -255,7 +255,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     this.selectedEmployeeExtDtoErrors = errors;
     if (isModelValid) {
       console.log(this.selectedEmployeeExtDto);
-      this.employeeExtService.updateExt(this.selectedEmployeeExtDto)
+      this.employeeService.update(this.selectedEmployeeExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

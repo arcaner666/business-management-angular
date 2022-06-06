@@ -15,9 +15,9 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 @Injectable({
   providedIn: 'root'
 })
-export class BankExtService {
+export class BankService {
 
-  private controllerUrl: string = "bankexts";
+  private controllerUrl: string = "banks";
   private _emptyBankExtDto: BankExtDto = {
     bankId: 0,
     businessId: 0,
@@ -109,17 +109,16 @@ export class BankExtService {
     return cloneDeep(this._emptyBankExtDtoErrors);
   }
 
-  // API İstekleri
-  addExt(bankExtDto: BankExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, bankExtDto);
+  add(bankExtDto: BankExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, bankExtDto);
   }
 
-  deleteExt(id: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+  delete(id: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
 
-  deleteExtByAccountId(accountId: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteextbyaccountid/${accountId}`);
+  deleteByAccountId(accountId: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deletebyaccountid/${accountId}`);
   }
 
   getExtByAccountId(accountId: number): Observable<SingleDataResult<BankExtDto>> {
@@ -134,7 +133,7 @@ export class BankExtService {
     return this.http.get<ListDataResult<BankExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
   }
 
-  updateExt(bankExtDto: BankExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, bankExtDto);
+  update(bankExtDto: BankExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/update`, bankExtDto);
   }
 }

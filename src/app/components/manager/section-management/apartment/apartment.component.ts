@@ -9,7 +9,7 @@ import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { ManagerDto } from 'src/app/models/dtos/manager-dto';
 import { SectionDto } from 'src/app/models/dtos/section-dto';
 
-import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
+import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { ManagerService } from 'src/app/services/manager.service';
 import { SectionService } from 'src/app/services/section.service';
@@ -37,7 +37,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private apartmentExtService: ApartmentExtService,
+    private apartmentService: ApartmentService,
     private authorizationService: AuthorizationService,
     private managerService: ManagerService,
     private modalService: NgbModal,
@@ -47,8 +47,8 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   ) { 
     console.log("ApartmentComponent constructor çalıştı.");
 
-    this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;
-    this.selectedApartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;
+    this.selectedApartmentExtDto = this.apartmentService.emptyApartmentExtDto;
+    this.selectedApartmentExtDtoErrors = this.apartmentService.emptyApartmentExtDtoErrors;
 
     this.apartmentExtDtos$ = this.getApartmentExtsByBusinessId();
     this.managerDtos$ = this.getManagersByBusinessId();
@@ -64,7 +64,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     this.selectedApartmentExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      this.apartmentExtService.addExt(this.selectedApartmentExtDto)
+      this.apartmentService.add(this.selectedApartmentExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -104,7 +104,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.apartmentExtService.deleteExt(selectedApartmentExtDto.apartmentId)
+          return this.apartmentService.delete(selectedApartmentExtDto.apartmentId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -132,7 +132,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
   }
 
   getApartmentExtsByBusinessId(): Observable<ListDataResult<ApartmentExtDto>> {
-    this.apartmentExtDtos$ = this.apartmentExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.apartmentExtDtos$ = this.apartmentService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.apartmentExtDtos$;
   }
 
@@ -158,7 +158,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     if (selectedApartmentExtDto) {
       this.selectedApartmentExtDto = selectedApartmentExtDto;
     } else {
-      this.selectedApartmentExtDto = this.apartmentExtService.emptyApartmentExtDto;  
+      this.selectedApartmentExtDto = this.apartmentService.emptyApartmentExtDto;  
     }
     this.setHeader(this.selectedApartmentExtDto.apartmentId);
     this.activePage = "detail";
@@ -172,7 +172,7 @@ export class ApartmentComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateApartmentExtDto(this.selectedApartmentExtDto, "update");
     this.selectedApartmentExtDtoErrors = errors;
     if (isModelValid) {
-      this.apartmentExtService.updateExt(this.selectedApartmentExtDto)
+      this.apartmentService.update(this.selectedApartmentExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

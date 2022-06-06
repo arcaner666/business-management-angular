@@ -11,10 +11,10 @@ import { CurrencyDto } from 'src/app/models/dtos/currency-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
+import { AccountService } from 'src/app/services/account.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
-import { CashExtService } from 'src/app/services/cash-ext.service';
+import { CashService } from 'src/app/services/cash.service';
 import { CurrencyService } from 'src/app/services/currency.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -41,10 +41,10 @@ export class CashComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private accountExtService: AccountExtService,
+    private accountService: AccountService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
-    private cashExtService: CashExtService,
+    private cashService: CashService,
     private currencyService: CurrencyService,
     private modalService: NgbModal,
     private navigationService: NavigationService,
@@ -54,8 +54,8 @@ export class CashComponent implements OnInit, OnDestroy {
   ) { 
     console.log("CashComponent constructor çalıştı.");
 
-    this.selectedCashExtDto = this.cashExtService.emptyCashExtDto;
-    this.selectedCashExtDtoErrors = this.cashExtService.emptyCashExtDtoErrors;
+    this.selectedCashExtDto = this.cashService.emptyCashExtDto;
+    this.selectedCashExtDtoErrors = this.cashService.emptyCashExtDtoErrors;
 
     this.branchDtos$ = this.getBranchsByBusinessId();
     this.currencyDtos$ = this.getAllCurrencies();
@@ -72,7 +72,7 @@ export class CashComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.cashExtService.addExt(this.selectedCashExtDto)
+      this.cashService.add(this.selectedCashExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -112,7 +112,7 @@ export class CashComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.cashExtService.deleteExt(selectedCashExtDto.cashId)
+          return this.cashService.delete(selectedCashExtDto.cashId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -143,7 +143,7 @@ export class CashComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateCashExtDto(this.selectedCashExtDto, "code");
     this.selectedCashExtDtoErrors = errors;
     if (isModelValid) {      
-      this.accountExtService.generateAccountCode(
+      this.accountService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedCashExtDto.branchId, 
         "100")
@@ -174,14 +174,14 @@ export class CashComponent implements OnInit, OnDestroy {
   }
 
   getCashExtsByBusinessId(): Observable<ListDataResult<CashExtDto>> {
-    this.cashExtDtos$ = this.cashExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.cashExtDtos$ = this.cashService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.cashExtDtos$;
   }
 
   navigate(routeHistory: RouteHistory) {
     if (routeHistory.previousRoute != "") {
       if (routeHistory.accountId != 0) {
-        this.cashExtService.getExtByAccountId(routeHistory.accountId)
+        this.cashService.getExtByAccountId(routeHistory.accountId)
         .pipe(
           takeUntil(this.unsubscribeAll),
         ).subscribe({
@@ -221,7 +221,7 @@ export class CashComponent implements OnInit, OnDestroy {
     if (selectedCashExtDto) {
       this.selectedCashExtDto = selectedCashExtDto;
     } else {
-      this.selectedCashExtDto = this.cashExtService.emptyCashExtDto;  
+      this.selectedCashExtDto = this.cashService.emptyCashExtDto;  
     }
     this.setHeader(this.selectedCashExtDto.cashId);
     this.activePage = "detail";
@@ -235,7 +235,7 @@ export class CashComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateCashExtDto(this.selectedCashExtDto, "update");
     this.selectedCashExtDtoErrors = errors;
     if (isModelValid) {
-      this.cashExtService.updateExt(this.selectedCashExtDto)
+      this.cashService.update(this.selectedCashExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

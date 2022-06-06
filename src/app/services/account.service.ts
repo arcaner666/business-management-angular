@@ -18,9 +18,9 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 @Injectable({
   providedIn: 'root'
 })
-export class AccountExtService {
+export class AccountService {
 
-  private controllerUrl: string = "accountexts";
+  private controllerUrl: string = "accounts";
   private _emptyAccountExtDto: AccountExtDto = {
     accountId: 0,
     businessId: 0,
@@ -101,13 +101,12 @@ export class AccountExtService {
     return cloneDeep(this._emptyAccountGroupCodesDto);
   }
 
-  // API İstekleri
-  addExt(accountExtDto: AccountExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, accountExtDto);
+  add(accountExtDto: AccountExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, accountExtDto);
   }
 
-  deleteExt(id: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+  delete(id: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
 
   generateAccountCode(businessId: number, branchId: number, accountGroupCode: string): Observable<SingleDataResult<AccountCodeDto>> {
@@ -126,7 +125,7 @@ export class AccountExtService {
     return this.http.post<ListDataResult<AccountExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessidandaccountgroupcodes`, accountGetByAccountGroupCodesDto);
   }
 
-  updateExt(accountExtDto: AccountExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, accountExtDto);
+  update(accountExtDto: AccountExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/update`, accountExtDto);
   }
 }

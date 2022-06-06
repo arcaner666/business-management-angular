@@ -23,17 +23,17 @@ import { SectionGroupDtoErrors } from 'src/app/models/validation-errors/section-
 import { TenantExtDto } from 'src/app/models/dtos/tenant-ext-dto';
 import { TenantExtDtoErrors } from 'src/app/models/validation-errors/tenant-ext-dto-errors';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
-import { ApartmentExtService } from 'src/app/services/apartment-ext.service';
-import { BankExtService } from 'src/app/services/bank-ext.service';
-import { BranchExtService } from 'src/app/services/branch-ext.service';
-import { CashExtService } from 'src/app/services/cash-ext.service';
-import { EmployeeExtService } from 'src/app/services/employee-ext.service';
-import { FlatExtService } from 'src/app/services/flat-ext.service';
-import { HouseOwnerExtService } from 'src/app/services/house-owner-ext.service';
-import { SectionExtService } from 'src/app/services/section-ext.service';
+import { AccountService } from 'src/app/services/account.service';
+import { ApartmentService } from 'src/app/services/apartment.service';
+import { BankService } from 'src/app/services/bank.service';
+import { BranchService } from 'src/app/services/branch.service';
+import { CashService } from 'src/app/services/cash.service';
+import { EmployeeService } from 'src/app/services/employee.service';
+import { FlatService } from 'src/app/services/flat.service';
+import { HouseOwnerService } from 'src/app/services/house-owner.service';
+import { SectionService } from 'src/app/services/section.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
-import { TenantExtService } from 'src/app/services/tenant-ext.service';
+import { TenantService } from 'src/app/services/tenant.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,19 +41,18 @@ import { TenantExtService } from 'src/app/services/tenant-ext.service';
 export class ValidationService {
 
   constructor(
-    private accountExtService: AccountExtService,
-    private apartmentExtService: ApartmentExtService,
-    private bankExtService: BankExtService,
-    private branchExtService: BranchExtService,
-    private cashExtService: CashExtService,
-    private employeeExtService: EmployeeExtService,
-    private flatExtService: FlatExtService,
-    private houseOwnerExtService: HouseOwnerExtService,
-    private sectionExtService: SectionExtService,
+    private accountService: AccountService,
+    private apartmentService: ApartmentService,
+    private bankService: BankService,
+    private branchService: BranchService,
+    private cashService: CashService,
+    private employeeService: EmployeeService,
+    private flatService: FlatService,
+    private houseOwnerService: HouseOwnerService,
+    private sectionService: SectionService,
     private sectionGroupService: SectionGroupService,
-    private tenantExtService: TenantExtService,
-  ) {
-  }
+    private tenantService: TenantService,
+  ) {}
 
   // Validasyon başarılıysa true, başarısız olursa false dönmeli.
 
@@ -130,7 +129,7 @@ export class ValidationService {
 
   // Kurallar
   validateAccountExtDto(accountExtDto: AccountExtDto, validationType: string): [boolean, AccountExtDtoErrors] {
-    let accountExtDtoErrors = this.accountExtService.emptyAccountExtDtoErrors;  
+    let accountExtDtoErrors = this.accountService.emptyAccountExtDtoErrors;  
     let isValid: boolean = true;
 
     const accountGroupId: boolean = this.smallintPositive(accountExtDto.accountGroupId);
@@ -166,7 +165,7 @@ export class ValidationService {
   }
 
   validateApartmentExtDto(apartmentExtDto: ApartmentExtDto, validationType: string): [boolean, ApartmentExtDtoErrors] {
-    let apartmentExtDtoErrors = this.apartmentExtService.emptyApartmentExtDtoErrors;  
+    let apartmentExtDtoErrors = this.apartmentService.emptyApartmentExtDtoErrors;  
     let isValid: boolean = true;
 
     const sectionId: boolean = this.intPositive(apartmentExtDto.sectionId);
@@ -197,7 +196,7 @@ export class ValidationService {
   }
 
   validateBankExtDto(bankExtDto: BankExtDto, validationType: string): [boolean, BankExtDtoErrors] {
-    let bankExtDtoErrors = this.bankExtService.emptyBankExtDtoErrors;  
+    let bankExtDtoErrors = this.bankService.emptyBankExtDtoErrors;  
     let isValid: boolean = true;
 
     const branchId: boolean = this.bigintPositive(bankExtDto.branchId);
@@ -287,7 +286,7 @@ export class ValidationService {
   }
 
   validateBranchExtDto(branchExtDto: BranchExtDto, validationType: string): [boolean, BranchExtDtoErrors] {
-    let branchExtDtoErrors = this.branchExtService.emptyBranchExtDtoErrors;  
+    let branchExtDtoErrors = this.branchService.emptyBranchExtDtoErrors;  
     let isValid: boolean = true;
 
     const branchName: boolean = this.string(branchExtDto.branchName);
@@ -333,7 +332,7 @@ export class ValidationService {
   }
 
   validateCashExtDto(cashExtDto: CashExtDto, validationType: string): [boolean, CashExtDtoErrors] {
-    let cashExtDtoErrors = this.cashExtService.emptyCashExtDtoErrors;  
+    let cashExtDtoErrors = this.cashService.emptyCashExtDtoErrors;  
     let isValid: boolean = true;
 
     const branchId: boolean = this.bigintPositive(cashExtDto.branchId);
@@ -368,7 +367,7 @@ export class ValidationService {
   }
 
   validateEmployeeExtDto(employeeExtDto: EmployeeExtDto, validationType: string): [boolean, EmployeeExtDtoErrors] {
-    let employeeExtDtoErrors = this.employeeExtService.emptyEmployeeExtDtoErrors;  
+    let employeeExtDtoErrors = this.employeeService.emptyEmployeeExtDtoErrors;  
     let isValid: boolean = true;
 
     const nameSurname: boolean = this.string(employeeExtDto.nameSurname);
@@ -435,7 +434,7 @@ export class ValidationService {
   }
 
   validateFlatExtDto(flatExtDto: FlatExtDto, validationType: string): [boolean, FlatExtDtoErrors] {
-    let flatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;  
+    let flatExtDtoErrors = this.flatService.emptyFlatExtDtoErrors;  
     let isValid: boolean = true;
 
     const sectionId: boolean = this.intPositive(flatExtDto.sectionId);
@@ -460,7 +459,7 @@ export class ValidationService {
   }
 
   validateHouseOwnerExtDto(houseOwnerExtDto: HouseOwnerExtDto, validationType: string): [boolean, HouseOwnerExtDtoErrors] {
-    let houseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;  
+    let houseOwnerExtDtoErrors = this.houseOwnerService.emptyHouseOwnerExtDtoErrors;  
     let isValid: boolean = true;
 
     const nameSurname: boolean = this.string(houseOwnerExtDto.nameSurname);
@@ -529,7 +528,7 @@ export class ValidationService {
   }
 
   validateSectionExtDto(sectionExtDto: SectionExtDto, validationType: string): [boolean, SectionExtDtoErrors] {
-    let sectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;  
+    let sectionExtDtoErrors = this.sectionService.emptySectionExtDtoErrors;  
     let isValid: boolean = true;
 
     const sectionName: boolean = this.string(sectionExtDto.sectionName);
@@ -593,7 +592,7 @@ export class ValidationService {
   }
 
   validateTenantExtDto(tenantExtDto: TenantExtDto, validationType: string): [boolean, TenantExtDtoErrors] {
-    let tenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;  
+    let tenantExtDtoErrors = this.tenantService.emptyTenantExtDtoErrors;  
     let isValid: boolean = true;
 
     const nameSurname: boolean = this.string(tenantExtDto.nameSurname);

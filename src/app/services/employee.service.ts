@@ -15,9 +15,9 @@ import { SingleDataResult } from 'src/app/models/results/single-data-result';
 @Injectable({
   providedIn: 'root'
 })
-export class EmployeeExtService {
+export class EmployeeService {
 
-  private controllerUrl: string = "employeeexts";
+  private controllerUrl: string = "employees";
   private _emptyEmployeeExtDto: EmployeeExtDto = {
     employeeId: 0,
     businessId: 0,
@@ -91,17 +91,16 @@ export class EmployeeExtService {
     return cloneDeep(this._emptyEmployeeExtDtoErrors);
   }
 
-  // API İstekleri
-  addExt(employeeExtDto: EmployeeExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/addext`, employeeExtDto);
+  add(employeeExtDto: EmployeeExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/add`, employeeExtDto);
   }
 
-  deleteExt(id: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteext/${id}`);
+  delete(id: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/delete/${id}`);
   }
 
-  deleteExtByAccountId(accountId: number): Observable<Result> {
-    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deleteextbyaccountid/${accountId}`);
+  deleteByAccountId(accountId: number): Observable<Result> {
+    return this.http.delete<Result>(`${environment.apiUrl}/${this.controllerUrl}/deletebyaccountid/${accountId}`);
   }
   
   getExtByAccountId(accountId: number): Observable<SingleDataResult<EmployeeExtDto>> {
@@ -116,7 +115,7 @@ export class EmployeeExtService {
     return this.http.get<ListDataResult<EmployeeExtDto>>(`${environment.apiUrl}/${this.controllerUrl}/getextsbybusinessid/${businessId}`);
   }
 
-  updateExt(employeeExtDto: EmployeeExtDto): Observable<Result> {
-    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/updateext`, employeeExtDto);
+  update(employeeExtDto: EmployeeExtDto): Observable<Result> {
+    return this.http.post<Result>(`${environment.apiUrl}/${this.controllerUrl}/update`, employeeExtDto);
   }
 }

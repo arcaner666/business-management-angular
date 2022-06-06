@@ -15,7 +15,7 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
 import { ManagerService } from 'src/app/services/manager.service';
-import { SectionExtService } from 'src/app/services/section-ext.service';
+import { SectionExtService } from 'src/app/services/section.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';

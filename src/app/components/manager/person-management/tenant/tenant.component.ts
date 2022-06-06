@@ -11,12 +11,12 @@ import { TenantExtDto } from 'src/app/models/dtos/tenant-ext-dto';
 import { TenantExtDtoErrors } from 'src/app/models/validation-errors/tenant-ext-dto-errors';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
+import { AccountService } from 'src/app/services/account.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { TenantExtService } from 'src/app/services/tenant-ext.service';
+import { TenantService } from 'src/app/services/tenant.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
 
@@ -41,21 +41,21 @@ export class TenantComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private accountExtService: AccountExtService,
+    private accountService: AccountService,
     private accountGroupService: AccountGroupService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
     private modalService: NgbModal,
     private navigationService: NavigationService,
     private router: Router,
-    private tenantExtService: TenantExtService,
+    private tenantService: TenantService,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
     console.log("TenantComponent constructor çalıştı.");
 
-    this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;
-    this.selectedTenantExtDtoErrors = this.tenantExtService.emptyTenantExtDtoErrors;
+    this.selectedTenantExtDto = this.tenantService.emptyTenantExtDto;
+    this.selectedTenantExtDtoErrors = this.tenantService.emptyTenantExtDtoErrors;
 
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
@@ -72,7 +72,7 @@ export class TenantComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.tenantExtService.addExt(this.selectedTenantExtDto)
+      this.tenantService.add(this.selectedTenantExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -112,7 +112,7 @@ export class TenantComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.tenantExtService.deleteExt(selectedTenantExtDto.tenantId)
+          return this.tenantService.delete(selectedTenantExtDto.tenantId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -143,7 +143,7 @@ export class TenantComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "code");
     this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {      
-      this.accountExtService.generateAccountCode(
+      this.accountService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedTenantExtDto.branchId, 
         "120")
@@ -183,14 +183,14 @@ export class TenantComponent implements OnInit, OnDestroy {
   }
 
   getTenantExtsByBusinessId(): Observable<ListDataResult<TenantExtDto>> {
-    this.tenantExtDtos$ = this.tenantExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.tenantExtDtos$ = this.tenantService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.tenantExtDtos$;
   }
 
   navigate(routeHistory: RouteHistory) {
     if (routeHistory.previousRoute != "") {
       if (routeHistory.accountId != 0) {
-        this.tenantExtService.getExtByAccountId(routeHistory.accountId)
+        this.tenantService.getExtByAccountId(routeHistory.accountId)
         .pipe(
           takeUntil(this.unsubscribeAll),
         ).subscribe({
@@ -230,7 +230,7 @@ export class TenantComponent implements OnInit, OnDestroy {
     if (selectedTenantExtDto) {
       this.selectedTenantExtDto = selectedTenantExtDto;
     } else {
-      this.selectedTenantExtDto = this.tenantExtService.emptyTenantExtDto;  
+      this.selectedTenantExtDto = this.tenantService.emptyTenantExtDto;  
     }
     this.setHeader(this.selectedTenantExtDto.tenantId);
     this.activePage = "detail";
@@ -244,7 +244,7 @@ export class TenantComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateTenantExtDto(this.selectedTenantExtDto, "update");
     this.selectedTenantExtDtoErrors = errors;
     if (isModelValid) {
-      this.tenantExtService.updateExt(this.selectedTenantExtDto)
+      this.tenantService.update(this.selectedTenantExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

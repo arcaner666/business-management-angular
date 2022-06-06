@@ -13,9 +13,9 @@ import { DistrictDto } from 'src/app/models/dtos/district-dto';
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account-ext.service';
+import { AccountService } from 'src/app/services/account.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
-import { BankExtService } from 'src/app/services/bank-ext.service';
+import { BankService } from 'src/app/services/bank.service';
 import { BranchService } from 'src/app/services/branch.service';
 import { CityService } from 'src/app/services/city.service';
 import { CurrencyService } from 'src/app/services/currency.service';
@@ -47,9 +47,9 @@ export class BankComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private accountExtService: AccountExtService,
+    private accountService: AccountService,
     private authorizationService: AuthorizationService,
-    private bankExtService: BankExtService,
+    private bankService: BankService,
     private branchService: BranchService,
     private cityService: CityService,
     private currencyService: CurrencyService,
@@ -62,8 +62,8 @@ export class BankComponent implements OnInit, OnDestroy {
   ) { 
     console.log("BankComponent constructor çalıştı.");
 
-    this.selectedBankExtDto = this.bankExtService.emptyBankExtDto;
-    this.selectedBankExtDtoErrors = this.bankExtService.emptyBankExtDtoErrors;
+    this.selectedBankExtDto = this.bankService.emptyBankExtDto;
+    this.selectedBankExtDtoErrors = this.bankService.emptyBankExtDtoErrors;
 
     this.branchDtos$ = this.getBranchsByBusinessId();
     this.cityDtos$ = this.getAllCities();
@@ -81,7 +81,7 @@ export class BankComponent implements OnInit, OnDestroy {
     if (isModelValid) {
       this.loading = true;
 
-      this.bankExtService.addExt(this.selectedBankExtDto)
+      this.bankService.add(this.selectedBankExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -121,7 +121,7 @@ export class BankComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.bankExtService.deleteExt(selectedBankExtDto.bankId)
+          return this.bankService.delete(selectedBankExtDto.bankId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -152,7 +152,7 @@ export class BankComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateBankExtDto(this.selectedBankExtDto, "code");
     this.selectedBankExtDtoErrors = errors;
     if (isModelValid) {      
-      this.accountExtService.generateAccountCode(
+      this.accountService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedBankExtDto.branchId, 
         "102")
@@ -188,7 +188,7 @@ export class BankComponent implements OnInit, OnDestroy {
   }
 
   getBankExtsByBusinessId(): Observable<ListDataResult<BankExtDto>> {
-    this.bankExtDtos$ = this.bankExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.bankExtDtos$ = this.bankService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.bankExtDtos$;
   }
 
@@ -200,7 +200,7 @@ export class BankComponent implements OnInit, OnDestroy {
   navigate(routeHistory: RouteHistory) {
     if (routeHistory.previousRoute != "") {
       if (routeHistory.accountId != 0) {
-        this.bankExtService.getExtByAccountId(routeHistory.accountId)
+        this.bankService.getExtByAccountId(routeHistory.accountId)
         .pipe(
           takeUntil(this.unsubscribeAll),
         ).subscribe({
@@ -241,7 +241,7 @@ export class BankComponent implements OnInit, OnDestroy {
       this.selectedBankExtDto = selectedBankExtDto;
       this.districtDtos$ = this.getDistrictsByCityId(selectedBankExtDto.cityId);
     } else {
-      this.selectedBankExtDto = this.bankExtService.emptyBankExtDto;  
+      this.selectedBankExtDto = this.bankService.emptyBankExtDto;  
     }
     this.setHeader(this.selectedBankExtDto.bankId);
     this.activePage = "detail";
@@ -262,7 +262,7 @@ export class BankComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateBankExtDto(this.selectedBankExtDto, "update");
     this.selectedBankExtDtoErrors = errors;
     if (isModelValid) {
-      this.bankExtService.updateExt(this.selectedBankExtDto)
+      this.bankService.update(this.selectedBankExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({
