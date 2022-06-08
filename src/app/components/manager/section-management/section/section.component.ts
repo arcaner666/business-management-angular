@@ -15,7 +15,7 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
 import { CityService } from 'src/app/services/city.service';
 import { DistrictService } from 'src/app/services/district.service';
 import { ManagerService } from 'src/app/services/manager.service';
-import { SectionExtService } from 'src/app/services/section.service';
+import { SectionService } from 'src/app/services/section.service';
 import { SectionGroupService } from 'src/app/services/section-group.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
@@ -49,14 +49,14 @@ export class SectionComponent implements OnInit, OnDestroy {
     private managerService: ManagerService,
     private modalService: NgbModal,
     private sectionGroupService: SectionGroupService,
-    private sectionExtService: SectionExtService,
+    private sectionService: SectionService,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) { 
     console.log("SectionComponent constructor çalıştı.");
 
-    this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;
-    this.selectedSectionExtDtoErrors = this.sectionExtService.emptySectionExtDtoErrors;
+    this.selectedSectionExtDto = this.sectionService.emptySectionExtDto;
+    this.selectedSectionExtDtoErrors = this.sectionService.emptySectionExtDtoErrors;
 
     this.cityDtos$ = this.getAllCities();
     this.managerDtos$ = this.getManagersByBusinessId();
@@ -73,7 +73,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.selectedSectionExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      this.sectionExtService.addExt(this.selectedSectionExtDto)
+      this.sectionService.add(this.selectedSectionExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -113,7 +113,7 @@ export class SectionComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.sectionExtService.deleteExt(selectedSectionExtDto.sectionId)
+          return this.sectionService.delete(selectedSectionExtDto.sectionId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -156,7 +156,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   }
 
   getSectionExtsByBusinessId(): Observable<ListDataResult<SectionExtDto>> {
-    this.sectionExtDtos$ = this.sectionExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.sectionExtDtos$ = this.sectionService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.sectionExtDtos$;
   }
 
@@ -178,7 +178,7 @@ export class SectionComponent implements OnInit, OnDestroy {
       this.selectedSectionExtDto = selectedSectionExtDto;
       this.districtDtos$ = this.getDistrictsByCityId(selectedSectionExtDto.cityId);
     } else {
-      this.selectedSectionExtDto = this.sectionExtService.emptySectionExtDto;  
+      this.selectedSectionExtDto = this.sectionService.emptySectionExtDto;  
     }
     this.setHeader(this.selectedSectionExtDto.sectionId);
     this.activePage = "detail";
@@ -199,7 +199,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateSectionExtDto(this.selectedSectionExtDto, "update");
     this.selectedSectionExtDtoErrors = errors;
     if (isModelValid) {
-      this.sectionExtService.updateExt(this.selectedSectionExtDto)
+      this.sectionService.update(this.selectedSectionExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

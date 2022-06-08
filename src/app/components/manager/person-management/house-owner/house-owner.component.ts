@@ -11,11 +11,11 @@ import { HouseOwnerExtDtoErrors } from 'src/app/models/validation-errors/house-o
 import { ListDataResult } from 'src/app/models/results/list-data-result';
 import { RouteHistory } from 'src/app/models/various/route-history';
 
-import { AccountExtService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/account.service';
 import { AccountGroupService } from 'src/app/services/account-group.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BranchService } from 'src/app/services/branch.service';
-import { HouseOwnerExtService } from 'src/app/services/house-owner.service';
+import { HouseOwnerService } from 'src/app/services/house-owner.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ValidationService } from 'src/app/services/validation.service';
@@ -41,11 +41,11 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<void> = new Subject<void>();
   
   constructor(
-    private accountExtService: AccountExtService,
+    private accountService: AccountService,
     private accountGroupService: AccountGroupService,
     private authorizationService: AuthorizationService,
     private branchService: BranchService,
-    private houseOwnerExtService: HouseOwnerExtService,
+    private houseOwnerService: HouseOwnerService,
     private modalService: NgbModal,
     private navigationService: NavigationService,
     private router: Router,
@@ -54,8 +54,8 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   ) { 
     console.log("HouseOwnerComponent constructor çalıştı.");
 
-    this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;
-    this.selectedHouseOwnerExtDtoErrors = this.houseOwnerExtService.emptyHouseOwnerExtDtoErrors;
+    this.selectedHouseOwnerExtDto = this.houseOwnerService.emptyHouseOwnerExtDto;
+    this.selectedHouseOwnerExtDtoErrors = this.houseOwnerService.emptyHouseOwnerExtDtoErrors;
 
     this.getAllAccountGroups();
     this.branchDtos$ = this.getBranchsByBusinessId();
@@ -71,7 +71,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     this.selectedHouseOwnerExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      this.houseOwnerExtService.addExt(this.selectedHouseOwnerExtDto)
+      this.houseOwnerService.addExt(this.selectedHouseOwnerExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -111,7 +111,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.houseOwnerExtService.deleteExt(selectedHouseOwnerExtDto.houseOwnerId)
+          return this.houseOwnerService.deleteExt(selectedHouseOwnerExtDto.houseOwnerId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -142,7 +142,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateHouseOwnerExtDto(this.selectedHouseOwnerExtDto, "code");
     this.selectedHouseOwnerExtDtoErrors = errors;
     if (isModelValid) {      
-      this.accountExtService.generateAccountCode(
+      this.accountService.generateAccountCode(
         this.authorizationService.authorizationDto.businessId, 
         this.selectedHouseOwnerExtDto.branchId, 
         "120")
@@ -183,14 +183,14 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
   }
 
   getHouseOwnerExtsByBusinessId(): Observable<ListDataResult<HouseOwnerExtDto>> {
-    this.houseOwnerExtDtos$ = this.houseOwnerExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.houseOwnerExtDtos$ = this.houseOwnerService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.houseOwnerExtDtos$;
   }
 
   navigate(routeHistory: RouteHistory) {
     if (routeHistory.previousRoute != "") {
       if (routeHistory.accountId != 0) {
-        this.houseOwnerExtService.getExtByAccountId(routeHistory.accountId)
+        this.houseOwnerService.getExtByAccountId(routeHistory.accountId)
         .pipe(
           takeUntil(this.unsubscribeAll),
         ).subscribe({
@@ -230,7 +230,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     if (selectedHouseOwnerExtDto) {
       this.selectedHouseOwnerExtDto = selectedHouseOwnerExtDto;
     } else {
-      this.selectedHouseOwnerExtDto = this.houseOwnerExtService.emptyHouseOwnerExtDto;  
+      this.selectedHouseOwnerExtDto = this.houseOwnerService.emptyHouseOwnerExtDto;  
     }
     this.setHeader(this.selectedHouseOwnerExtDto.houseOwnerId);
     this.activePage = "detail";
@@ -244,7 +244,7 @@ export class HouseOwnerComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateHouseOwnerExtDto(this.selectedHouseOwnerExtDto, "update");
     this.selectedHouseOwnerExtDtoErrors = errors;
     if (isModelValid) {
-      this.houseOwnerExtService.updateExt(this.selectedHouseOwnerExtDto)
+      this.houseOwnerService.updateExt(this.selectedHouseOwnerExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({

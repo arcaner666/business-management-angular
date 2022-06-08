@@ -13,7 +13,7 @@ import { TenantDto } from 'src/app/models/dtos/tenant-dto';
 
 import { ApartmentService } from 'src/app/services/apartment.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
-import { FlatExtService } from 'src/app/services/flat.service';
+import { FlatService } from 'src/app/services/flat.service';
 import { HouseOwnerService } from 'src/app/services/house-owner.service';
 import { SectionService } from 'src/app/services/section.service';
 import { TenantService } from 'src/app/services/tenant.service';
@@ -46,7 +46,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     private apartmentService: ApartmentService,
     private authorizationService: AuthorizationService,
     private houseOwnerService: HouseOwnerService,
-    private flatExtService: FlatExtService,
+    private flatService: FlatService,
     private modalService: NgbModal,
     private sectionService: SectionService,
     private tenantService: TenantService,
@@ -55,8 +55,8 @@ export class FlatComponent implements OnInit, OnDestroy {
   ) { 
     console.log("FlatComponent constructor çalıştı.");
 
-    this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;
-    this.selectedFlatExtDtoErrors = this.flatExtService.emptyFlatExtDtoErrors;
+    this.selectedFlatExtDto = this.flatService.emptyFlatExtDto;
+    this.selectedFlatExtDtoErrors = this.flatService.emptyFlatExtDtoErrors;
 
     this.flatExtDtos$ = this.getFlatExtsByBusinessId();
     this.houseOwnerDtos$ = this.getHouseOwnersByBusinessId();
@@ -73,7 +73,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     this.selectedFlatExtDtoErrors = errors;
     if (isModelValid) {
       this.loading = true;
-      this.flatExtService.addExt(this.selectedFlatExtDto)
+      this.flatService.add(this.selectedFlatExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
         concatMap((response) => {
@@ -113,7 +113,7 @@ export class FlatComponent implements OnInit, OnDestroy {
       // Burada response, açılan modal'daki seçeneklere verilen yanıtı tutar.
       concatMap((response) => {
         if (response == "ok") {
-          return this.flatExtService.deleteExt(selectedFlatExtDto.flatId)
+          return this.flatService.delete(selectedFlatExtDto.flatId)
           .pipe(
             tap((response) => {
               this.toastService.success(response.message);
@@ -156,7 +156,7 @@ export class FlatComponent implements OnInit, OnDestroy {
   }
 
   getFlatExtsByBusinessId(): Observable<ListDataResult<FlatExtDto>> {
-    this.flatExtDtos$ = this.flatExtService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
+    this.flatExtDtos$ = this.flatService.getExtsByBusinessId(this.authorizationService.authorizationDto.businessId);
     return this.flatExtDtos$;
   }
 
@@ -178,7 +178,7 @@ export class FlatComponent implements OnInit, OnDestroy {
       this.selectedFlatExtDto = selectedFlatExtDto;
       this.apartmentDtos$ = this.getApartmentsBySectionId(selectedFlatExtDto.sectionId);
     } else {
-      this.selectedFlatExtDto = this.flatExtService.emptyFlatExtDto;  
+      this.selectedFlatExtDto = this.flatService.emptyFlatExtDto;  
     }
     this.setHeader(this.selectedFlatExtDto.flatId);
     this.activePage = "detail";
@@ -199,7 +199,7 @@ export class FlatComponent implements OnInit, OnDestroy {
     let [isModelValid, errors] = this.validationService.validateFlatExtDto(this.selectedFlatExtDto, "update");
     this.selectedFlatExtDtoErrors = errors;
     if (isModelValid) {
-      this.flatExtService.updateExt(this.selectedFlatExtDto)
+      this.flatService.update(this.selectedFlatExtDto)
       .pipe(
         takeUntil(this.unsubscribeAll),
       ).subscribe({
